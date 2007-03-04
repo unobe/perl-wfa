@@ -1,0 +1,22 @@
+# Avoid Makemaker generated and utility files.
+\bMANIFEST\.bak
+\bMakefile$
+\bblib/
+\bWWW-Facebook-API-\d
+\bpm_to_blib$
+
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\b_build/
+
+# Avoid temp and backup files.
+~$
+\.old$
+\#$
+\b\.#
+
+# Avoid Devel::Cover files.
+\bcover_db\b
+
+#Avoid bin directory, for now
+\bbin/

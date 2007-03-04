@@ -1,0 +1,21 @@
+#!perl
+use strict;
+use warnings;
+use WWW::Facebook::API;
+
+my $acct = WWW::Facebook::API->new(
+    desktop => 1,
+    throw_errors => 1,
+);
+
+my $token = $acct->auth->create_token->{result}->[0]->{token}->[0];
+$acct->login->login($token);
+$acct->auth->get_session($token);
+my @friends = @{$acct->friends->get->{result}->[0]->{result_elt}};
+print "You have ".$acct->pokes->get_count->{result}->[0]->{unseen}->[0]
+    ." new poke(s).";
+my @quotes = map { @{$_->{quote}} }
+    values %{$acct->users->get_info(\@friends, 'quote')->{result}->[0]->{result_elt}};
+print "A lot of quotes: ".@quotes."\n";
+print "Random one:\t".$quotes[int rand @quotes]."\n";
+$acct->mech->follow_link(text => 'logout');

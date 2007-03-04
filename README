@@ -1,0 +1,29 @@
+WWW-Facebook-API-REST-CLIENT version 0.0.5
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+
+DEPENDENCIES
+
+Test::More
+version
+Moose
+WWW::Mechanize
+Digest::MD5
+Time::HiRes
+URI::Escape
+XML::Simple
+
+COPYRIGHT AND LICENSE
+
+Copyright (C) 2006, David Romano
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.

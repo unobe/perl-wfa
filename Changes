@@ -1,0 +1,32 @@
+Revision history for WWW-Facebook-API
+
+0.0.5  Sun Nov  5 00:57:05 2006
+         updated module to match API:
+           removed Wall.pm
+           changed documentation
+         added tests:
+           messages.t
+           pokes.t
+           session.t
+
+0.0.4  Sat Nov  4 20:57:47 2006
+         updated module to match API:
+           added friends.getAppUsers
+           added friends.getRequests
+           added session.ping
+         fixed some documentation typos
+         clarified some documentation
+
+0.0.3  Sat Sep 16 14:32:27 2006
+        Added friends->get_app_users, which was added to the official
+            Facebook API
+
+0.0.2  Sat Sep 16 13:00:24 2006
+        Initial release.
+        Added more tests
+        Changed module structure slightly
+            - Client/Auth/UserLogin.pm -> Client/Login.pm
+
+0.0.1  Mon Aug 21 13:09:11 2006
+        Initial development.
+
