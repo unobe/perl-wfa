@@ -46,6 +46,18 @@ has 'api_key' => (is => 'ro', isa => 'Str', required => 1,
         return $key;
     },
 );
+has 'api_version' => (is => 'ro', isa => 'Str', required => 1,
+    default => sub { "1.0" },
+);
+has 'next' => (is => 'ro', isa => 'Int', required => 1,
+    default => sub { 0 }
+);
+has 'popup' => (is => 'ro', isa => 'Int', required => 1,
+    default => sub { 0 }
+);
+has 'skipcookie' => (is => 'ro', isa => 'Int', required => 1,
+    default => sub { 0 }
+);
 has 'session_secret' => ( is => 'rw', isa => 'Str', default => q{} );
 has 'session_key'   => ( is => 'rw', isa => 'Str', default => q{} );
 has 'desktop' => ( is => 'ro', isa => 'Bool', required => 1, default => 0 );
@@ -85,9 +97,13 @@ sub _post_request {
     $params->{'api_key'} = $self->api_key;
     if ( $method !~ m/\.auth/mx ) {
         $params->{'session_key'} = $self->session_key;
+        $params->{'api_version'} = $self->api_version;
     }
     $params->{'method'} = $method;
-    $params->{'call_id'} = time;
+    $params->{'call_id'} = time if $self->desktop;
+    for (qw/popup next skipcookie/) {
+        $params->{$_} = '' if $self->$_;
+    }
 
     my @post_params = _create_post_params_from( $params );
 
@@ -110,7 +126,7 @@ sub _create_post_params_from {
         if ( ref $params->{$_} eq 'ARRAY' ) {
             $params->{$_} = join q{,}, @{ $params->{$_} }
         }
-        push @post_params, "$_=".uri_escape( $params->{$_} );
+        push @post_params, join '=', $_, uri_escape( $params->{$_} );
     }
 
     return @post_params;
