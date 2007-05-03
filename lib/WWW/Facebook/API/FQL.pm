@@ -10,9 +10,9 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.6');
-
 use Moose;
+
+use version; our $VERSION = qv('0.0.6');
 
 extends 'Moose::Object';
 
@@ -28,7 +28,6 @@ sub query {
         ? $value->{fql_query_response}->[0]
         : $value;
 }
-
 
 1; # Magic true value required at end of module
 __END__

@@ -8,7 +8,6 @@ use Test::More tests => 3;
 use strict;
 use warnings;
 
-
 BEGIN { use_ok('WWW::Facebook::API::Simple'); }
 
 my $api = WWW::Facebook::API::Simple->new( api_key => 1, secret => 1 );

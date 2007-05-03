@@ -15,11 +15,10 @@ use Time::HiRes qw(time);
 use URI::Escape;
 use XML::Simple qw(xml_in);
 use Digest::MD5 qw(md5_hex);
-
-use version; our $VERSION = qv('0.0.6');
-
 use Moose;
 use WWW::Facebook::API::Errors;
+
+use version; our $VERSION = qv('0.0.6');
 
 has 'mech' => (is => 'rw', isa => 'WWW::Mechanize', required => 1,
     default => sub {

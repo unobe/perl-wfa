@@ -5,13 +5,16 @@
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Errors;
+
 use strict;
 use warnings;
 use XML::Simple qw(xml_out);
 use Carp;
-use version; our $VERSION = qv('0.0.6');
 
 use Moose;
+
+use version; our $VERSION = qv('0.0.6');
+
 extends 'Moose::Object';
 
 has 'debug' => ( is => 'ro', isa => 'Bool', default => 0 );

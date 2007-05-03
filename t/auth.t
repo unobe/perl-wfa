@@ -11,7 +11,6 @@ use WWW::Facebook::API::Base;
 use strict;
 use warnings;
 
-
 BEGIN { use_ok('WWW::Facebook::API::Auth'); }
 
 my $base = WWW::Facebook::API::Base->new(

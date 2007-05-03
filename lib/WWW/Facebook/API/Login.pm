@@ -10,9 +10,9 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.6');
-
 use Moose;
+
+use version; our $VERSION = qv('0.0.6');
 
 extends 'Moose::Object';
 

@@ -10,9 +10,9 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.5');
-
 use Moose;
+
+use version; our $VERSION = qv('0.0.6');
 
 extends 'Moose::Object';
 
@@ -50,7 +50,7 @@ WWW::Facebook::API::Users - Users methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.0.5
+This document describes WWW::Facebook::API::Users version 0.0.6
 
 
 =head1 SYNOPSIS
