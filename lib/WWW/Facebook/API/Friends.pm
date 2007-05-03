@@ -10,10 +10,9 @@ use warnings;
 use strict;
 use Carp;
 
-use Moose;
-
 use version; our $VERSION = qv('0.0.6');
 
+use Moose;
 extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );

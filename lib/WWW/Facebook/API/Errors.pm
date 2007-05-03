@@ -11,10 +11,9 @@ use warnings;
 use XML::Simple qw(xml_out);
 use Carp;
 
-use Moose;
-
 use version; our $VERSION = qv('0.0.6');
 
+use Moose;
 extends 'Moose::Object';
 
 has 'debug' => ( is => 'ro', isa => 'Bool', default => 0 );
