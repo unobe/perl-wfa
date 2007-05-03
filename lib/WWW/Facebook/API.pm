@@ -13,6 +13,7 @@ use Carp;
 use version; our $VERSION = qv('0.0.6');
 
 use Moose;
+
 extends 'WWW::Facebook::API::Base';
 
 has 'auth' => (is => 'ro',
