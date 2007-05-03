@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 
@@ -18,33 +18,70 @@ extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
+sub add_tag {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'photos.addTag',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{photos_addTag_response}->[0]->{content}
+        : $value;
+}
+
+sub create_album {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'photos.createAlbum',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{photos_createAlbum_response}->[0]
+        : $value;
+}
+
+sub get {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'photos.get',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{photos_get_response}->[0]->{photo}
+        : $value;
+}
+
 sub get_albums {
-    if ( not $_[1] ) { confess 'id required'; }
-    return $_[0]->base->call(
-        method => 'facebook.photos.getAlbums', 
-        params => { 'id' => $_[1] },
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'photos.getAlbums',
+        params => { @_ },
     );
+    return $self->base->simple
+        ? $value->{photos_getAlbums_response}->[0]->{album}
+        : $value;
 }
 
-sub get_comment_count {
-    return $_[0]->base->call( method => 'facebook.photos.getCommentCount' );
+sub get_tags {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'photos.getTags',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{photos_getTags_response}->[0]->{photo_tag}
+        : $value;
 }
 
-sub get_from_album {
-    if ( not $_[1] ) { confess 'id required'; }
-    if ( not $_[2] ) { confess 'aid required'; }
-    return $_[0]->base->call(
-        method => 'facebook.photos.getFromAlbum',
-        params => { 'id' => $_[1], 'aid' => $_[2] },
+sub upload {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'photos.upload',
+        params => { @_ },
     );
-}
-
-sub get_of_user {
-    if ( not $_[1] ) { confess 'id required'; }
-    return $_[0]->base->call(
-        method => 'facebook.photos.getOfUser',
-        params => { 'id'=> $_[1], 'max'=> ($_[2] ? $_[2] : 0) },
-    );
+    return $self->base->simple
+        ? $value->{photos_upload_response}->[0]
+        : $value;
 }
 
 1; # Magic true value required at end of module
@@ -57,7 +94,7 @@ WWW::Facebook::API::Photos - Photos methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.0.5
+This document describes WWW::Facebook::API::Photos version 0.0.6
 
 
 =head1 SYNOPSIS
@@ -77,52 +114,36 @@ Methods for accessing photos with L<WWW::Facebook::API>
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
+=item add_tag
+
+The photos.addTag method of the Facebook API.
+
+=item create_album
+
+The photos.createAlbum method of the Facebook API.
+
+=item get
+
+The photos.get method of the Facebook API.
+
 =item get_albums
 
-The photos.getAlbums method of the Facebook API. The first argument is the
-'id' as per the API.
+The photos.getAlbums method of the Facebook API.
 
-=item get_comment_count
+=item get_tags
 
-The photos.getCommentCount method of the Facebook API.
+The photos.getTags method of the Facebook API.
 
-=item get_from_album
+=item upload
 
-The photos.getFromAlbum method of the Facebook API. The first argument
-corresponds to the 'id' and the second corresponds to the 'aid' as per the
-API.
-
-=item get_of_user
-
-The photos.getOfUser method of the Facebook API. The first argument
-corresponds to the 'id' and the second corresponds to the 'max' as per the
-API.
-
+The photos.upload method of the Facebook API.
 
 =back
 
 
 =head1 DIAGNOSTICS
 
-=over
-
-=item C< id required >
-
-No id was passed to the function. Pass an id that is permitted by the Facebook
-API.
-
-=item C< aid required >
-
-No aid value was passed to the function. Pass an album id that is permitted by
-the Facebook API.
-
-=item C< max required >
-
-No max value was passed to the function. Pass a max value that is permitted by
-the Facebook API.
-
-=back
-
+None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -145,7 +166,7 @@ None reported.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

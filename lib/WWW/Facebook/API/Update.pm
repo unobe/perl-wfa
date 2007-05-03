@@ -1,16 +1,16 @@
 #######################################################################
-# $Date: 2006-10-21T23:59:25.294425Z $
-# $Revision: 39 $
-# $Author: dromano $
+# $Date$
+# $Revision$
+# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-package WWW::Facebook::API::Session;
+package WWW::Facebook::API::Update;
 
 use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 
@@ -18,8 +18,15 @@ extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub ping {
-    return $_[0]->base->call( method => 'facebook.session.ping' );
+sub decode_ids {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'update.decodeIDs',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{update_decodeIDs_response}->[0]->{id_map}
+        : $value;
 }
 
 1; # Magic true value required at end of module
@@ -27,23 +34,22 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Session - Session methods for Client
+WWW::Facebook::API::Update - Update methods for Client
 
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Session version 0.0.5
+This document describes WWW::Facebook::API::Update version 0.0.6
 
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Session;
+    use WWW::Facebook::API::Update;
 
 
 =head1 DESCRIPTION
 
-Methods for accessing pokes with L<WWW::Facebook::API>
-
+Methods for updating old API info to newer API with L<WWW::Facebook::API>
 
 =head1 SUBROUTINES/METHODS 
 
@@ -54,16 +60,11 @@ Methods for accessing pokes with L<WWW::Facebook::API>
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item ping
+=item decode_ids
 
-The session.ping method of the Facebook API.
-
-=item meta
-
-Moose.
+The update.decodeIDs method of the Facebook API.
 
 =back
-
 
 =head1 DIAGNOSTICS
 
@@ -73,7 +74,7 @@ not have any unique error messages.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Session requires no configuration files or
+WWW::Facebook::API::Update requires no configuration files or
 environment variables.
 
 
@@ -92,7 +93,7 @@ None reported.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

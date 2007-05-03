@@ -4,7 +4,7 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-package WWW::Facebook::API::Auth;
+package WWW::Facebook::API::Groups;
 
 use warnings;
 use strict;
@@ -18,96 +18,52 @@ extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub create_token {
+sub get {
     my $self = shift;
     my $value = $self->base->call(
-        method => 'auth.createToken',
-        params => { api_key => $self->base->api_key, @_ },
-        secret => $self->base->secret,
+        method => 'groups.get',
+        params => { @_ },
     );
     return $self->base->simple
-        ? $value->{auth_createToken_response}->[0]->{content}
+        ? $value->{groups_get_response}->[0]->{group}
         : $value;
 }
 
-sub get_session {
+sub get_members {
     my $self = shift;
-
-    if ( $self->base->desktop ) {
-        # swap to using https for the sake of getting the session secret
-        $self->base->server_uri( _make_secure( $self->base->server_uri ) )
-    }
-
-    my $xml = $self->base->call(
-        method => 'auth.getSession',
+    my $value = $self->base->call(
+        method => 'groups.getMembers',
         params => { @_ },
-        secret => $self->base->secret,
     );
-
-    for ( qw/session_key session_expires session_uid/ ) {
-        $self->base->$_( $xml->{auth_getSession_response}->[0]->{$_}->[0] );
-    }
-    if ( $self->base->desktop ) {
-        $self->base->secret(
-            $xml->{auth_getSession_response}->[0]->{secret}->[0]
-        );
-        $self->base->server_uri( _make_insecure( $self->base->server_uri ) );
-    }
     return $self->base->simple
-        ? $xml->{auth_getSession_response}->[0]
-        : $xml;
+        ? $value->{groups_getMembers_response}->[0]
+        : $value;
 }
 
-sub _make_secure {
-    my $uri = shift;
-    $uri =~ s{http://}{https://}mx;
-    return $uri;
-}
-
-sub _make_insecure {
-    my $uri = shift;
-    $uri =~ s{https://}{http://}mx;
-    return $uri;
-}
-
-1;
+1; # Magic true value required at end of module
 __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Auth - Authentication utilities for Client
+WWW::Facebook::API::Groups - Groups methods for Client
 
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.0.6
+This document describes WWW::Facebook::API::Groups version 0.0.6
 
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Auth;
+    use WWW::Facebook::API::Groups;
 
 
 =head1 DESCRIPTION
 
-Methods for accessing auth with L<WWW::Facebook::API>
+Methods for accessing groups with L<WWW::Facebook::API>
+
 
 =head1 SUBROUTINES/METHODS 
-
-=over
-
-=item create_token
-
-auth.createToken of the Facebook API.
-
-=item get_session
-
-auth.getSession of the Facebook API.
-
-=back
-
-
-=head1 INTERNAL METHODS AND FUNCTIONS
 
 =over
 
@@ -116,41 +72,37 @@ auth.getSession of the Facebook API.
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item _make_secure
+=item get
 
-Changes the server_uri to https for C<get_session>.
+The groups.get method of the Facebook API.
 
-=item _make_insecure
+=item get_members
 
-Changes the server_uri back to http at the end of C<get_session>.
+The groups.get_members method of the Facebook API.
 
 =back
 
 
 =head1 DIAGNOSTICS
 
-None.
+This module is used by L<WWW::Facebook::API> and right now does
+not have any unique error messages.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Auth requires no configuration files or
+WWW::Facebook::API::Groups requires no configuration files or
 environment variables.
 
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Mechanize>
-L<XML::Simple>
-L<Digest::MD5>
-L<Time::HiRes>
-L<URI::Escape>
+None.
 
 
 =head1 INCOMPATIBILITIES
 
-None.
+None reported.
 
 
 =head1 BUGS AND LIMITATIONS

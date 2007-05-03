@@ -16,7 +16,7 @@ use URI::Escape;
 use XML::Simple qw(xml_in);
 use Digest::MD5 qw(md5_hex);
 
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -24,7 +24,7 @@ use WWW::Facebook::API::Errors;
 has 'mech' => (is => 'rw', isa => 'WWW::Mechanize', required => 1,
     default => sub {
             WWW::Mechanize->new(
-                agent => "Perl-WWW-Facebook-API-REST-Client/$VERSION"
+                agent => "Perl-WWW-Facebook-API/$VERSION"
             )
     },
 );
@@ -32,7 +32,7 @@ has 'server_uri' => (
     is => 'rw', isa => 'Str', required => 1,
     default => 'http://api.facebook.com/restserver.php',
 );
-has 'secret' => (is => 'ro', isa => 'Str', required => 1,
+has 'secret' => (is => 'rw', isa => 'Str', required => 1,
     default => sub {
         print q{Shhhh...please enter a secret: };
         chomp(my $secret = <STDIN>);
@@ -58,8 +58,9 @@ has 'popup' => (is => 'ro', isa => 'Int', required => 1,
 has 'skipcookie' => (is => 'ro', isa => 'Int', required => 1,
     default => sub { 0 }
 );
-has 'session_secret' => ( is => 'rw', isa => 'Str', default => q{} );
 has 'session_key'   => ( is => 'rw', isa => 'Str', default => q{} );
+has 'session_expires'   => ( is => 'rw', isa => 'Str', default => q{} );
+has 'session_uid'   => ( is => 'rw', isa => 'Str', default => q{} );
 has 'desktop' => ( is => 'ro', isa => 'Bool', required => 1, default => 0 );
 has 'errors' => (
     is => 'ro',
@@ -73,38 +74,44 @@ sub call {
     my ( $method, $params, $secret ) = (
         $args{'method'},
         ( $args{'params'} ? $args{'params'} : {} ),
-        ( $args{'secret'} ? $args{'secret'} : $self->session_secret ),
+        ( $args{'secret'} ? $args{'secret'} : $self->secret ),
     );
     $self->errors->last_call_success( 1 );
     $self->errors->last_error( undef );
 
+    $params->{'method'} = $args{'method'};
+    $self->_update_params( $params );
     my $xml = xml_in(
-        $self->_post_request( $method, $params, $secret ), 
+        $self->_post_request( $params, $secret ), 
         ForceArray  => 1,
         KeepRoot    => 1,
     );
     if ($self->errors->debug) {
         $self->errors->log_debug( $params, $xml );
     }
-    if ( $xml->{'result'}->[0]->{'fb_error'} ) {
+    if ( $xml->{'error_response'} ) {
         $self->errors->log_error( $xml );
     }
     return $xml;
 }
 
-sub _post_request {
-    my ($self, $method, $params, $secret) = @_;
-    $params->{'api_key'} = $self->api_key;
-    if ( $method !~ m/\.auth/mx ) {
+sub _update_params {
+    my ( $self, $params ) = @_;
+    if ( $params->{'method'} !~ m/^auth/mx ) {
         $params->{'session_key'} = $self->session_key;
-        $params->{'api_version'} = $self->api_version;
     }
-    $params->{'method'} = $method;
+    $params->{'method'} = "facebook.$params->{'method'}";
+    $params->{'api_key'} ||= $self->api_key;
+    $params->{'v'} ||= $self->api_version;
     $params->{'call_id'} = time if $self->desktop;
+
     for (qw/popup next skipcookie/) {
         $params->{$_} = '' if $self->$_;
     }
+ }
 
+sub _post_request {
+    my ($self, $params, $secret ) = @_;
     my @post_params = _create_post_params_from( $params );
 
     push @post_params, 'sig='._api_generate_sig( @post_params, $secret );
@@ -147,7 +154,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.0.5
+This document describes WWW::Facebook::API::Base version 0.0.6
 
 
 =head1 SYNOPSIS
@@ -187,7 +194,7 @@ documentation.
 For a desktop application, this is the secret that is used for calling
 create_token and get_session. See the Facebook API documentation under
 Authentication. If no secret is passed in to the C<new> method, it will prompt
-for one to be entered from STDIN
+for one to be entered from STDIN.
 
 =item api_key
 
@@ -195,13 +202,18 @@ The developer's API key. See the Facebook API documentation. If no api_key is
 passed in to the C<new> method, it will prompt for one to be entered from
 STDIN.
 
-=item session_secret
-
-The session secret for the client's user. See the Facebook API documentation.
-
 =item session_key
 
 The session key for the client's user. See the Facebook API documentation.
+
+=item session_expires
+
+The session expire timestamp for the client's user. See the Facebook API
+documentation.
+
+=item session_uid
+
+The session's uid for the client's user. See the Facebook API documentation.
 
 =item desktop
 
@@ -213,11 +225,33 @@ See the Facebook API documentation.
 See L<WWW::Facebook::API::Errors>. Basically, a grouping of the
 data that handles errors and debug information.
 
+=item api_version
+
+Which version to use (default is "1.0", which is the only one supported
+currently. Corresponds to the argument C<v> that is passed in to methods as a
+parameter.
+
+=item next
+
+See the Facebook API documentation.
+
+=item popup
+
+See the Facebook API documentation.
+
+=item skipcookie
+
+See the Facebook API documentation.
+
 =back
 
 =head1 INTERNAL METHODS AND FUNCTIONS
 
 =over
+
+=item _update_params
+
+Updates values for parameters that are passed in.
 
 =item _post_request
 
@@ -278,7 +312,7 @@ None.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

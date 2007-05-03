@@ -4,13 +4,13 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-package WWW::Facebook::API::Messages;
+package WWW::Facebook::API::Notifications;
 
 use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 
@@ -18,32 +18,38 @@ extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub get_count {
-    return $_[0]->base->call( method => 'facebook.messages.getCount' );
+sub get {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'notifications.get',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{notifications_get_response}->[0]
+        : $value;
 }
-
 
 1; # Magic true value required at end of module
 __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Messages - Message methods for Client
+WWW::Facebook::API::Notifications - Notifications methods for Client
 
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Messages version 0.0.5
+This document describes WWW::Facebook::API::Notifications version 0.0.6
 
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API;
+    use WWW::Facebook::API::Notifications;
 
 
 =head1 DESCRIPTION
 
-Methods for accessing messages with L<WWW::Facebook::API>
+Methods for accessing notification information with L<WWW::Facebook::API>
 
 
 =head1 SUBROUTINES/METHODS 
@@ -55,9 +61,9 @@ Methods for accessing messages with L<WWW::Facebook::API>
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item get_count
+=item get
 
-The messages.getCount method of the Facebook API.
+The notifications.get method of the Facebook API.
 
 =back
 
@@ -70,13 +76,13 @@ not have any unique error messages.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Messages requires no configuration files or
+WWW::Facebook::API::Notifications requires no configuration files or
 environment variables.
 
 
 =head1 DEPENDENCIES
 
-L<WWW::Facebook::API::Base>
+None.
 
 
 =head1 INCOMPATIBILITIES
@@ -89,7 +95,7 @@ None reported.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

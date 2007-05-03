@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 
@@ -18,20 +18,26 @@ extends 'Moose::Object';
 
 has 'base' => (is => 'ro', isa => 'WWW::Facebook::API::Base');
 
-sub get_in_window {
-    my $retval = $_[0]->base->call(
-        method => 'facebook.events.getInWindow',
-        params => {
-            'start_time' => $_[1] ? $_[1] : 0,
-            'end_time'   => $_[2] ? $_[2] : 0,
-        }
+sub get {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'events.get',
+        params => { @_ },
     );
-    for ( @{ $retval->{'result'}->[0]->{'result_elt'} } ) {
-        if ( ref $_->{'attending'}->[0] eq 'HASH' ) {
-            $_->{'attending'}->[0] = q{};
-        }
-    }
-    return $retval;
+    return $self->base->simple
+        ? $value->{events_get_response}->[0]->{event}
+        : $value;
+}
+
+sub getMembers {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'events.getMembers',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{events_getMembers_response}->[0]
+        : $value;
 }
 
 1; # Magic true value required at end of module
@@ -44,7 +50,7 @@ WWW::Facebook::API::Events - Events for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Events version 0.0.5
+This document describes WWW::Facebook::API::Events version 0.0.6
 
 
 =head1 SYNOPSIS
@@ -66,11 +72,13 @@ Methods for accessing events with L<WWW::Facebook::API>
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item get_in_window
+=item get
 
-The events.getInWindow method of the Facebook API. The first argument
-corresponds to the 'start_time' value, while the second corresponds to the
-'end_time' value per the API.
+The events.get method of the Facebook API.
+
+=item getMembers
+
+The events.getMembers method of the Facebook API.
 
 =back
 
@@ -102,7 +110,7 @@ None reported.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

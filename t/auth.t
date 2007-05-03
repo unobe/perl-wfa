@@ -1,4 +1,10 @@
-use Test::More tests => 8;
+#######################################################################
+# $Date$
+# $Revision$
+# $Author$
+# ex: set ts=8 sw=4 et
+#########################################################################
+use Test::More tests => 5;
 use Test::MockObject::Extends;
 use WWW::Mechanize;
 use WWW::Facebook::API::Base;
@@ -13,30 +19,27 @@ my $base = WWW::Facebook::API::Base->new(
     secret  => 1,
     mech    => Test::MockObject::Extends->new(WWW::Mechanize->new()),
 );
-$/ = "\n\n";
-$base->mech->set_series('content', <DATA>);
+
+{
+    local $/ = "\n\n";
+    $base->mech->set_series('content', <DATA>);
+}
 
 my $auth = WWW::Facebook::API::Auth->new(
     base => $base, api_key => 1, secret => 1
 );
 
 {
-    my $result = $auth->create_token->{result}->[0];
-    is $result->{method}, 'facebook.auth.createToken', 'method correct';
-    is $result->{token}->[0], '3e4a22bb2f5ed75114b0fc9995ea85f1', 'token correct';
-
+    my $result = $auth->create_token->{auth_createToken_response}->[0];
+    is $result->{content}, '3e4a22bb2f5ed75114b0fc9995ea85f1', 'token correct';
 }
 
 {
-    is eval { $auth->get_session->{result}->[0] }, undef,
-        "auth token needed";
-    like $@, '/^auth token required/', "auth token error message";
-
-    my $result = $auth->get_session('8bd7eb80aef3778f2478921787d7e911')->{result}->[0];
-    is $result->{method}, 'facebook.auth.getSession', 'method correct';
+    my $result = $auth->get_session( auth_token => '8bd7eb80aef3778f2478921787d7e911' )
+        ->{auth_getSession_response}->[0];
     is $result->{session_key}->[0], '5f34e11bfb97c762e439e6a5-8055', 'session key correct';
     is $result->{uid}->[0], '8055', 'uid correct';
-
+    is $result->{expires}->[0], '1173309298', 'expires correct';
 }
 
 __DATA__
@@ -47,4 +50,5 @@ __DATA__
 <auth_getSession_response xmlns="http://api.facebook.com/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd">
   <session_key>5f34e11bfb97c762e439e6a5-8055</session_key>
   <uid>8055</uid>
+  <expires>1173309298</expires>
 </auth_getSession_response>

@@ -19,12 +19,25 @@ extends 'Moose::Object';
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
 sub get_info {
-    if ( not $_[1] ) { confess 'users required'; }
-    if ( not $_[2] ) { confess 'fields required'; }
-    return $_[0]->base->call(
-        method => 'facebook.users.getInfo',
-        params => { 'users' => $_[1], 'fields' => $_[2] }
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'users.getInfo',
+        params => { @_ },
     );
+    return $self->base->simple
+        ? $value->{users_getInfo_response}->[0]->{user}
+        : $value;
+}
+
+sub get_logged_in_user {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'users.getLoggedInUser',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{users_getLoggedInUser_response}->[0]->{content}
+        : $value;
 }
 
 1; # Magic true value required at end of module
@@ -61,28 +74,16 @@ the REST server.
 
 =item get_info
 
-The users.getInfo method of the Facebook API. The first argument corresponds
-to the 'users' value (an array ref), and the second argument corresponds to
-the 'fields' value (another array ref) as per the API.
+The users.getInfo method of the Facebook API.
+
+=item get_logged_in_user
+
+The users.getLoggedInUser method of the Facebook API.
 
 =back
 
 
 =head1 DIAGNOSTICS
-
-=over
-
-=item C< users required >
-
-No users array ref was passed to get_info. Pass an array ref with the user
-ids.
-
-=item C< fields required >
-
-No fields array ref was passed to get_info. Pass an array ref with the fields
-you want.
-
-=back
 
 This module is used by L<WWW::Facebook::API> and right now does
 not have any unique error messages.
@@ -109,7 +110,7 @@ None reported.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

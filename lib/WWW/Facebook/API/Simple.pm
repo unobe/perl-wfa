@@ -4,7 +4,7 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-package WWW::Facebook::API::Friends;
+package WWW::Facebook::API::Simple;
 
 use warnings;
 use strict;
@@ -14,110 +14,91 @@ use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 
-extends 'Moose::Object';
+extends 'WWW::Facebook::API';
 
-has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
-
-sub get {
+sub BUILD {
     my $self = shift;
-    my $value = $self->base->call(
-        method => 'friends.get',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{friends_get_response}->[0]->{uid}
-        : $value;
+    $self->simple(1);
 }
 
-sub get_app_users {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'friends.getAppUsers',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{friends_getAppUsers_response}->[0]
-        : $value;
-}
-
-sub are_friends {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'friends.areFriends', 
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{friends_areFriends_response}->[0]->{friend_info}
-        : $value;
-}
-
-1; # Magic true value required at end of module
+1;
 __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Friends - Friend methods for Client
+WWW::Facebook::API - Facebook API implementation
 
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Friends version 0.0.6
+This document describes WWW::Facebook::API version 0.0.6
 
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API;
+    use WWW::Facebook::API::Simple;
+
+    my $client = WWW::Facebook::API::Simple->new(
+        throw_errors => 1,
+        desktop => 1,
+        api_key => '5ac7d432',
+        secret => '459ade099c',
+    );
+
+    my $token = $client->auth->create_token;
+    $client->login->login( $token ); # prompts for login credentials from STDIN
+    $client->auth->get_session( auth_token => $token );
+    my @friends = @{ $client->friends->get };
+    use Data::Dumper;
+    print Dumper $client->friends->are_friends(
+        uids1 => [@friends[0,1,2,3]],
+        uids2 => [@friends[4,5,6,7]],
+    );
+    print 'You have '
+        . $client->notifications->get->{pokes}->[0]->{unread}->[0]
+        .' unread poke(s).';
+    my @quotes = map { @{$_->{quotes}} }
+        @{ $client->users->get_info( uids => \@friends, fields => ['quotes']) };
+    print 'A lot of quotes: '.@quotes."\n";
+    print "Random one:\t".$quotes[int rand @quotes]."\n";
 
 
 =head1 DESCRIPTION
 
-Methods for accessing friends with L<WWW::Facebook::API>
-
+A simpler interface to fetch values with for the Facebook API. Basically, not
+as much typing to get at the information returned by the server.
 
 =head1 SUBROUTINES/METHODS 
 
-=over
-
-=item base
-
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
-
-=item get
-
-The friends.get method of the Facebook API.
-
-=item get_app_users
-
-The friends.getAppUsers method of the Facebook API.
-
-=item are_friends
-
-The friends.areFriends method of the Facebook API. The two arguments are array
-refs that make up an associative array. See the API for further details.
-
-=back
-
+See L<WWW::Facebook::API>.
 
 =head1 DIAGNOSTICS
 
-None.
+The errors that are thrown would most likely be from
+L<WWW::Facebook::API::Base> or from L<DEPENDENCIES>, so look
+there first.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Friends requires no configuration files or
-environment variables.
+WWW::Facebook::API::Simple requires no configuration files or environment
+variables.
 
 
 =head1 DEPENDENCIES
 
-L<WWW::Facebook::API::Base>.
+L<Moose>
+L<WWW::Mechanize>
+L<XML::Simple>
+L<Digest::MD5>
+L<Time::HiRes>
+L<URI::Escape>
+L<Crypt::SSLeay>
 
 
 =head1 INCOMPATIBILITIES
 
-None reported.
+None.
 
 
 =head1 BUGS AND LIMITATIONS
@@ -125,7 +106,7 @@ None reported.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

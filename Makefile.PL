@@ -5,8 +5,8 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME                => 'WWW::Facebook::API',
     AUTHOR              => 'David Romano <unobe@cpan.org>',
-    VERSION_FROM        => 'lib/WWW/Facebook/API/REST/Client.pm',
-    ABSTRACT_FROM       => 'lib/WWW/Facebook/API/REST/Client.pm',
+    VERSION_FROM        => 'lib/WWW/Facebook/API.pm',
+    ABSTRACT_FROM       => 'lib/WWW/Facebook/API.pm',
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More'        => 0,
@@ -17,6 +17,7 @@ WriteMakefile(
         'Time::HiRes'       => 0,
         'URI::Escape'       => 0,
         'XML::Simple'       => 0,
+        'Crypt::SSLeay'     => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'WWW-Facebook-API-*' },

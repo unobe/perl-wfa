@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 
@@ -49,14 +49,15 @@ sub login {
     $self->base->mech->get(
         $self->login_uri
         . '?api_key=' . $self->base->api_key
+        . "&v=1.0"
         . "&auth_token=$token"
     );
     if ( not $self->base->mech->forms ) {
         confess 'No form to submit!';
     }
     $self->_login_form;
-    if ( $self->base->mech->content !~ m{logout</a>}mx ) {
-        confess 'Unable to login';
+    if ( $self->base->mech->content !~ m{Logout</a>}mix ) {
+        confess 'Unable to login:'. $self->base->mech->content;
     }
     $self->base->mech->agent( $agent );
     return $token;
@@ -72,8 +73,7 @@ WWW::Facebook::API::Login - Ask for user login info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Login
-version 0.0.5
+This document describes WWW::Facebook::API::Login version 0.0.6
 
 
 =head1 SYNOPSIS
@@ -143,6 +143,7 @@ L<XML::Simple>
 L<Digest::MD5>
 L<Time::HiRes>
 L<URI::Escape>
+L<Crypt:SSLeay>
 
 
 =head1 INCOMPATIBILITIES
@@ -155,7 +156,7 @@ None.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

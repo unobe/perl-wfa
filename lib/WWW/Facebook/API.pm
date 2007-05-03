@@ -10,75 +10,87 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
-
-use WWW::Facebook::API::Auth;
-use WWW::Facebook::API::Login;
-use WWW::Facebook::API::Events;
-use WWW::Facebook::API::Friends;
-use WWW::Facebook::API::Messages;
-use WWW::Facebook::API::Photos;
-use WWW::Facebook::API::Pokes;
-use WWW::Facebook::API::Session;
-use WWW::Facebook::API::Users;
 
 extends 'WWW::Facebook::API::Base';
 
 has 'auth' => (is => 'ro',
     isa => 'WWW::Facebook::API::Auth',
     default => sub {
-        return WWW::Facebook::API::Auth->new(base => $_[0] )
+        use WWW::Facebook::API::Auth;
+        return WWW::Facebook::API::Auth->new( base => $_[0] )
     },
 );
 has 'login' => (is => 'ro',
     isa => 'WWW::Facebook::API::Login',
     default => sub {
-        return WWW::Facebook::API::Login->new(base => $_[0] )
+        use WWW::Facebook::API::Login;
+        return WWW::Facebook::API::Login->new( base => $_[0] )
     },
 );
 has 'events' => (is => 'ro',
     isa => 'WWW::Facebook::API::Events',
     default => sub {
-        return WWW::Facebook::API::Events->new(base => $_[0] )
+        use WWW::Facebook::API::Events;
+        return WWW::Facebook::API::Events->new( base => $_[0] )
+    },
+);
+has 'fql' => (is => 'ro',
+    isa => 'WWW::Facebook::API::FQL',
+    default => sub {
+        use WWW::Facebook::API::FQL;
+        return WWW::Facebook::API::FQL->new( base => $_[0] )
     },
 );
 has 'friends' => (is => 'ro',
     isa => 'WWW::Facebook::API::Friends',
     default => sub {
-        return WWW::Facebook::API::Friends->new(base => $_[0] )
+        use WWW::Facebook::API::Friends;
+        return WWW::Facebook::API::Friends->new( base => $_[0] )
     },
 );
-has 'messages' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Messages',
+has 'groups' => (is => 'ro',
+    isa => 'WWW::Facebook::API::Groups',
     default => sub {
-        return WWW::Facebook::API::Messages->new(base => $_[0] )
+        use WWW::Facebook::API::Groups;
+        return WWW::Facebook::API::Groups->new( base => $_[0] )
+    },
+);
+has 'notifications' => (is => 'ro',
+    isa => 'WWW::Facebook::API::Notifications',
+    default => sub {
+        use WWW::Facebook::API::Notifications;
+        return WWW::Facebook::API::Notifications->new( base => $_[0] )
     },
 );
 has 'photos' => (is => 'ro',
     isa => 'WWW::Facebook::API::Photos',
     default => sub {
-        return WWW::Facebook::API::Photos->new(base => $_[0] )
+        use WWW::Facebook::API::Photos;
+        return WWW::Facebook::API::Photos->new( base => $_[0] )
     },
 );
-has 'pokes' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Pokes',
+has 'update' => (is => 'ro',
+    isa => 'WWW::Facebook::API::Update',
     default => sub {
-        return WWW::Facebook::API::Pokes->new(base => $_[0] )
-    },
-);
-has 'session' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Session',
-    default => sub {
-        return WWW::Facebook::API::Session->new(base => $_[0] )
+        use WWW::Facebook::API::Update;
+        return WWW::Facebook::API::Update->new( base => $_[0] )
     },
 );
 has 'users' => (is => 'ro',
     isa => 'WWW::Facebook::API::Users',
     default => sub {
-        return WWW::Facebook::API::Users->new(base => $_[0] )
+        use WWW::Facebook::API::Users;
+        return WWW::Facebook::API::Users->new( base => $_[0] )
     },
+);
+
+has 'simple' => (is => 'rw',
+    isa => 'Bool',
+    required => 1,
+    default => 0,
 );
 
 1;
@@ -91,7 +103,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.0.5
+This document describes WWW::Facebook::API version 0.0.6
 
 
 =head1 SYNOPSIS
@@ -104,15 +116,24 @@ This document describes WWW::Facebook::API version 0.0.5
         api_key => '5ac7d432',
         secret => '459ade099c',
     );
-    my $token = $client->auth->create_token->{result}->[0]->{token}->[0];
-    $client->login->login($token); # prompts for email and password from STDIN
-    $client->auth->get_session($token);
-    my @friends = @{$client->friends->get->{result}->[0]->{result_elt}};
-    $client->friends->are_friends([@friends[0,1,2,3]], [@friends[4,5,6,7]]);
-    print 'You have '.$client->pokes->get_count->{result}->[0]->{unseen}->[0]
-        .' new poke(s).';
-    my @quotes = map { @{$_->{quote}} }
-        values %{$client->users->get_info(\@friends, 'quote')->{result}->[0]->{result_elt}};
+
+    my $token = $client->auth->create_token
+        ->{auth_createToken_response}->[0]->{content};
+    $client->login->login( $token ); # prompts for login credentials from STDIN
+    $client->auth->get_session( auth_token => $token );
+    my @friends = @{$client->friends->get->{friends_get_response}->[0]->{uid}};
+    use Data::Dumper;
+    print Dumper $client->friends->are_friends(
+        uids1 => [@friends[0,1,2,3]],
+        uids2 => [@friends[4,5,6,7]],
+    );
+    print 'You have '
+        . $client->notifications->get->{notifications_get_response}->[0]
+            ->{pokes}->[0]->{unread}->[0]
+        .' unread poke(s).';
+    my @quotes = map { @{$_->{quotes}} }
+        @{$client->users->get_info( uids => \@friends, fields => ['quotes'] )
+            ->{users_getInfo_response}->[0]->{user}};
     print 'A lot of quotes: '.@quotes."\n";
     print "Random one:\t".$quotes[int rand @quotes]."\n";
 
@@ -151,18 +172,25 @@ events namespace of the API (See L<WWW::Facebook::API::Events>).
 All method names from the Facebook API are lower_cased instead of CamelCase,
 e.g., events.getInWindow is events->get_in_window
 
+=item fql
+
+fql namespace of the API (See L<WWW::Facebook::API::FQL>).
+
 =item friends
 
 friends namespace of the API (See L<WWW::Facebook::API::Friends>).
 All method names from the Facebook API are lower_cased instead of CamelCase,
 e.g., friends.areFriends(list1, list2) is friends->are_friends(list1, list2)
 
-=item messages
+=item groups
 
-messages namespace of the API (See
-L<WWW::Facebook::API::Messages>). All method names from the
-Facebook API are lower_cased instead of CamelCase, e.g., messages.getCount is
-message->get_count
+groups namespace of the API (See L<WWW::Facebook::API::Groups>).
+All method names from the Facebook API are lower_cased instead of CamelCase,
+e.g., groups.getMembers(gid) is groups->get_members(gid)
+
+=item notifications
+
+notifications namespace of the API (See L<WWW::Facebook::API::Notifications>).
 
 =item photos
 
@@ -170,23 +198,28 @@ photos namespace of the API (See L<WWW::Facebook::API::Photos>).
 All method names from the Facebook API are lower_cased instead of CamelCase,
 e.g., photos.getOfUser is photos->get_of_user
 
-=item pokes
+=item update
 
-pokes namespace of the API (See L<WWW::Facebook::API::Pokes>).
-All method names from the Facebook API are lower_cased instead of CamelCase,
-e.g., pokes.getCount is pokes->get_count
-
-=item session
-
-session namespace of the API (See L<WWW::Facebook::API::Session>).
-All method names from the Facebook API are lower_cased instead of CamelCase,
-e.g., session.ping is session->ping
+update namespace of the API (See L<WWW::Facebook::API::Update>).
+Call update.decodeIDs with update->decode_ids
 
 =item users
 
 users namespace of the API (See L<WWW::Facebook::API::Users>).
 All method names from the Facebook API are lower_cased instead of CamelCase,
 e.g., users.getInfo is users->get_info
+
+=item simple
+
+Defaults to false.  L<WWW::Facebook::API::Simple> defaults to true. Compare
+this module's synopsis with L<WWW::Facebook::API::Simple> to see an example of
+what difference it makes. If set to true, makes all methods return an
+easier-to-manage value by dereferencing the top nodes of the XML hierarchy. If
+there is no ambiguity about what the requested value is, it will return that
+(e.g, auth.createToken will return the token, friends.get will return an array
+ref of uids, etc. ).  If there is ambiguity (e.g., auth.getSession), then it
+will only dereference to the point where it cannot do so without losing
+crucial information.
 
 =back 
 
@@ -211,6 +244,7 @@ L<XML::Simple>
 L<Digest::MD5>
 L<Time::HiRes>
 L<URI::Escape>
+L<Crypt::SSLeay>
 
 
 =head1 INCOMPATIBILITIES

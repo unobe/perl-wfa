@@ -1,5 +1,10 @@
 Revision history for WWW-Facebook-API
 
+0.0.6  Thu May  3 04:20:26 PDT 2007
+	lots of changes to make module to match API 1.0
+	added Simple interface
+	removed tests that were not longer useful
+
 0.0.5  Sun Nov  5 00:57:05 2006
          updated module to match API:
            removed Wall.pm

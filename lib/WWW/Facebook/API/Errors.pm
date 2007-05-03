@@ -9,42 +9,10 @@ use strict;
 use warnings;
 use XML::Simple qw(xml_out);
 use Carp;
-use version; our $VERSION = qv('0.0.5');
+use version; our $VERSION = qv('0.0.6');
 
 use Moose;
 extends 'Moose::Object';
-
-my ERROR => {
-    1 => 'An unknown error occurred. Please resubmit the request.',
-    2 => 'The service is not available at this time.',
-    4 => 'The application has reached the maximum number of requests'
-         .' allowed. More requests are allowed once the time window has'
-         .' completed.',
-    5 => 'The request came from a remote address not allowed by this'
-         .'application.',
-    100 => 'One of the parameters specified was missing or invalid.',
-    101 => 'The api key submitted is not associated with any known'
-           .' application.',
-    102 => 'The session key was improperly submitted or has reached its'
-           .' timeout. Direct the user to log in again to obtain another'
-           .' key.',
-    103 => 'The submitted call_id was not greater than the previous call_id'
-           .' for this session.',
-    104 => 'Incorrect signature.',
-    110 => 'Invalid user id.',
-    120 => 'Invalid album id.',
-    121 => 'Invalid photo id.',
-    321 => 'Album is full.',
-    322 => 'Invalid photo tag subject.',
-    323 => 'Cannot tag photo already visible on Facebook.',
-    324 => 'Missing or invalid image file.',
-    325 => 'Too many unapproved photos pending.',
-    326 => 'Too many photo tags pending.'
-    601 => 'Error while parsing FQL statement.',
-    602 => 'The field you requested does not exist.',
-    603 => 'The table you requested does not exist.',
-    604 => 'Your statement is not indexable.',
-    };
 
 has 'debug' => ( is => 'ro', isa => 'Bool', default => 0 );
 has 'throw_errors' => (
@@ -69,13 +37,12 @@ sub log_debug {
 sub log_error {
     my ( $self, $xml ) = @_;
     $self->last_call_success( 0 );
-    $self->last_error( $xml->{'result'}->[0]->{'fb_error'}->[0]->{'msg'}->[0] );
-    if ( $self->throw_errors ) {
-        confess(
-            $xml->{'result'}->[0]->{'fb_error'}->[0]->{'msg'}->[0],
-            '('.$xml->{'result'}->[0]->{'fb_error'}->[0]->{'code'}->[0].')',
-        );
-    }
+    my $error_response = $xml->{'error_response'}->[0];
+    $self->last_error( join ': ',
+        $error_response->{'error_code'}->[0],
+        $error_response->{'error_msg'}->[0]
+    );
+    if ( $self->throw_errors ) { confess xml_out( $xml ) }
     return;
 }
 
@@ -89,7 +56,7 @@ WWW::Facebook::API::Errors - Errors class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Errors version 0.0.5
+This document describes WWW::Facebook::API::Errors version 0.0.6
 
 
 =head1 SYNOPSIS
@@ -136,7 +103,7 @@ message.
 
 =item meta
 
-From L<Moose>
+L<Moose>
 
 =back
 
@@ -147,7 +114,7 @@ Any error that is thrown is most likely an API error as well.
 
 =over
 
-=item C< Incorrect signature(104) >
+=item C< 104: Incorrect signature >
 
 This one in particular might get you: make sure you have passed in (desktop =>
 1) when creating a new desktop client, or else the signature won't match
@@ -179,7 +146,7 @@ None reported.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 
