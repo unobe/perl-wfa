@@ -28,7 +28,7 @@ sub get {
         : $value;
 }
 
-sub getMembers {
+sub get_members {
     my $self = shift;
     my $value = $self->base->call(
         method => 'events.getMembers',
@@ -75,7 +75,7 @@ the REST server.
 
 The events.get method of the Facebook API.
 
-=item getMembers
+=item get_members
 
 The events.getMembers method of the Facebook API.
 

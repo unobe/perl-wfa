@@ -15,7 +15,7 @@ use version; our $VERSION = qv('0.0.6');
 use Moose;
 extends 'Moose::Object';
 
-has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
+has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API' );
 
 sub create_token {
     my $self = shift;

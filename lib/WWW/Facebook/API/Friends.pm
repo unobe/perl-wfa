@@ -42,7 +42,7 @@ sub get_app_users {
 sub are_friends {
     my $self = shift;
     my $value = $self->base->call(
-        method => 'friends.areFriends', 
+        method => 'friends.areFriends',
         params => { @_ },
     );
     return $self->base->simple

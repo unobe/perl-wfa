@@ -18,6 +18,7 @@ extends 'WWW::Facebook::API';
 sub BUILD {
     my $self = shift;
     $self->simple(1);
+    return;
 }
 
 1;
@@ -70,6 +71,18 @@ as much typing to get at the information returned by the server.
 =head1 SUBROUTINES/METHODS 
 
 See L<WWW::Facebook::API>.
+
+=over
+
+=item BUILD
+
+L<Moose>
+
+=item meta
+
+L<Moose>
+
+=back
 
 =head1 DIAGNOSTICS
 

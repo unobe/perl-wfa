@@ -47,16 +47,16 @@ has 'api_key' => (is => 'ro', isa => 'Str', required => 1,
     },
 );
 has 'api_version' => (is => 'ro', isa => 'Str', required => 1,
-    default => sub { "1.0" },
+    default => '1.0',
 );
 has 'next' => (is => 'ro', isa => 'Int', required => 1,
-    default => sub { 0 }
+    default => 0,
 );
 has 'popup' => (is => 'ro', isa => 'Int', required => 1,
-    default => sub { 0 }
+    default => 0,
 );
 has 'skipcookie' => (is => 'ro', isa => 'Int', required => 1,
-    default => sub { 0 }
+    default => 0,
 );
 has 'session_key'   => ( is => 'rw', isa => 'Str', default => q{} );
 has 'session_expires'   => ( is => 'rw', isa => 'Str', default => q{} );
@@ -82,7 +82,7 @@ sub call {
     $params->{'method'} = $args{'method'};
     $self->_update_params( $params );
     my $xml = xml_in(
-        $self->_post_request( $params, $secret ), 
+        $self->_post_request( $params, $secret ),
         ForceArray  => 1,
         KeepRoot    => 1,
     );
@@ -103,11 +103,12 @@ sub _update_params {
     $params->{'method'} = "facebook.$params->{'method'}";
     $params->{'api_key'} ||= $self->api_key;
     $params->{'v'} ||= $self->api_version;
-    $params->{'call_id'} = time if $self->desktop;
+    if ( $self->desktop ) { $params->{'call_id'} = time }
 
     for (qw/popup next skipcookie/) {
-        $params->{$_} = '' if $self->$_;
+        if ( $self->$_ ) { $params->{$_} = q{} }
     }
+    return;
  }
 
 sub _post_request {
@@ -133,7 +134,7 @@ sub _create_post_params_from {
         if ( ref $params->{$_} eq 'ARRAY' ) {
             $params->{$_} = join q{,}, @{ $params->{$_} }
         }
-        push @post_params, join '=', $_, uri_escape( $params->{$_} );
+        push @post_params, join q{=}, $_, uri_escape( $params->{$_} );
     }
 
     return @post_params;

@@ -48,7 +48,7 @@ sub login {
     $self->base->mech->get(
         $self->login_uri
         . '?api_key=' . $self->base->api_key
-        . "&v=1.0"
+        . '&v=1.0'
         . "&auth_token=$token"
     );
     if ( not $self->base->mech->forms ) {

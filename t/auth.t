@@ -7,13 +7,13 @@
 use Test::More tests => 5;
 use Test::MockObject::Extends;
 use WWW::Mechanize;
-use WWW::Facebook::API::Base;
+use WWW::Facebook::API;
 use strict;
 use warnings;
 
 BEGIN { use_ok('WWW::Facebook::API::Auth'); }
 
-my $base = WWW::Facebook::API::Base->new(
+my $base = WWW::Facebook::API->new(
     api_key => 1,
     secret  => 1,
     mech    => Test::MockObject::Extends->new(WWW::Mechanize->new()),
