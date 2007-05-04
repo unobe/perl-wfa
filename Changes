@@ -1,5 +1,8 @@
 Revision history for WWW-Facebook-API
 
+0.0.7  Fri May  4 10:08:07 PDT 2007
+	doc cleanup
+
 0.0.6  Thu May  3 04:42:22 PDT 2007
 	lots of changes to make module to match API 1.0
 	added Simple interface

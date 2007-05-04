@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.6');
+use version; our $VERSION = qv('0.0.7');
 
 use Moose;
 extends 'Moose::Object';
@@ -60,7 +60,7 @@ WWW::Facebook::API::Friends - Friend methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Friends version 0.0.6
+This document describes WWW::Facebook::API::Friends version 0.0.7
 
 
 =head1 SYNOPSIS
