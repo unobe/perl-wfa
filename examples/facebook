@@ -26,4 +26,4 @@ print 'A lot of quotes: '.@quotes."\n";
 print "Random one:\t".$quotes[int rand @quotes]."\n";
 
 
-$client->mech->follow_link(text => 'Logout');
+$client->mech->follow_link( text => 'Logout' );

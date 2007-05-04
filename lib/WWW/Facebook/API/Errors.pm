@@ -135,7 +135,6 @@ environment variables.
 
 L<Moose>
 L<XML::Simple>
-L<version>
 
 
 =head1 INCOMPATIBILITIES

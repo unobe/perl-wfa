@@ -7,9 +7,9 @@ WriteMakefile(
     AUTHOR              => 'David Romano <unobe@cpan.org>',
     VERSION_FROM        => 'lib/WWW/Facebook/API.pm',
     ABSTRACT_FROM       => 'lib/WWW/Facebook/API.pm',
+    LICENSE             => 'perl',
     PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More'        => 0,
         'version'           => 0,
         'Moose'             => 0,
         'WWW::Mechanize'    => 0,

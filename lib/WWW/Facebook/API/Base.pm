@@ -301,6 +301,7 @@ L<XML::Simple>
 L<Digest::MD5>
 L<Time::HiRes>
 L<URI::Escape>
+L<Crypt::SSLeay>
 
 
 =head1 INCOMPATIBILITIES

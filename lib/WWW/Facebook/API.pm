@@ -226,8 +226,8 @@ crucial information.
 =head1 DIAGNOSTICS
 
 The errors that are thrown would most likely be from
-L<WWW::Facebook::API::Base> or from L<DEPENDENCIES>, so look
-there first.
+L<WWW::Facebook::API::Base> or from others in L<DEPENDENCIES>, so look there
+first.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -238,12 +238,17 @@ WWW::Facebook::API requires no configuration files or environment variables.
 =head1 DEPENDENCIES
 
 L<Moose>
-L<WWW::Mechanize>
-L<XML::Simple>
-L<Digest::MD5>
-L<Time::HiRes>
-L<URI::Escape>
-L<Crypt::SSLeay>
+L<WWW::Facebook::API::Auth>
+L<WWW::Facebook::API::Base>
+L<WWW::Facebook::API::Login>
+L<WWW::Facebook::API::Events>
+L<WWW::Facebook::API::FQL>
+L<WWW::Facebook::API::Friends>
+L<WWW::Facebook::API::Groups>
+L<WWW::Facebook::API::Notifications>
+L<WWW::Facebook::API::Photos>
+L<WWW::Facebook::API::Update>
+L<WWW::Facebook::API::Users>
 
 
 =head1 INCOMPATIBILITIES
@@ -256,7 +261,7 @@ None.
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-www-facebook-api-rest-client@rt.cpan.org>, or through the web interface at
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 

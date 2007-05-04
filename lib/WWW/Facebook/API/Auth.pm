@@ -50,7 +50,7 @@ sub get_session {
         $self->base->secret(
             $xml->{auth_getSession_response}->[0]->{secret}->[0]
         );
-        $self->base->server_uri( _make_insecure( $self->base->server_uri ) );
+        $self->base->server_uri( _make_unsecure( $self->base->server_uri ) );
     }
     return $self->base->simple
         ? $xml->{auth_getSession_response}->[0]
@@ -63,7 +63,7 @@ sub _make_secure {
     return $uri;
 }
 
-sub _make_insecure {
+sub _make_unsecure {
     my $uri = shift;
     $uri =~ s{https://}{http://}mx;
     return $uri;
@@ -119,7 +119,7 @@ the REST server.
 
 Changes the server_uri to https for C<get_session>.
 
-=item _make_insecure
+=item _make_unsecure
 
 Changes the server_uri back to http at the end of C<get_session>.
 
@@ -140,12 +140,7 @@ environment variables.
 =head1 DEPENDENCIES
 
 L<Moose>
-L<WWW::Mechanize>
-L<XML::Simple>
-L<Digest::MD5>
-L<Time::HiRes>
-L<URI::Escape>
-
+L<WWW::Facebook::API>
 
 =head1 INCOMPATIBILITIES
 

@@ -137,12 +137,7 @@ files or environment variables.
 =head1 DEPENDENCIES
 
 L<Moose>
-L<WWW::Mechanize>
-L<XML::Simple>
-L<Digest::MD5>
-L<Time::HiRes>
-L<URI::Escape>
-L<Crypt:SSLeay>
+L<WWW::Facebook::API::Base>
 
 
 =head1 INCOMPATIBILITIES

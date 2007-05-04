@@ -26,12 +26,12 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API - Facebook API implementation
+WWW::Facebook::API::Simple - Facebook API implementation
 
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.0.6
+This document describes WWW::Facebook::API::Simple version 0.0.6
 
 
 =head1 SYNOPSIS
@@ -100,12 +100,7 @@ variables.
 =head1 DEPENDENCIES
 
 L<Moose>
-L<WWW::Mechanize>
-L<XML::Simple>
-L<Digest::MD5>
-L<Time::HiRes>
-L<URI::Escape>
-L<Crypt::SSLeay>
+L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

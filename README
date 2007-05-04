@@ -12,7 +12,6 @@ To install this module, run the following commands:
 
 DEPENDENCIES
 
-Test::More
 version
 Moose
 WWW::Mechanize
@@ -20,6 +19,7 @@ Digest::MD5
 Time::HiRes
 URI::Escape
 XML::Simple
+Crypt::SSLeay
 
 COPYRIGHT AND LICENSE
 

@@ -96,7 +96,8 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<WWW::Facebook::API::Base>.
+L<Moose>
+L<WWW::Facebook::API::Base>
 
 
 =head1 INCOMPATIBILITIES

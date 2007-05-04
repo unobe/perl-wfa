@@ -81,6 +81,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
+L<Moose>
 L<WWW::Facebook::API::Base>
 
 

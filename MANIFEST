@@ -3,6 +3,7 @@ MANIFEST
 META.yml # Will be created by "make dist"
 Makefile.PL
 README
+examples/facebook
 lib/WWW/Facebook/API.pm
 lib/WWW/Facebook/API/Simple.pm
 lib/WWW/Facebook/API/Auth.pm
@@ -21,3 +22,6 @@ t/00.load.t
 t/api.t
 t/api_simple.t
 t/auth.t
+t/perlcritic.t
+t/pod-coverage.t
+t/pod.t
