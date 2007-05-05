@@ -16,7 +16,7 @@ use URI::Escape;
 use XML::Simple qw(xml_in);
 use Digest::MD5 qw(md5_hex);
 
-use version; our $VERSION = qv('0.0.7');
+use version; our $VERSION = qv('0.0.8');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -155,7 +155,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.0.7
+This document describes WWW::Facebook::API::Base version 0.0.8
 
 
 =head1 SYNOPSIS

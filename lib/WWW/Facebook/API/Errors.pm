@@ -11,7 +11,7 @@ use warnings;
 use XML::Simple qw(xml_out);
 use Carp;
 
-use version; our $VERSION = qv('0.0.7');
+use version; our $VERSION = qv('0.0.8');
 
 use Moose;
 extends 'Moose::Object';
@@ -58,7 +58,7 @@ WWW::Facebook::API::Errors - Errors class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Errors version 0.0.7
+This document describes WWW::Facebook::API::Errors version 0.0.8
 
 
 =head1 SYNOPSIS

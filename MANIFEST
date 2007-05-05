@@ -22,6 +22,4 @@ t/00.load.t
 t/api.t
 t/api_simple.t
 t/auth.t
-t/perlcritic.t
-t/pod-coverage.t
 t/pod.t

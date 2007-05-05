@@ -1,5 +1,8 @@
 Revision history for WWW-Facebook-API
 
+0.0.8  Sat May  5 11:22:27 PDT 2007
+	doc coverage and perl-critic tests no longer packaged
+
 0.0.7  Fri May  4 10:08:07 PDT 2007
 	doc cleanup
 

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.7');
+use version; our $VERSION = qv('0.0.8');
 
 use Moose;
 extends 'Moose::Object';
@@ -72,7 +72,7 @@ WWW::Facebook::API::Login - Ask for user login info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Login version 0.0.7
+This document describes WWW::Facebook::API::Login version 0.0.8
 
 
 =head1 SYNOPSIS
