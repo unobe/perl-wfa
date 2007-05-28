@@ -1,4 +1,4 @@
-WWW-Facebook-API version 0.0.8
+WWW-Facebook-API version 0.0.9
 
 INSTALLATION
 
@@ -17,13 +17,13 @@ Moose
 WWW::Mechanize
 Digest::MD5
 Time::HiRes
-URI::Escape
 XML::Simple
 Crypt::SSLeay
+Test::MockObject::Extends
 
 COPYRIGHT AND LICENSE
 
-Copyright (C) 2006, David Romano
+Copyright (C) 2007, David Romano
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

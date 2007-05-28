@@ -1,6 +1,5 @@
 #######################################################################
-# $Date$
-# $Revision$
+# $Date$ # $Revision$
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
@@ -12,11 +11,10 @@ use Carp;
 
 use WWW::Mechanize;
 use Time::HiRes qw(time);
-use URI::Escape;
 use XML::Simple qw(xml_in);
 use Digest::MD5 qw(md5_hex);
 
-use version; our $VERSION = qv('0.0.8');
+use version; our $VERSION = qv('0.0.9');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -113,36 +111,35 @@ sub _update_params {
 
 sub _post_request {
     my ($self, $params, $secret ) = @_;
-    my @post_params = _create_post_params_from( $params );
+    my $post_params = _create_sig_for( $params, $secret );
 
-    push @post_params, 'sig='._api_generate_sig( @post_params, $secret );
+    $self->mech->post( $self->server_uri, $post_params );
+    my $response = $self->mech->content;
 
-    $self->mech->get( $self->server_uri.q{?} . join q{&}, @post_params );
-    my $xml = $self->mech->content;
-
-    if ( $xml !~ m/<\?xml/mx ) {
-        confess "XML not returned from REST call:\n$xml";
+    if ( $response =~ m/error_response/mx ) {
+        confess "Error during REST call:\n$response";
     }
 
-    return $xml;
+    return $response;
 }
 
-sub _create_post_params_from {
-    my ($params, @post_params) = @_;
+sub _create_sig_for {
+    my ($params, $secret, @post_params ) = @_;
 
+    # have to join keys and values to generate sig...
+    # there has to be a better way to do this
     for ( sort keys %{$params} ) {
         if ( ref $params->{$_} eq 'ARRAY' ) {
             $params->{$_} = join q{,}, @{ $params->{$_} }
         }
-        push @post_params, join q{=}, $_, uri_escape( $params->{$_} );
+        push @post_params, join q{=}, $_, $params->{$_};
     }
 
-    return @post_params;
-}
-
-sub _api_generate_sig {
-    my $sig = join q{}, map { uri_unescape($_) } @_;
-    return md5_hex( $sig );
+    # create sig and and then split keys/values for posting
+    return [
+        map { split /=/, $_ }
+            @post_params, 'sig='.md5_hex( join q{}, @post_params, $secret )
+    ];
 }
 
 1; # Magic true value required at end of module
@@ -155,7 +152,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.0.8
+This document describes WWW::Facebook::API::Base version 0.0.9
 
 
 =head1 SYNOPSIS
@@ -259,15 +256,10 @@ Updates values for parameters that are passed in.
 Used by C<call> to post the request to the REST server and return the
 response.
 
-=item _create_post_params_from
+=item _create_sig_for
 
-Creates string from the given hash ref by sorting the hash by key and
-concatenating the uri_escape'd key value pair to to the string.
-
-=item _api_generate_sig
-
-Generates and returns an md5_hex signature of the parameters for the method
-call.
+Creates signature (md5) for the post parameters, and returns a reference to
+the post parameters with the sig as the last element in the list.
 
 =back
 
@@ -325,7 +317,7 @@ David Romano  C<< <unobe@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2006, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

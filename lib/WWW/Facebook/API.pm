@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.8');
+use version; our $VERSION = qv('0.0.9');
 
 use Moose;
 extends 'WWW::Facebook::API::Base';
@@ -102,7 +102,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.0.8
+This document describes WWW::Facebook::API version 0.0.9
 
 
 =head1 SYNOPSIS
@@ -238,18 +238,6 @@ WWW::Facebook::API requires no configuration files or environment variables.
 =head1 DEPENDENCIES
 
 L<Moose>
-L<WWW::Facebook::API::Auth>
-L<WWW::Facebook::API::Base>
-L<WWW::Facebook::API::Login>
-L<WWW::Facebook::API::Events>
-L<WWW::Facebook::API::FQL>
-L<WWW::Facebook::API::Friends>
-L<WWW::Facebook::API::Groups>
-L<WWW::Facebook::API::Notifications>
-L<WWW::Facebook::API::Photos>
-L<WWW::Facebook::API::Update>
-L<WWW::Facebook::API::Users>
-
 
 =head1 INCOMPATIBILITIES
 
@@ -272,7 +260,7 @@ David Romano  C<< <unobe@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2006, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

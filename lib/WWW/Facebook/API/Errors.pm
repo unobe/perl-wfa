@@ -11,7 +11,7 @@ use warnings;
 use XML::Simple qw(xml_out);
 use Carp;
 
-use version; our $VERSION = qv('0.0.8');
+use version; our $VERSION = qv('0.0.9');
 
 use Moose;
 extends 'Moose::Object';
@@ -58,7 +58,7 @@ WWW::Facebook::API::Errors - Errors class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Errors version 0.0.8
+This document describes WWW::Facebook::API::Errors version 0.0.9
 
 
 =head1 SYNOPSIS
@@ -158,7 +158,7 @@ David Romano  C<< <unobe@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2006, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

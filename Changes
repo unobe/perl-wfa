@@ -1,5 +1,13 @@
 Revision history for WWW-Facebook-API
 
+0.0.9  Mon May 28 06:53:17 PDT 2007
+	changed from GET to POST for dealing with REST server, since it appears
+	  that FB is more strict now about what kind of connection it expects
+	  (thanks to Shawn Van Ittersum for the tip)
+	fixed test dependency problem RT#27305
+	removed URI::Escape from dependency list
+	updated copyright
+
 0.0.8  Sat May  5 11:22:27 PDT 2007
 	doc coverage and perl-critic tests no longer packaged
 
