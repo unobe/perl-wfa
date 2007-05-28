@@ -14,7 +14,7 @@ use Time::HiRes qw(time);
 use XML::Simple qw(xml_in);
 use Digest::MD5 qw(md5_hex);
 
-use version; our $VERSION = qv('0.0.9');
+use version; our $VERSION = qv('0.1.0');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -87,7 +87,8 @@ sub call {
     if ($self->errors->debug) {
         $self->errors->log_debug( $params, $xml );
     }
-    if ( $xml->{'error_response'} ) {
+    if ( $xml =~ m/<error_code>|^{"error_code"/mx ) {
+        confess "Error during REST call:\n$xml";
         $self->errors->log_error( $xml );
     }
     return $xml;
@@ -114,13 +115,8 @@ sub _post_request {
     my $post_params = _create_sig_for( $params, $secret );
 
     $self->mech->post( $self->server_uri, $post_params );
-    my $response = $self->mech->content;
-
-    if ( $response =~ m/error_response/mx ) {
-        confess "Error during REST call:\n$response";
-    }
-
-    return $response;
+    
+    return $self->mech->content;
 }
 
 sub _create_sig_for {
@@ -152,7 +148,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.0.9
+This document describes WWW::Facebook::API::Base version 0.1.0
 
 
 =head1 SYNOPSIS
@@ -268,11 +264,12 @@ the post parameters with the sig as the last element in the list.
 
 =over
 
-=item C< XML not returned from REST call >
+=item C< Error during REST call: %s >
 
 This means that there's most likely an error in the server you are using to
-communicate to the Facebook REST server. Double-check that C<server_uri> is
-set to the right location.
+communicate to the Facebook REST server. Look at the traceback to determine
+why an error was thrown. Double-check that C<server_uri> is set to the right
+location.
 
 =back
 
@@ -292,7 +289,6 @@ L<WWW::Mechanize>
 L<XML::Simple>
 L<Digest::MD5>
 L<Time::HiRes>
-L<URI::Escape>
 L<Crypt::SSLeay>
 
 

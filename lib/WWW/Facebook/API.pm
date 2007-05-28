@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.9');
+use version; our $VERSION = qv('0.1.0');
 
 use Moose;
 extends 'WWW::Facebook::API::Base';
@@ -102,7 +102,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.0.9
+This document describes WWW::Facebook::API version 0.1.0
 
 
 =head1 SYNOPSIS
@@ -238,6 +238,11 @@ WWW::Facebook::API requires no configuration files or environment variables.
 =head1 DEPENDENCIES
 
 L<Moose>
+L<WWW::Mechanize>
+L<XML::Simple>
+L<Digest::MD5>
+L<Time::HiRes>
+L<Crypt::SSLeay>
 
 =head1 INCOMPATIBILITIES
 
