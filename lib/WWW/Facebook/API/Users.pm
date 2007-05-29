@@ -25,7 +25,7 @@ sub get_info {
     );
 
     # remove erraneous hash refs in quotes
-    my $quotes = $values->{users_getInfo_response}->[0]->{user}->{quotes};
+    my $quotes = $value->{users_getInfo_response}->[0]->{user}->{quotes};
     @$quotes = grep  { not ref } @$quotes;
 
     return $self->base->simple
