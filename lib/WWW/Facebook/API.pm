@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.0');
+use version; our $VERSION = qv('0.1.1');
 
 use Moose;
 extends 'WWW::Facebook::API::Base';
@@ -43,6 +43,13 @@ has 'fql' => (is => 'ro',
         return WWW::Facebook::API::FQL->new( base => $_[0] )
     },
 );
+has 'feed' => (is => 'ro',
+    isa => 'WWW::Facebook::API::Feed',
+    default => sub {
+        use WWW::Facebook::API::Feed;
+        return WWW::Facebook::API::Feed->new( base => $_[0] )
+    },
+);
 has 'friends' => (is => 'ro',
     isa => 'WWW::Facebook::API::Friends',
     default => sub {
@@ -62,6 +69,13 @@ has 'notifications' => (is => 'ro',
     default => sub {
         use WWW::Facebook::API::Notifications;
         return WWW::Facebook::API::Notifications->new( base => $_[0] )
+    },
+);
+has 'profile' => (is => 'ro',
+    isa => 'WWW::Facebook::API::Profile',
+    default => sub {
+        use WWW::Facebook::API::Profile;
+        return WWW::Facebook::API::Profile->new( base => $_[0] )
     },
 );
 has 'photos' => (is => 'ro',
@@ -102,7 +116,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.1.0
+This document describes WWW::Facebook::API version 0.1.1
 
 
 =head1 SYNOPSIS

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.9');
+use version; our $VERSION = qv('0.1.1');
 
 use Moose;
 extends 'Moose::Object';
@@ -49,7 +49,7 @@ WWW::Facebook::API::Events - Events for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Events version 0.0.9
+This document describes WWW::Facebook::API::Events version 0.1.1
 
 
 =head1 SYNOPSIS

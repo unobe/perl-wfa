@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.9');
+use version; our $VERSION = qv('0.1.1');
 
 use Moose;
 extends 'Moose::Object';
@@ -57,6 +57,13 @@ sub get_session {
         : $xml;
 }
 
+sub logout {
+    my $self = shift;
+    $self->base->mech->post( 'http://www.facebook.com/logout.php',
+                             { confirm => 1 }
+    );
+}
+
 sub _make_secure {
     my $uri = shift;
     $uri =~ s{http://}{https://}mx;
@@ -79,7 +86,7 @@ WWW::Facebook::API::Auth - Authentication utilities for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.0.9
+This document describes WWW::Facebook::API::Auth version 0.1.1
 
 
 =head1 SYNOPSIS
@@ -102,6 +109,12 @@ auth.createToken of the Facebook API.
 =item get_session
 
 auth.getSession of the Facebook API.
+
+=item logout
+
+Sends a POST to http://www.facebook.com/logout.php, with the parameter
+"confirm" set to 1 (Cf.
+http://developers.facebook.com/documentation.php?v=1.0&doc=auth )
 
 =back
 

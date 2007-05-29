@@ -1,5 +1,13 @@
 Revision history for WWW-Facebook-API
 
+0.1.1  Mon May 28 22:07:01 PDT 2007
+	added profile.* and feed.* methods of API
+	added logout method under Auth
+	updated example to use logout method
+	added debugging information
+	added two load tests
+	hash refs under quotes (none which should be refs) are now removed
+
 0.1.0  Mon May 28 07:48:50 PDT 2007
 	slightly changed how to check for errors
 	updated docs

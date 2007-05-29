@@ -4,7 +4,7 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 BEGIN {
 use_ok( 'WWW::Facebook::API' );
@@ -21,6 +21,8 @@ use_ok( 'WWW::Facebook::API::Update' );
 use_ok( 'WWW::Facebook::API::Users' );
 use_ok( 'WWW::Facebook::API::Notifications' );
 use_ok( 'WWW::Facebook::API::Friends' );
+use_ok( 'WWW::Facebook::API::Feed' );
+use_ok( 'WWW::Facebook::API::Profile' );
 }
 
 diag( "Testing WWW::Facebook::API $WWW::Facebook::API::VERSION" );

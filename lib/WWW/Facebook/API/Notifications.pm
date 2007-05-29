@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.9');
+use version; our $VERSION = qv('0.1.1');
 
 use Moose;
 extends 'Moose::Object';
@@ -28,6 +28,28 @@ sub get {
         : $value;
 }
 
+sub send {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'notifications.send',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{notifications_send_response}->[0]
+        : $value;
+}
+
+sub send_request {
+    my $self = shift;
+    my $value = $self->base->call(
+        method => 'notifications.sendRequest',
+        params => { @_ },
+    );
+    return $self->base->simple
+        ? $value->{notifications_sendRequest_response}->[0]
+        : $value;
+}
+
 1; # Magic true value required at end of module
 __END__
 
@@ -38,7 +60,7 @@ WWW::Facebook::API::Notifications - Notifications methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Notifications version 0.0.9
+This document describes WWW::Facebook::API::Notifications version 0.1.1
 
 
 =head1 SYNOPSIS
@@ -63,6 +85,14 @@ the REST server.
 =item get
 
 The notifications.get method of the Facebook API.
+
+=item send
+
+The notifications.send method of the Facebook API.
+
+=item send_request
+
+The notifications.sendRequest method of the Facebook API.
 
 =back
 

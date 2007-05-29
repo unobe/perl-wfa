@@ -1,10 +1,10 @@
 #######################################################################
-# $Date$
-# $Revision$
-# $Author$
+# $Date: 2007-05-28T14:18:18.679359Z $
+# $Revision: 1508 $
+# $Author: unobe $
 # ex: set ts=8 sw=4 et
 #########################################################################
-package WWW::Facebook::API::Photos;
+package WWW::Facebook::API::Profile;
 
 use warnings;
 use strict;
@@ -17,69 +17,25 @@ extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub add_tag {
+sub set_FBML {
     my $self = shift;
     my $value = $self->base->call(
-        method => 'photos.addTag',
+        method => 'profile.setFBML',
         params => { @_ },
     );
     return $self->base->simple
-        ? $value->{photos_addTag_response}->[0]->{content}
+        ? $value->{profile_setFBML_response}->[0]->{content}
         : $value;
 }
 
-sub create_album {
+sub get_FBML {
     my $self = shift;
     my $value = $self->base->call(
-        method => 'photos.createAlbum',
+        method => 'profile.getFBML',
         params => { @_ },
     );
     return $self->base->simple
-        ? $value->{photos_createAlbum_response}->[0]
-        : $value;
-}
-
-sub get {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.get',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_get_response}->[0]->{photo}
-        : $value;
-}
-
-sub get_albums {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.getAlbums',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_getAlbums_response}->[0]->{album}
-        : $value;
-}
-
-sub get_tags {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.getTags',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_getTags_response}->[0]->{photo_tag}
-        : $value;
-}
-
-sub upload {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.upload',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_upload_response}->[0]
+        ? $value->{profile_getFBML_response}->[0]->{content}
         : $value;
 }
 
@@ -88,12 +44,12 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Photos - Photos methods for Client
+WWW::Facebook::API::Profile - Profile methods for Client
 
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.1.1
+This document describes WWW::Facebook::API::Profile version 0.1.1
 
 
 =head1 SYNOPSIS
@@ -113,29 +69,13 @@ Methods for accessing photos with L<WWW::Facebook::API>
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item add_tag
+=item set_FBML
 
-The photos.addTag method of the Facebook API.
+The profile.setFBML method of the Facebook API.
 
-=item create_album
+=item get_FBML
 
-The photos.createAlbum method of the Facebook API.
-
-=item get
-
-The photos.get method of the Facebook API.
-
-=item get_albums
-
-The photos.getAlbums method of the Facebook API.
-
-=item get_tags
-
-The photos.getTags method of the Facebook API.
-
-=item upload
-
-The photos.upload method of the Facebook API.
+The profile.getFBML method of the Facebook API.
 
 =back
 
@@ -146,7 +86,7 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Photos requires no configuration files or
+WWW::Facebook::API::Profile requires no configuration files or
 environment variables.
 
 

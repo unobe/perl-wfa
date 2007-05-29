@@ -11,12 +11,14 @@ use warnings;
 use XML::Simple qw(xml_out);
 use Carp;
 
-use version; our $VERSION = qv('0.0.9');
+use version; our $VERSION = qv('0.1.1');
 
 use Moose;
 extends 'Moose::Object';
 
-has 'debug' => ( is => 'ro', isa => 'Bool', default => 0 );
+has 'base' => (is => 'ro', isa => 'WWW::Facebook::API::Base',);
+
+has 'debug' => ( is => 'rw', isa => 'Bool', default => 0 );
 has 'throw_errors' => (
     is => 'ro', isa => 'Bool', required => 1, default => 1,
 );
@@ -26,7 +28,8 @@ has 'last_error' => ( is => 'rw', isa => 'Str' );
 sub log_debug {
     my ($self, $params, $xml ) = @_;
     # output the raw xml and its corresponding object, for debugging:
-    my $debug = "params = \n";
+    my $debug =  "uri = ".$self->base->server_uri;
+    $debug    .= "\n\nparams = \n";
 
     for ( keys %{$params} ) {
         $debug .= "\t$_ " . $params->{$_} . "\n";
@@ -58,7 +61,7 @@ WWW::Facebook::API::Errors - Errors class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Errors version 0.0.9
+This document describes WWW::Facebook::API::Errors version 0.1.1
 
 
 =head1 SYNOPSIS

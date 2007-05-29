@@ -14,7 +14,7 @@ use Time::HiRes qw(time);
 use XML::Simple qw(xml_in);
 use Digest::MD5 qw(md5_hex);
 
-use version; our $VERSION = qv('0.1.0');
+use version; our $VERSION = qv('0.1.1');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -64,7 +64,7 @@ has 'errors' => (
     is => 'ro',
     isa => 'WWW::Facebook::API::Errors',
     required => 1,
-    default => sub { WWW::Facebook::API::Errors->new },
+    default => sub { WWW::Facebook::API::Errors->new( base => $_[0] ) },
 );
 
 sub call {
@@ -148,7 +148,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.1.0
+This document describes WWW::Facebook::API::Base version 0.1.1
 
 
 =head1 SYNOPSIS
