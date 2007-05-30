@@ -10,34 +10,15 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub set_FBML {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'profile.setFBML',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{profile_setFBML_response}->[0]->{content}
-        : $value;
-}
-
-sub get_FBML {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'profile.getFBML',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{profile_getFBML_response}->[0]->{content}
-        : $value;
-}
+sub set_FBML    { shift->base->call( 'profile.setFBML', @_ )  }
+sub get_FBML    { shift->base->call( 'profile.getFBML', @_ )  }
 
 1; # Magic true value required at end of module
 __END__
@@ -49,7 +30,7 @@ WWW::Facebook::API::Profile - Profile methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Profile version 0.1.1
+This document describes WWW::Facebook::API::Profile version 0.1.2
 
 
 =head1 SYNOPSIS

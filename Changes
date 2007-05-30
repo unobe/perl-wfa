@@ -1,5 +1,18 @@
 Revision history for WWW-Facebook-API
 
+0.1.2  Tue May 29 13:37:23 PDT 2007
+	listened to wisdom and fixed test dependency problem RT#27305
+          (thanks Sean)
+	added 'format' attribute to Base
+	returns JSON (raw response) if specified
+	reworked logic for fixing quotes hash refs
+	changed POST to GET for Login->login
+	moved most of 'simple' logic into Base
+	fixed error catching code in Base->call
+	added private method _make_xml_for to create xml if specified
+	changed debugging output to just print raw response
+	made calls in different sub-modules a lot simpler
+
 0.1.1  Mon May 28 22:07:01 PDT 2007
 	added profile.* and feed.* methods of API
 	added logout method under Auth

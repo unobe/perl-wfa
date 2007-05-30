@@ -10,23 +10,14 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub query {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'fql.query',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{fql_query_response}->[0]
-        : $value;
-}
+sub query { shift->base->call( 'fql.query', @_ ) }
 
 1; # Magic true value required at end of module
 __END__
@@ -38,7 +29,7 @@ WWW::Facebook::API::FQL - Message methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FQL version 0.1.1
+This document describes WWW::Facebook::API::FQL version 0.1.2
 
 
 =head1 SYNOPSIS

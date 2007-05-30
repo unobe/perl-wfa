@@ -8,10 +8,9 @@ package WWW::Facebook::API::Errors;
 
 use strict;
 use warnings;
-use XML::Simple qw(xml_out);
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
@@ -26,28 +25,24 @@ has 'last_call_success' => ( is => 'rw', isa => 'Bool' );
 has 'last_error' => ( is => 'rw', isa => 'Str' );
 
 sub log_debug {
-    my ($self, $params, $xml ) = @_;
-    # output the raw xml and its corresponding object, for debugging:
+    my ($self, $params, $response ) = @_;
+
     my $debug =  "uri = ".$self->base->server_uri;
     $debug    .= "\n\nparams = \n";
 
     for ( keys %{$params} ) {
         $debug .= "\t$_ " . $params->{$_} . "\n";
     }
-    $debug .= "xml = \n" . xml_out( $xml );
+    $debug .= "response =\n$response\n";
     carp $debug;
     return;
 }
 
 sub log_error {
-    my ( $self, $xml ) = @_;
+    my ( $self, $error_code, $response ) = @_;
     $self->last_call_success( 0 );
-    my $error_response = $xml->{'error_response'}->[0];
-    $self->last_error( join ': ',
-        $error_response->{'error_code'}->[0],
-        $error_response->{'error_msg'}->[0]
-    );
-    if ( $self->throw_errors ) { confess xml_out( $xml ) }
+    $self->last_error( $error_code );
+    confess $response if $self->throw_errors;
     return;
 }
 
@@ -61,7 +56,7 @@ WWW::Facebook::API::Errors - Errors class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Errors version 0.1.1
+This document describes WWW::Facebook::API::Errors version 0.1.2
 
 
 =head1 SYNOPSIS
@@ -98,7 +93,7 @@ A string holding the error message of the last failed call to the REST server.
 
 =item log_debug
 
-Logs debugging message by carping parameters and xml returned by REST server.
+Logs debugging message by carping parameters and response returned by REST server.
 Only called if C<debug> is true.
 
 =item log_error

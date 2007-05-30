@@ -17,7 +17,6 @@ WriteMakefile(
         'Time::HiRes'       => 0,
         'XML::Simple'       => 0,
         'Crypt::SSLeay'     => 0,
-        'Test::MockObject::Extends' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'WWW-Facebook-API-*' },

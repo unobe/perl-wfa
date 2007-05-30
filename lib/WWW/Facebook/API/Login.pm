@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
@@ -45,17 +45,17 @@ sub _login_form {
 sub login {
     my ( $self, $token ) = @_;
     my $agent = $self->base->mech->agent_alias( 'Mac Mozilla' );
-    $self->base->mech->post(
-        $self->login_uri,
-        { 'api_key'     => $self->base->api_key,
-          'v'           => '1.0',
-          'auth_token'  => $token,
-        }
+    $self->base->mech->get(
+        $self->login_uri . join '&',
+            '?api_key='.$self->base->api_key, 'v=1.0', "auth_token=$token",
     );
     if ( not $self->base->mech->forms ) {
         confess 'No form to submit!';
     }
     $self->_login_form;
+    if ( $self->base->errors->debug ) {
+        confess $self->base->mech->content;
+    }
     if ( $self->base->mech->content !~ m{Logout</a>}mix ) {
         confess 'Unable to login:'. $self->base->mech->content;
     }
@@ -73,7 +73,7 @@ WWW::Facebook::API::Login - Ask for user login info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Login version 0.1.1
+This document describes WWW::Facebook::API::Login version 0.1.2
 
 
 =head1 SYNOPSIS

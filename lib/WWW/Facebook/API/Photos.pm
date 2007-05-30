@@ -10,78 +10,19 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub add_tag {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.addTag',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_addTag_response}->[0]->{content}
-        : $value;
-}
-
-sub create_album {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.createAlbum',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_createAlbum_response}->[0]
-        : $value;
-}
-
-sub get {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.get',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_get_response}->[0]->{photo}
-        : $value;
-}
-
-sub get_albums {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.getAlbums',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_getAlbums_response}->[0]->{album}
-        : $value;
-}
-
-sub get_tags {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.getTags',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_getTags_response}->[0]->{photo_tag}
-        : $value;
-}
-
-sub upload {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'photos.upload',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{photos_upload_response}->[0]
-        : $value;
-}
+sub add_tag         { shift->base->call( 'photos.addTag', @_ )        }
+sub create_album    { shift->base->call( 'photos.createAlbum', @_ )   }
+sub get             { shift->base->call( 'photos.get', @_ )           }
+sub get_albums      { shift->base->call( 'photos.getAlbums', @_ )     }
+sub get_tags        { shift->base->call( 'photos.getTags', @_ )       }
+sub upload          { shift->base->call( 'photos.upload', @_ )        }
 
 1; # Magic true value required at end of module
 __END__
@@ -93,7 +34,7 @@ WWW::Facebook::API::Photos - Photos methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.1.1
+This document describes WWW::Facebook::API::Photos version 0.1.2
 
 
 =head1 SYNOPSIS

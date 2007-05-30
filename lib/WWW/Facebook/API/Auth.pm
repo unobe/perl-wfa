@@ -10,24 +10,14 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API' );
 
-sub create_token {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'auth.createToken',
-        params => { api_key => $self->base->api_key, @_ },
-        secret => $self->base->secret,
-    );
-    return $self->base->simple
-        ? $value->{auth_createToken_response}->[0]->{content}
-        : $value;
-}
+sub create_token    { shift->base->call( 'auth.createToken', @_ )   }
 
 sub get_session {
     my $self = shift;
@@ -37,24 +27,35 @@ sub get_session {
         $self->base->server_uri( _make_secure( $self->base->server_uri ) )
     }
 
-    my $xml = $self->base->call(
-        method => 'auth.getSession',
-        params => { @_ },
-        secret => $self->base->secret,
-    );
+    my $response = $self->base->call( 'auth.getSession', @_ );
 
-    for ( qw/session_key session_expires session_uid/ ) {
-        $self->base->$_( $xml->{auth_getSession_response}->[0]->{$_}->[0] );
-    }
+    my %field = qw/
+        session_key session_key
+        expires     session_expires
+        uid         session_uid
+    /;
+
     if ( $self->base->desktop ) {
-        $self->base->secret(
-            $xml->{auth_getSession_response}->[0]->{secret}->[0]
-        );
+        $field{'secret'} = 'secret';
         $self->base->server_uri( _make_unsecure( $self->base->server_uri ) );
     }
-    return $self->base->simple
-        ? $xml->{auth_getSession_response}->[0]
-        : $xml;
+
+    if ($self->base->format eq 'XML') {
+        my $value = $self->base->simple
+            ? $response
+            : $response->{auth_getSession_response}->[0];
+
+        while ( my ($key, $val) = each %field ) {
+            $self->base->$val( $value->{$key}->[0] );
+        }
+    }
+    else { # JSON
+        while ( my ($key, $val) = each %field ) {
+            $response =~ /$key"\W+([\w-]+)/g;
+            $self->base->$val( $1 );
+        }
+    }
+    return $response;
 }
 
 sub logout {
@@ -86,7 +87,7 @@ WWW::Facebook::API::Auth - Authentication utilities for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.1.1
+This document describes WWW::Facebook::API::Auth version 0.1.2
 
 
 =head1 SYNOPSIS

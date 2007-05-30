@@ -1,4 +1,4 @@
-WWW-Facebook-API version 0.1.1
+WWW-Facebook-API version 0.1.2
 
 INSTALLATION
 
@@ -19,7 +19,6 @@ Digest::MD5
 Time::HiRes
 XML::Simple
 Crypt::SSLeay
-Test::MockObject::Extends
 
 COPYRIGHT AND LICENSE
 

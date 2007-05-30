@@ -4,8 +4,14 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 5;
-use Test::MockObject::Extends;
+use Test::More;
+BEGIN {
+    eval 'use Test::MockObject::Extends';
+    if ($@) {
+        plan skip_all => 'Tests require Test::MockObject::Extends';
+    }
+    plan tests => 5;
+}
 use WWW::Mechanize;
 use WWW::Facebook::API;
 use strict;

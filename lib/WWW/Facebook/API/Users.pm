@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
@@ -19,30 +19,22 @@ has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
 sub get_info {
     my $self = shift;
-    my $value = $self->base->call(
-        method => 'users.getInfo',
-        params => { @_ },
-    );
+    my $value = $self->base->call( 'users.getInfo', @_ );
+
+    return $value if $self->base->format eq 'JSON';
 
     # remove erraneous hash refs in quotes
-    my $quotes = $value->{users_getInfo_response}->[0]->{user}->{quotes};
-    @$quotes = grep  { not ref } @$quotes;
+    my $node = $self->base->simple
+        ? $value
+        : $value->{users_getInfo_response}->[0]->{user};
+    for ( @$node ) {
+        $_->{'quotes'}->[0] = q{} if ref $_->{'quotes'}->[0];
+    }
 
-    return $self->base->simple
-        ? $value->{users_getInfo_response}->[0]->{user}
-        : $value;
+    return $value;
 }
 
-sub get_logged_in_user {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'users.getLoggedInUser',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{users_getLoggedInUser_response}->[0]->{content}
-        : $value;
-}
+sub get_logged_in_user { shift->base->call( 'users.getLoggedInUser', @_ ) }
 
 1; # Magic true value required at end of module
 __END__
@@ -54,7 +46,7 @@ WWW::Facebook::API::Users - Users methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.1.1
+This document describes WWW::Facebook::API::Users version 0.1.2
 
 
 =head1 SYNOPSIS

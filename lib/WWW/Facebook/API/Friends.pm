@@ -10,45 +10,16 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub get {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'friends.get',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{friends_get_response}->[0]->{uid}
-        : $value;
-}
-
-sub get_app_users {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'friends.getAppUsers',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{friends_getAppUsers_response}->[0]
-        : $value;
-}
-
-sub are_friends {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'friends.areFriends',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{friends_areFriends_response}->[0]->{friend_info}
-        : $value;
-}
+sub get             { shift->base->call( 'friends.get', @_ )          }
+sub get_app_users   { shift->base->call( 'friends.getAppUsers', @_ )  }
+sub are_friends     { shift->base->call( 'friends.areFriends', @_ )   }
 
 1; # Magic true value required at end of module
 __END__
@@ -60,7 +31,7 @@ WWW::Facebook::API::Friends - Friend methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Friends version 0.1.1
+This document describes WWW::Facebook::API::Friends version 0.1.2
 
 
 =head1 SYNOPSIS

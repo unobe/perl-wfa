@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
@@ -18,25 +18,11 @@ extends 'Moose::Object';
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
 sub publish_story_to_user {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'feed.publishStoryToUser',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{feed_publishStoryToUser_response}->[0]->{content}
-        : $value;
+    shift->base->call( 'feed.publishStoryToUser', @_ );
 }
 
 sub publish_action_of_user {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'feed.publishActionOfUser',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{feed_publishActionOfUser_response}->[0]->{content}
-        : $value;
+    shift->base->call( 'feed.publishActionOfUser', @_ );
 }
 
 1; # Magic true value required at end of module
@@ -49,7 +35,7 @@ WWW::Facebook::API::Feed - Feed methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Feed version 0.1.1
+This document describes WWW::Facebook::API::Feed version 0.1.2
 
 
 =head1 SYNOPSIS

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'WWW::Facebook::API::Base';
@@ -116,7 +116,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.1.1
+This document describes WWW::Facebook::API version 0.1.2
 
 
 =head1 SYNOPSIS
@@ -261,6 +261,11 @@ L<Crypt::SSLeay>
 =head1 INCOMPATIBILITIES
 
 None.
+
+=head1 SEE ALSO
+
+L<WWW::Facebook::FQL> for an interface to just work with Facebook's FQL query
+language.
 
 
 =head1 BUGS AND LIMITATIONS

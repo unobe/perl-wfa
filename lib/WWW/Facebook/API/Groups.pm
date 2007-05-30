@@ -10,34 +10,15 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 extends 'Moose::Object';
 
 has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
 
-sub get {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'groups.get',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{groups_get_response}->[0]->{group}
-        : $value;
-}
-
-sub get_members {
-    my $self = shift;
-    my $value = $self->base->call(
-        method => 'groups.getMembers',
-        params => { @_ },
-    );
-    return $self->base->simple
-        ? $value->{groups_getMembers_response}->[0]
-        : $value;
-}
+sub get         { shift->base->call( 'groups.get', @_ ) }
+sub get_members { shift->base->call( 'groups.getMembers', @_ ) }
 
 1; # Magic true value required at end of module
 __END__
@@ -49,7 +30,7 @@ WWW::Facebook::API::Groups - Groups methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Groups version 0.1.1
+This document describes WWW::Facebook::API::Groups version 0.1.2
 
 
 =head1 SYNOPSIS

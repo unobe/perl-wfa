@@ -14,11 +14,12 @@ use Time::HiRes qw(time);
 use XML::Simple qw(xml_in);
 use Digest::MD5 qw(md5_hex);
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.1.2');
 
 use Moose;
 use WWW::Facebook::API::Errors;
 
+has 'format' => ( is => 'rw', isa => 'Str', required => 1, default => 'XML' );
 has 'mech' => (is => 'rw', isa => 'WWW::Mechanize', required => 1,
     default => sub {
             WWW::Mechanize->new(
@@ -68,28 +69,51 @@ has 'errors' => (
 );
 
 sub call {
-    my ( $self, %args ) = @_;
-    my ( $method, $params, $secret ) = (
-        $args{'method'},
-        ( $args{'params'} ? $args{'params'} : {} ),
-        ( $args{'secret'} ? $args{'secret'} : $self->secret ),
-    );
+    my ( $self, $method, %args, $params, $secret, $response ) = @_;
     $self->errors->last_call_success( 1 );
     $self->errors->last_error( undef );
 
-    $params->{'method'} = $args{'method'};
+    $params = delete $args{'params'} || {};
+    $params->{$_} = $args{$_} for keys %args;
+
+    $secret = $args{'secret'} || $self->secret;
+    $params->{'method'} ||= $method;
     $self->_update_params( $params );
-    my $xml = xml_in(
-        $self->_post_request( $params, $secret ),
-        ForceArray  => 1,
-        KeepRoot    => 1,
-    );
+    $response = $self->_post_request( $params, $secret );
+
     if ($self->errors->debug) {
-        $self->errors->log_debug( $params, $xml );
+        $self->errors->log_debug( $params, $response );
     }
-    if ( $xml =~ m/<error_code>|^{"error_code"/mx ) {
-        confess "Error during REST call:\n$xml";
-        $self->errors->log_error( $xml );
+    if ( $response =~ m!<error_code>(\d+)|^{"error_code"\D(\d+)!mx ) {
+        confess "Error during REST $method call:\n$response";
+        $self->errors->log_error( $1, $response );
+    }
+
+    return $response if $params->{'format'} eq 'JSON';
+
+    return $self->_make_xml_for( $response );
+}
+
+sub _make_xml_for {
+    my ( $self, $response, $xml ) = @_;
+    $xml = xml_in( $response,
+        ForceArray => 1,
+        KeepRoot => !$self->simple,
+    );
+
+    if ( $self->simple ) {
+        # remove meta-data
+        for ( keys %$xml ) {
+            delete $xml->{$_} if /^x(ml|si)|list/;
+        }
+
+        # keys is screwy: will give uninit warnings otherwise
+        if ( keys %$xml ) {
+            return $xml->{ [keys %$xml]->[0] } if keys %$xml == 1;
+        }
+        elsif ( exists $xml->{$_}->[0]->{content} ) {
+            return $xml->{content};
+        }
     }
     return $xml;
 }
@@ -99,10 +123,11 @@ sub _update_params {
     if ( $params->{'method'} !~ m/^auth/mx ) {
         $params->{'session_key'} = $self->session_key;
     }
-    $params->{'method'} = "facebook.$params->{'method'}";
-    $params->{'api_key'} ||= $self->api_key;
-    $params->{'v'} ||= $self->api_version;
-    if ( $self->desktop ) { $params->{'call_id'} = time }
+    $params->{ 'call_id' }  =   time if $self->desktop;
+    $params->{ 'method'  }  =   "facebook.$params->{'method'}";
+    $params->{ 'api_key' }  ||= $self->api_key;
+    $params->{ 'format'  }  ||= $self->format;
+    $params->{ 'v'       }  ||= $self->api_version;
 
     for (qw/popup next skipcookie/) {
         if ( $self->$_ ) { $params->{$_} = q{} }
@@ -148,7 +173,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.1.1
+This document describes WWW::Facebook::API::Base version 0.1.2
 
 
 =head1 SYNOPSIS
@@ -164,6 +189,11 @@ Base methods and data for WWW::Facebook::API and friends.
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item format
+
+The default format to use if none is supplied with an API method call.
+Currently available options are XML and JSON. Defaults to XML.
 
 =item call
 
