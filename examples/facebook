@@ -27,5 +27,4 @@ my @quotes = map { @{$_->{quotes}} }
 print 'A lot of quotes: '.@quotes."\n";
 print "Random one:\t".$quotes[int rand @quotes]."\n";
 
-
 $client->auth->logout;

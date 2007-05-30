@@ -12,9 +12,9 @@ use Carp;
 use WWW::Mechanize;
 use Time::HiRes qw(time);
 use XML::Simple qw(xml_in);
-use Digest::MD5 qw(md5_hex);
+use Digest::MD5;
 
-use version; our $VERSION = qv('0.1.3');
+use version; our $VERSION = qv('0.1.4');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -79,9 +79,12 @@ sub call {
     $secret = $args{'secret'} || $self->secret;
     $params->{'method'} ||= $method;
     $self->_update_params( $params );
+    my $sig = _create_sig_for( $params, $secret );
     $response = $self->_post_request( $params, $secret );
 
     if ($self->errors->debug) {
+        $params->{'sig'} = $sig;
+        $params->{'secret'} = $secret;
         $self->errors->log_debug( $params, $response );
     }
     if ( $response =~ m!<error_code>(\d+)|^{"error_code"\D(\d+)!mx ) {
@@ -136,31 +139,36 @@ sub _update_params {
  }
 
 sub _post_request {
-    my ($self, $params, $secret ) = @_;
-    my $post_params = _create_sig_for( $params, $secret );
+    my ($self, $params, $secret, $sig, $post_params ) = @_;
+
+    _reformat_params( $params );
+    $sig = _create_sig_for( $params, $secret );
+    $post_params = [ map { $_, $params->{$_} } sort keys %$params ];
+    push @$post_params, 'sig', $sig;
 
     $self->mech->post( $self->server_uri, $post_params );
     
     return $self->mech->content;
 }
 
-sub _create_sig_for {
-    my ($params, $secret, @post_params ) = @_;
+sub _reformat_params {
+    my $params = shift;
 
-    # have to join keys and values to generate sig...
-    # there has to be a better way to do this
-    for ( sort keys %{$params} ) {
-        if ( ref $params->{$_} eq 'ARRAY' ) {
-            $params->{$_} = join q{,}, @{ $params->{$_} }
-        }
-        push @post_params, join q{=}, $_, $params->{$_};
+    # reformat arrays and add each param to digest
+    for ( keys %$params ) {
+        next unless ref $params->{$_} eq 'ARRAY';
+        $params->{$_} = join q{,}, @{ $params->{$_} };
     }
+}
 
-    # create sig and and then split keys/values for posting
-    return [
-        map { split /=/, $_ }
-            @post_params, 'sig='.md5_hex( join q{}, @post_params, $secret )
-    ];
+sub _create_sig_for {
+    my ($params, $secret ) = @_;
+
+    my $md5 = Digest::MD5->new;
+    $md5->add( map { "$_=$params->{$_}" } sort keys %$params );
+    $md5->add( $secret );
+
+    return $md5->hexdigest;
 }
 
 1; # Magic true value required at end of module
@@ -173,7 +181,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.1.3
+This document describes WWW::Facebook::API::Base version 0.1.4
 
 
 =head1 SYNOPSIS
@@ -272,6 +280,10 @@ See the Facebook API documentation.
 =head1 INTERNAL METHODS AND FUNCTIONS
 
 =over
+
+=item _reformat_params
+
+Reformat parameters according to Facebook API spec.
 
 =item _update_params
 

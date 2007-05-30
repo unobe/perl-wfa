@@ -1,5 +1,9 @@
 Revision history for WWW-Facebook-API
 
+0.1.4  Wed May 30 06:16:35 PDT 2007
+	update docs
+	fixed signature generation bug (thanks Shawn) and added test
+
 0.1.3  Tue May 29 19:21:23 PDT 2007
 	updated docs to have profile and feed
 

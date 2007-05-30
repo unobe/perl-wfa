@@ -24,4 +24,5 @@ t/00.load.t
 t/api.t
 t/api_simple.t
 t/auth.t
+t/md5.t
 t/pod.t

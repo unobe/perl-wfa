@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.3');
+use version; our $VERSION = qv('0.1.4');
 
 use Moose;
 extends 'Moose::Object';
@@ -28,6 +28,7 @@ sub get_info {
         ? $value
         : $value->{users_getInfo_response}->[0]->{user};
     for ( @$node ) {
+        next unless $_->{'quotes'};
         $_->{'quotes'}->[0] = q{} if ref $_->{'quotes'}->[0];
     }
 
@@ -46,7 +47,7 @@ WWW::Facebook::API::Users - Users methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.1.3
+This document describes WWW::Facebook::API::Users version 0.1.4
 
 
 =head1 SYNOPSIS

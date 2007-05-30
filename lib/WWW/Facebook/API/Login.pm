@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.3');
+use version; our $VERSION = qv('0.1.4');
 
 use Moose;
 extends 'Moose::Object';
@@ -54,7 +54,7 @@ sub login {
     }
     $self->_login_form;
     if ( $self->base->errors->debug ) {
-        confess $self->base->mech->content;
+        carp $self->base->mech->content;
     }
     if ( $self->base->mech->content !~ m{Logout</a>}mix ) {
         confess 'Unable to login:'. $self->base->mech->content;
@@ -73,7 +73,7 @@ WWW::Facebook::API::Login - Ask for user login info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Login version 0.1.3
+This document describes WWW::Facebook::API::Login version 0.1.4
 
 
 =head1 SYNOPSIS
