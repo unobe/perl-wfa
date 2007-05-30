@@ -4,7 +4,7 @@
 # $Author: unobe $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More 'no_plan'; # tests => 3;
+use Test::More tests => 2;
 use strict;
 use warnings;
 
