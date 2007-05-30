@@ -73,6 +73,10 @@ Error methods and data used by L<WWW::Facebook::API::Base>
 
 =over
 
+=item base
+
+The L<WWW::Facebook::API::Base> object to use to access settings.
+
 =item debug
 
 A boolean set to either true or false, determining if debugging messages
