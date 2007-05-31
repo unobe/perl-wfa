@@ -48,13 +48,13 @@ has 'api_key' => (is => 'ro', isa => 'Str', required => 1,
 has 'api_version' => (is => 'ro', isa => 'Str', required => 1,
     default => '1.0',
 );
-has 'next' => (is => 'ro', isa => 'Int', required => 1,
+has 'popup' => (is => 'rw', isa => 'Int', required => 1,
     default => 0,
 );
-has 'popup' => (is => 'ro', isa => 'Int', required => 1,
+has 'skipcookie' => (is => 'rw', isa => 'Int', required => 1,
     default => 0,
 );
-has 'skipcookie' => (is => 'ro', isa => 'Int', required => 1,
+has 'next' => (is => 'rw', isa => 'Str', required => 1,
     default => 0,
 );
 has 'session_key'   => ( is => 'rw', isa => 'Str', default => q{} );
