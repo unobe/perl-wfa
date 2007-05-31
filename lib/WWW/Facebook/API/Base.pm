@@ -14,7 +14,7 @@ use Time::HiRes qw(time);
 use XML::Simple qw(xml_in);
 use Digest::MD5;
 
-use version; our $VERSION = qv('0.1.4');
+use version; our $VERSION = qv('0.1.5');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -83,13 +83,18 @@ sub call {
     $response = $self->_post_request( $params, $secret );
 
     if ($self->errors->debug) {
-        $params->{'sig'} = $sig;
-        $params->{'secret'} = $secret;
-        $self->errors->log_debug( $params, $response );
+        $params->{ 'sig'    }   = $sig;
+        $params->{ 'secret' }   = $secret;
+        carp $self->errors->log_string( $params, $response );
     }
     if ( $response =~ m!<error_code>(\d+)|^{"error_code"\D(\d+)!mx ) {
-        confess "Error during REST $method call:\n$response";
-        $self->errors->log_error( $1, $response );
+        $self->last_call_success( 0 );
+        $self->errors->last_error( $1 );
+
+        if ( $self->throw_errors ) {
+            confess "Error during REST $method call:\n",
+                    $self->errors->log_string( $params, $response );
+        }
     }
 
     return $response if $params->{'format'} eq 'JSON';
@@ -181,7 +186,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.1.4
+This document describes WWW::Facebook::API::Base version 0.1.5
 
 
 =head1 SYNOPSIS

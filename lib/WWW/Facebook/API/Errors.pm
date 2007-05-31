@@ -10,7 +10,7 @@ use strict;
 use warnings;
 use Carp;
 
-use version; our $VERSION = qv('0.1.3');
+use version; our $VERSION = qv('0.1.5');
 
 use Moose;
 extends 'Moose::Object';
@@ -24,26 +24,19 @@ has 'throw_errors' => (
 has 'last_call_success' => ( is => 'rw', isa => 'Bool' );
 has 'last_error' => ( is => 'rw', isa => 'Str' );
 
-sub log_debug {
+sub log_string {
     my ($self, $params, $response ) = @_;
 
-    my $debug =  "uri = ".$self->base->server_uri;
-    $debug    .= "\n\nparams = \n";
+    my $string =  "uri = ".$self->base->server_uri;
 
+    $string .= "\n\nparams = \n";
     for ( keys %{$params} ) {
-        $debug .= "\t$_ " . $params->{$_} . "\n";
+        $string .= "\t$_ " . $params->{$_} . "\n";
     }
-    $debug .= "response =\n$response\n";
-    carp $debug;
-    return;
-}
 
-sub log_error {
-    my ( $self, $error_code, $response ) = @_;
-    $self->last_call_success( 0 );
-    $self->last_error( $error_code );
-    confess $response if $self->throw_errors;
-    return;
+    $string .= "response =\n$response\n";
+
+    return $string;
 }
 
 1;
@@ -56,7 +49,7 @@ WWW::Facebook::API::Errors - Errors class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Errors version 0.1.3
+This document describes WWW::Facebook::API::Errors version 0.1.5
 
 
 =head1 SYNOPSIS
@@ -95,15 +88,11 @@ A boolean. True if the last call was a success, false otherwise.
 
 A string holding the error message of the last failed call to the REST server.
 
-=item log_debug
+=item log_string
 
-Logs debugging message by carping parameters and response returned by REST server.
-Only called if C<debug> is true.
-
-=item log_error
-
-Logs an error, and if C<throw_errors> is true, carps with the error code and
-message.
+Pass in the params and the response from a call, and it will make a formatted
+string out of it showing the server_uri, the parameters used, and the response
+received. Used by log_debug and log_error.
 
 =item meta
 

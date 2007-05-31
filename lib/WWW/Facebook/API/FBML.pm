@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.4');
+use version; our $VERSION = qv('0.1.5');
 
 use Moose;
 extends 'Moose::Object';
@@ -25,7 +25,7 @@ WWW::Facebook::API::FBML - FBML methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FBML version 0.1.4
+This document describes WWW::Facebook::API::FBML version 0.1.5
 
 
 =head1 SYNOPSIS
@@ -92,12 +92,12 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-David Romano  C<< <unobe@cpan.org> >>
+TSIBLEY C<< <tsibley@cpan.org> >>
 
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007, TSIBLEY C<< <tsibley@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

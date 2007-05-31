@@ -10,102 +10,38 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.4');
+use version; our $VERSION = qv('0.1.5');
 
 use Moose;
 extends 'WWW::Facebook::API::Base';
 
-has 'auth' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Auth',
-    default => sub {
-        use WWW::Facebook::API::Auth;
-        return WWW::Facebook::API::Auth->new( base => $_[0] )
-    },
+our @namespaces = qw(
+    Auth        Events      FBML
+    Feed        FQL         Friends
+    Groups      Login       Notifications
+    Photos      Profile     Update
+    Users
 );
-has 'login' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Login',
-    default => sub {
-        use WWW::Facebook::API::Login;
-        return WWW::Facebook::API::Login->new( base => $_[0] )
-    },
-);
-has 'events' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Events',
-    default => sub {
-        use WWW::Facebook::API::Events;
-        return WWW::Facebook::API::Events->new( base => $_[0] )
-    },
-);
-has 'fbml' => (is => 'ro',
-    isa => 'WWW::Facebook::API::FBML',
-    default => sub {
-        use WWW::Facebook::API::FBML;
-        return WWW::Facebook::API::FBML->new( base => $_[0] )
-    },
-);
-has 'fql' => (is => 'ro',
-    isa => 'WWW::Facebook::API::FQL',
-    default => sub {
-        use WWW::Facebook::API::FQL;
-        return WWW::Facebook::API::FQL->new( base => $_[0] )
-    },
-);
-has 'feed' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Feed',
-    default => sub {
-        use WWW::Facebook::API::Feed;
-        return WWW::Facebook::API::Feed->new( base => $_[0] )
-    },
-);
-has 'friends' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Friends',
-    default => sub {
-        use WWW::Facebook::API::Friends;
-        return WWW::Facebook::API::Friends->new( base => $_[0] )
-    },
-);
-has 'groups' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Groups',
-    default => sub {
-        use WWW::Facebook::API::Groups;
-        return WWW::Facebook::API::Groups->new( base => $_[0] )
-    },
-);
-has 'notifications' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Notifications',
-    default => sub {
-        use WWW::Facebook::API::Notifications;
-        return WWW::Facebook::API::Notifications->new( base => $_[0] )
-    },
-);
-has 'profile' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Profile',
-    default => sub {
-        use WWW::Facebook::API::Profile;
-        return WWW::Facebook::API::Profile->new( base => $_[0] )
-    },
-);
-has 'photos' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Photos',
-    default => sub {
-        use WWW::Facebook::API::Photos;
-        return WWW::Facebook::API::Photos->new( base => $_[0] )
-    },
-);
-has 'update' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Update',
-    default => sub {
-        use WWW::Facebook::API::Update;
-        return WWW::Facebook::API::Update->new( base => $_[0] )
-    },
-);
-has 'users' => (is => 'ro',
-    isa => 'WWW::Facebook::API::Users',
-    default => sub {
-        use WWW::Facebook::API::Users;
-        return WWW::Facebook::API::Users->new( base => $_[0] )
-    },
-);
+
+my $create_attribute_code = sub {
+    local $_        = shift;
+    my $attribute   = shift;
+    eval qq(
+        has '$attribute' => (is => 'ro',
+            isa => 'WWW::Facebook::API::$_',
+            default => sub {
+                use WWW::Facebook::API::$_;
+                return WWW::Facebook::API::$_->new( base => \$_[0] )
+            },
+        );
+    );
+    croak "Cannot create attribute $attribute: $@\n" if $@;
+};
+
+for (@namespaces) {
+    my $attribute = "\L$_";
+    $create_attribute_code->( $_, $attribute );
+}
 
 has 'simple' => (is => 'rw',
     isa => 'Bool',
@@ -123,7 +59,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.1.4
+This document describes WWW::Facebook::API version 0.1.5
 
 
 =head1 SYNOPSIS

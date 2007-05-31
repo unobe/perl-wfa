@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.3');
+use version; our $VERSION = qv('0.1.5');
 
 use Moose;
 extends 'Moose::Object';
@@ -33,7 +33,7 @@ WWW::Facebook::API::Notifications - Notifications methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Notifications version 0.1.3
+This document describes WWW::Facebook::API::Notifications version 0.1.5
 
 
 =head1 SYNOPSIS

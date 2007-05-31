@@ -9,6 +9,7 @@ lib/WWW/Facebook/API/Simple.pm
 lib/WWW/Facebook/API/Auth.pm
 lib/WWW/Facebook/API/Base.pm
 lib/WWW/Facebook/API/Errors.pm
+lib/WWW/Facebook/API/FBML.pm
 lib/WWW/Facebook/API/FQL.pm
 lib/WWW/Facebook/API/Events.pm
 lib/WWW/Facebook/API/Feed.pm
