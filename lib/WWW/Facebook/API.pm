@@ -36,6 +36,13 @@ has 'events' => (is => 'ro',
         return WWW::Facebook::API::Events->new( base => $_[0] )
     },
 );
+has 'fbml' => (is => 'ro',
+    isa => 'WWW::Facebook::API::FBML',
+    default => sub {
+        use WWW::Facebook::API::FBML;
+        return WWW::Facebook::API::FBML->new( base => $_[0] )
+    },
+);
 has 'fql' => (is => 'ro',
     isa => 'WWW::Facebook::API::FQL',
     default => sub {
@@ -184,6 +191,10 @@ $client->login->login($token);
 events namespace of the API (See L<WWW::Facebook::API::Events>).
 All method names from the Facebook API are lower_cased instead of CamelCase,
 e.g., events.getInWindow is events->get_in_window
+
+=item fbml
+
+fbml namespace of the API (See L<WWW::Facebook::API::FBML>).
 
 =item fql
 

@@ -1,5 +1,8 @@
 Revision history for WWW-Facebook-API
 
+0.1.5  Thu May 31 11:15:52 PDT 2007
+	applied patch to add FBML methods RT#27351 (thanks Tom!)
+
 0.1.4  Wed May 30 06:16:35 PDT 2007
 	update docs
 	fixed signature generation bug (thanks Shawn) and added test
