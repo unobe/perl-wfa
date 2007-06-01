@@ -12,13 +12,15 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'WWW::Facebook::API';
+use base 'WWW::Facebook::API';
 
-sub BUILD {
-    my $self = shift;
-    $self->simple(1);
-    return;
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+
+    $self = WWW::Facebook::API->new( %args, simple => 1 );
+
+    bless $self, $class;
 }
 
 1;

@@ -3,7 +3,10 @@ MANIFEST
 META.yml # Will be created by "make dist"
 Makefile.PL
 README
-examples/facebook
+examples/facebook-web-json
+examples/facebook-web-xml
+examples/facebook-desktop-xml
+examples/facebook-desktop-json
 lib/WWW/Facebook/API.pm
 lib/WWW/Facebook/API/Simple.pm
 lib/WWW/Facebook/API/Auth.pm

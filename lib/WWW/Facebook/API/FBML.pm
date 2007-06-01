@@ -6,10 +6,18 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'Moose::Object';
+sub base { return shift->{'base'}; }
 
-has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+    $self = bless \%args, $class;
+
+    delete $self->{$_} for grep !/base/, keys %$self;
+    $self->$_ for keys %$self;
+
+    return $self;
+}
 
 sub refresh_img_src { shift->base->call( 'fbml.refreshImgSrc', @_ ) }
 sub refresh_ref_url { shift->base->call( 'fbml.refreshRefUrl', @_ ) }

@@ -12,14 +12,24 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'Moose::Object';
+my @attributes = qw( base login_uri );
 
-has 'base' => (is => 'ro', isa => 'WWW::Facebook::API::Base',);
+sub base      { return shift->{'base'}; }
+sub login_uri {
+    return shift->{'login_uri'} ||= 'http://api.facebook.com/login.php';
+}
 
-has 'login_uri' => (is => 'ro', isa => 'Str', required => 1,
-    default => sub { 'http://api.facebook.com/login.php' },
-);
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+    $self = bless \%args, $class;
+
+    my $is_attribute = join '|', @attributes;
+    delete $self->{$_} for grep !/^($is_attribute)$/, keys %$self;
+    $self->$_ for keys %$self;
+
+    return $self;
+}
 
 sub _login_form {
     my $self = shift;
@@ -33,8 +43,8 @@ sub _login_form {
             }->(),
             pass  => sub {
                 print 'Password: ';
-                chomp(my $email = <STDIN>);
-                return $email;
+                chomp(my $pass = <STDIN>);
+                return $pass;
             }->(),
         },
         button => 'login',
@@ -44,11 +54,16 @@ sub _login_form {
 
 sub login {
     my ( $self, $token ) = @_;
+    my $params = join '&', '?api_key='.$self->base->api_key,'v=1.0';
+    if ( $self->base->desktop ) {
+        croak "A desktop app must have a token passed in!\n" unless $token;
+        $params .= "&auth_token=$token";
+    }
+    my $url = $self->login_uri . $params;
+    system qq(open $url);
+    sleep 10;
     my $agent = $self->base->mech->agent_alias( 'Mac Mozilla' );
-    $self->base->mech->get(
-        $self->login_uri . join '&',
-            '?api_key='.$self->base->api_key, 'v=1.0', "auth_token=$token",
-    );
+    $self->base->mech->get( $self->login_uri . $params );
     if ( not $self->base->mech->forms ) {
         confess 'No form to submit!';
     }
@@ -56,8 +71,11 @@ sub login {
     if ( $self->base->errors->debug ) {
         carp $self->base->mech->content;
     }
-    if ( $self->base->mech->content !~ m{Logout</a>}mix ) {
-        confess 'Unable to login:'. $self->base->mech->content;
+    if ( $self->base->desktop and $self->base->mech->content !~ m{Logout</a>}mix ) {
+        confess "Unable to login:\n\n". $self->base->mech->content;
+    }
+    if ( not $self->base->desktop ) {
+        ($token) = ($self->base->mech->uri =~ /auth_token=(.+)$/g);
     }
     $self->base->mech->agent( $agent );
     return $token;

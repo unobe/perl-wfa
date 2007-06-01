@@ -12,29 +12,20 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'Moose::Object';
+sub base { return shift->{'base'}; }
 
-has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+    $self = bless \%args, $class;
 
-sub get_info {
-    my $self = shift;
-    my $value = $self->base->call( 'users.getInfo', @_ );
+    delete $self->{$_} for grep !/base/, keys %$self;
+    for ( keys %$self ) { $self->$_ }
 
-    return $value if $self->base->format eq 'JSON';
-
-    # remove erraneous hash refs in quotes
-    my $node = $self->base->simple
-        ? $value
-        : $value->{users_getInfo_response}->[0]->{user};
-    for ( @$node ) {
-        next unless $_->{'quotes'};
-        $_->{'quotes'}->[0] = q{} if ref $_->{'quotes'}->[0];
-    }
-
-    return $value;
+    return $self;
 }
 
+sub get_info           { shift->base->call( 'users.getInfo', @_ );        }
 sub get_logged_in_user { shift->base->call( 'users.getLoggedInUser', @_ ) }
 
 1; # Magic true value required at end of module
@@ -63,6 +54,10 @@ Methods for accessing users with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item new
+
+Returns a new instance of this class.
 
 =item base
 

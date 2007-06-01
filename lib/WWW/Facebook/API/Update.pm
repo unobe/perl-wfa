@@ -12,12 +12,20 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'Moose::Object';
+sub base { return shift->{'base'}; }
 
-has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API::Base' );
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+    $self = bless \%args, $class;
 
-sub decode_ids  { shift->base->call( 'update.decodeIDs', @_ ) }
+    delete $self->{$_} for grep !/base/, keys %$self;
+    $self->$_ for keys %$self;
+
+    return $self;
+}
+
+sub decode_ids  { $_[0]->base->call( 'update.decodeIDs', @_ ) }
 
 1; # Magic true value required at end of module
 __END__
@@ -44,6 +52,10 @@ Methods for updating old API info to newer API with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item new
+
+Returns a new instance of this class.
 
 =item base
 

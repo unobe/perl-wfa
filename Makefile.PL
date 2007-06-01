@@ -11,11 +11,9 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'version'           => 0,
-        'Moose'             => 0,
         'WWW::Mechanize'    => 0,
         'Digest::MD5'       => 0,
         'Time::HiRes'       => 0,
-        'XML::Simple'       => 0,
         'Crypt::SSLeay'     => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

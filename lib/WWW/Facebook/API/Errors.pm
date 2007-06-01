@@ -12,17 +12,33 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'Moose::Object';
-
-has 'base' => (is => 'ro', isa => 'WWW::Facebook::API::Base',);
-
-has 'debug' => ( is => 'rw', isa => 'Bool', default => 0 );
-has 'throw_errors' => (
-    is => 'ro', isa => 'Bool', required => 1, default => 1,
+our @attributes = qw(
+    base
+    debug   throw_errors    last_error
+    last_call_success
 );
-has 'last_call_success' => ( is => 'rw', isa => 'Bool' );
-has 'last_error' => ( is => 'rw', isa => 'Str' );
+
+sub base         { return shift->{'base'}; }
+
+sub debug        { return shift->{'debug'       } ||= @_ ? shift != 0 : 0; }
+sub throw_errors { return shift->{'throw_errors'} ||= @_ ? shift != 0 : 1; }
+sub last_error   { return shift->{'last_error'  } ||= @_ ? shift : 0;      }
+
+sub last_call_success {
+    return shift->{'last_call_success'} ||= @_ ? shift != 0 : 0;
+}
+
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+    $self = bless \%args, $class;
+
+    my $is_attribute = join '|', @attributes;
+    delete $self->{$_} for grep !/^($is_attribute)$/, keys %$self;
+    $self->$_ for keys %$self;
+
+    return $self;
+}
 
 sub log_string {
     my ($self, $params, $response ) = @_;

@@ -12,12 +12,25 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'Moose::Object';
+sub base { return shift->{'base'}; }
 
-has 'base' => ( is => 'ro', isa => 'WWW::Facebook::API' );
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+    $self = bless \%args, $class;
 
-sub create_token    { shift->base->call( 'auth.createToken', @_ )   }
+    delete $self->{$_} for grep !/base/, keys %$self;
+    $self->$_ for keys %$self;
+
+    return $self;
+}
+
+sub create_token    {
+    my $self = shift;
+    my $token = $self->base->call( 'auth.createToken', @_ );
+    $token =~ s/\W//g if $self->base->format eq 'JSON';
+    return $token;
+}
 
 sub get_session {
     my $self = shift;
@@ -29,18 +42,22 @@ sub get_session {
 
     my $response = $self->base->call( 'auth.getSession', @_ );
 
-    my %field = qw/
-        session_key session_key
-        expires     session_expires
-        uid         session_uid
-    /;
+    my %field = qw(
+        session_key     session_key
+        expires         session_expires
+        uid             session_uid
+    );
 
+    print STDERR "desktop is ".$self->base->desktop."\n";
     if ( $self->base->desktop ) {
         $field{'secret'} = 'secret';
         $self->base->server_uri( _make_unsecure( $self->base->server_uri ) );
     }
 
     if ($self->base->format eq 'XML') {
+        use Data::Dumper;
+        print STDERR Dumper $response;
+
         my $value = $self->base->simple
             ? $response
             : $response->{auth_getSession_response}->[0];
@@ -50,6 +67,7 @@ sub get_session {
         }
     }
     else { # JSON
+        print STDERR "JSON: $response\n";
         while ( my ($key, $val) = each %field ) {
             $response =~ /$key"\W+([\w-]+)/g;
             $self->base->$val( $1 );

@@ -12,8 +12,11 @@ use Carp;
 
 use version; our $VERSION = qv('0.1.6');
 
-use Moose;
-extends 'WWW::Facebook::API::Base';
+use base 'WWW::Facebook::API::Base';
+
+our @attributes = qw(simple);
+
+sub simple { shift->{'simple'} ||= @_ ? shift : 0; }
 
 our @namespaces = qw(
     Auth        Events      FBML
@@ -27,13 +30,11 @@ my $create_attribute_code = sub {
     local $_        = shift;
     my $attribute   = shift;
     eval qq(
-        has '$attribute' => (is => 'ro',
-            isa => 'WWW::Facebook::API::$_',
-            default => sub {
-                use WWW::Facebook::API::$_;
-                return WWW::Facebook::API::$_->new( base => \$_[0] )
-            },
-        );
+        use WWW::Facebook::API::$_;
+        sub $attribute {
+            return shift->{'_$attribute'}
+                ||= WWW::Facebook::API::$_->new( base => shift )
+        }
     );
     croak "Cannot create attribute $attribute: $@\n" if $@;
 };
@@ -43,11 +44,23 @@ for (@namespaces) {
     $create_attribute_code->( $_, $attribute );
 }
 
-has 'simple' => (is => 'rw',
-    isa => 'Bool',
-    required => 1,
-    default => 0,
-);
+sub new {
+    my ( $self, %args ) = @_;
+    my $class = ref $self || $self;
+
+    my %no_super;
+    for ( @attributes ) {
+        $no_super{$_} = delete $args{$_} if exists $args{$_};
+    }
+    $self = WWW::Facebook::API::Base->new( %args );
+    bless $self, $class;
+
+    $self->$_($no_super{$_})    for @attributes;
+    $self->$_($self)            for map { "\L$_" } @namespaces;
+
+
+    return $self;
+}
 
 1;
 __END__

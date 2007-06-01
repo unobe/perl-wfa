@@ -13,7 +13,6 @@ To install this module, run the following commands:
 DEPENDENCIES
 
 version
-Moose
 WWW::Mechanize
 Digest::MD5
 Time::HiRes

@@ -1,5 +1,9 @@
 Revision history for WWW-Facebook-API
 
+HEAD
+	Removed Moose dependency
+	fixed last_call_success method being called on wrong object
+
 0.1.6  Thu May 31 17:54:39 PDT 2007
 	fixed 'errors' method calls in Base.pm
 
