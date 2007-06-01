@@ -55,8 +55,6 @@ sub get_session {
     }
 
     if ($self->base->format eq 'XML') {
-        use Data::Dumper;
-        print STDERR Dumper $response;
 
         my $value = $self->base->simple
             ? $response
@@ -67,7 +65,6 @@ sub get_session {
         }
     }
     else { # JSON
-        print STDERR "JSON: $response\n";
         while ( my ($key, $val) = each %field ) {
             $response =~ /$key"\W+([\w-]+)/g;
             $self->base->$val( $1 );

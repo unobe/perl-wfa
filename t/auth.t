@@ -10,6 +10,10 @@ BEGIN {
     if ($@) {
         plan skip_all => 'Tests require Test::MockObject::Extends';
     }
+    eval 'use XML::Simple';
+    if ($@) {
+        plan skip_all => 'Tests require XML::Simple';
+    }
     plan tests => 5;
 }
 use WWW::Mechanize;
@@ -23,6 +27,7 @@ my $base = WWW::Facebook::API->new(
     api_key => 1,
     secret  => 1,
     mech    => Test::MockObject::Extends->new(WWW::Mechanize->new()),
+    parse_response => 1,
 );
 
 {

@@ -16,7 +16,7 @@ use base 'WWW::Facebook::API::Base';
 
 our @attributes = qw(simple);
 
-sub simple { shift->{'simple'} ||= @_ ? shift : 0; }
+sub simple { shift->_check_default(0, 'simple', @_ ) }
 
 our @namespaces = qw(
     Auth        Events      FBML
