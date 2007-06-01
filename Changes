@@ -1,6 +1,10 @@
 Revision history for WWW-Facebook-API
 
-0.2.0	Fri Jun  1 02:55:17 PDT 2007
+0.2.1  Fri Jun  1 02:55:17 PDT 2007
+	Removed OSX-specific code in Login.pm (shouldn't cause any major
+	  damage, but annoying nonetheless)
+
+0.2.0  Fri Jun  1 02:55:17 PDT 2007
 	Perltidy'd
 	Updated docs to match current usage
 	Removed Moose and XML::Simple dependency

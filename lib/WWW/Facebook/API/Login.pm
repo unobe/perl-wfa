@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.2.0');
+use version; our $VERSION = qv('0.2.1');
 
 my @attributes = qw( base login_uri );
 
@@ -93,7 +93,7 @@ WWW::Facebook::API::Login - Ask for user login info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Login version 0.2.0
+This document describes WWW::Facebook::API::Login version 0.2.1
 
 
 =head1 SYNOPSIS
