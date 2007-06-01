@@ -14,7 +14,7 @@ use Time::HiRes qw(time);
 use XML::Simple qw(xml_in);
 use Digest::MD5;
 
-use version; our $VERSION = qv('0.1.5');
+use version; our $VERSION = qv('0.1.6');
 
 use Moose;
 use WWW::Facebook::API::Errors;
@@ -91,7 +91,7 @@ sub call {
         $self->errors->last_call_success( 0 );
         $self->errors->last_error( $1 );
 
-        if ( $self->throw_errors ) {
+        if ( $self->errors->throw_errors ) {
             confess "Error during REST $method call:\n",
                     $self->errors->log_string( $params, $response );
         }
@@ -186,7 +186,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.1.5
+This document describes WWW::Facebook::API::Base version 0.1.6
 
 
 =head1 SYNOPSIS

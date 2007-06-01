@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.5');
+use version; our $VERSION = qv('0.1.6');
 
 use Moose;
 extends 'WWW::Facebook::API::Base';
@@ -59,7 +59,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.1.5
+This document describes WWW::Facebook::API version 0.1.6
 
 
 =head1 SYNOPSIS
