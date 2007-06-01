@@ -49,7 +49,6 @@ sub get_session {
         uid             session_uid
     );
 
-    print STDERR "desktop is " . $self->base->desktop . "\n";
     if ( $self->base->desktop ) {
         $field{'secret'} = 'secret';
         $self->base->server_uri( _make_unsecure( $self->base->server_uri ) );
