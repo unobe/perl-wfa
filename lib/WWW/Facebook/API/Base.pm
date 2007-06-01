@@ -92,7 +92,7 @@ sub new {
 
     my $is_attribute = join '|', @attributes;
     delete $self->{$_} for grep !/^($is_attribute)$/, keys %$self;
-    print STDERR "$_=".$self->$_."\n" for sort @attributes;
+    $self->$_ for sort @attributes;
 
     return $self;
 }
