@@ -42,7 +42,7 @@ This document describes WWW::Facebook::API::Update version 0.1.6
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Update;
+    use WWW::Facebook::API;
 
 
 =head1 DESCRIPTION
@@ -82,8 +82,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Facebook::API::Base>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

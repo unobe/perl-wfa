@@ -1,16 +1,17 @@
 #!perl
 use strict;
 use warnings;
-use WWW::Facebook::API::Simple;
+use WWW::Facebook::API;
 
-my $client = WWW::Facebook::API::Simple->new(
+my $client = WWW::Facebook::API->new(
     desktop => 1,
     throw_errors => 1,
     parse_response => 1, # uses XML::Simple if set to 1
 );
 
 # Session initialization
-my $token = $client->auth->create_token;
+my $token
+    = $client->auth->create_token->{auth_createToken_response}->[0]->{content};
 
 # prompts for login credentials from STDIN
 $client->login->login( $token );
@@ -18,17 +19,21 @@ $client->auth->get_session( auth_token => $token );
 
 # Dump XML data returned
 use Data::Dumper;
-my @friends = @{ $client->friends->get };
+my @friends = @{ $client->friends->get->{friends_get_response}->[0]->{uid} };
 print Dumper $client->friends->are_friends(
     uids1 => [@friends[0,1,2,3]],
     uids2 => [@friends[4,5,6,7]],
 );
 
-my $unread_pokes = $client->notifications->get->{pokes}->[0]->{unread}->[0];
-print "You have $unread_pokes unread poke(s).";
+my $unread_pokes
+    = $client->notifications->get
+        ->{notifications_get_response}->[0]->{pokes}->[0]->{unread}->[0];
+print "You have $unread_pokes unread poke(s).\n";
 
 my @users
-    = @{ $client->users->get_info( uids => \@friends, fields => ['quotes'] ) };
+    = @{ $client->users->get_info( uids => \@friends, fields => ['quotes'])
+            ->{users_getInfo_response}->[0]->{user}
+};
 print "Number of friends:".@users."\n";
 
 # Get number of quotes by derefrencing, and then removing the null items (hash

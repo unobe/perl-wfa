@@ -28,7 +28,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Simple - Facebook API implementation
+WWW::Facebook::API::Simple - 'Simpler' Facebook API implementation
 
 
 =head1 VERSION
@@ -41,34 +41,47 @@ This document describes WWW::Facebook::API::Simple version 0.1.6
     use WWW::Facebook::API::Simple;
 
     my $client = WWW::Facebook::API::Simple->new(
-        throw_errors => 1,
         desktop => 1,
-        api_key => '5ac7d432',
-        secret => '459ade099c',
+        throw_errors => 1,
+        parse_response => 1, # uses XML::Simple if set to 1
     );
-
+    
+    # Session initialization
     my $token = $client->auth->create_token;
-    $client->login->login( $token ); # prompts for login credentials from STDIN
+    
+    # prompts for login credentials from STDIN
+    $client->login->login( $token );
     $client->auth->get_session( auth_token => $token );
-    my @friends = @{ $client->friends->get };
+    
+    # Dump XML data returned
     use Data::Dumper;
+    my @friends = @{ $client->friends->get };
     print Dumper $client->friends->are_friends(
         uids1 => [@friends[0,1,2,3]],
         uids2 => [@friends[4,5,6,7]],
     );
-    print 'You have '
-        . $client->notifications->get->{pokes}->[0]->{unread}->[0]
-        .' unread poke(s).';
-    my @quotes = map { @{$_->{quotes}} }
-        @{ $client->users->get_info( uids => \@friends, fields => ['quotes']) };
-    print 'A lot of quotes: '.@quotes."\n";
-    print "Random one:\t".$quotes[int rand @quotes]."\n";
+    
+    my $unread_pokes = $client->notifications->get->{pokes}->[0]->{unread}->[0];
+    print "You have $unread_pokes unread poke(s).";
+    
+    my @users
+        = @{ $client->users->get_info( uids => \@friends, fields => ['quotes'] ) };
+    print "Number of friends:".@users."\n";
+    
+    # Get number of quotes by derefrencing, and then removing the null items (hash
+    # refs)
+    my @quotes = grep !ref, map { @{$_->{'quotes'}} } @users;
+    print "Number of quotes: ".@quotes."\n";
+    print "Random quote: ".$quotes[int rand @quotes]."\n";
+    
+    $client->auth->logout;
 
-
+    
 =head1 DESCRIPTION
 
-A simpler interface to fetch values with for the Facebook API. Basically, not
-as much typing to get at the information returned by the server.
+A simpler interface to deal with the XML responses of the Facebook API.
+Basically, not as much typing to get at the information returned by the
+server.
 
 =head1 SUBROUTINES/METHODS 
 
@@ -76,13 +89,14 @@ See L<WWW::Facebook::API>.
 
 =over
 
-=item BUILD
+=item new
 
-L<Moose>
+Returns a new instance of this class.
 
-=item meta
+=item base
 
-L<Moose>
+The L<WWW::Facebook::API::Base> object to use to make calls to
+the REST server.
 
 =back
 
@@ -101,8 +115,7 @@ variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Facebook::API>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

@@ -1,4 +1,4 @@
-WWW-Facebook-API version 0.1.6
+WWW-Facebook-API version 0.1.7
 
 INSTALLATION
 
@@ -16,7 +16,6 @@ version
 WWW::Mechanize
 Digest::MD5
 Time::HiRes
-XML::Simple
 Crypt::SSLeay
 
 COPYRIGHT AND LICENSE

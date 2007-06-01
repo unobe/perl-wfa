@@ -46,7 +46,7 @@ This document describes WWW::Facebook::API::Notifications version 0.1.6
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Notifications;
+    use WWW::Facebook::API;
 
 
 =head1 DESCRIPTION
@@ -57,6 +57,10 @@ Methods for accessing notification information with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item new
+
+Returns a new instance of this class.
 
 =item base
 
@@ -92,8 +96,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Facebook::API::Base>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

@@ -110,7 +110,7 @@ This document describes WWW::Facebook::API::Auth version 0.1.6
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Auth;
+    use WWW::Facebook::API;
 
 
 =head1 DESCRIPTION
@@ -120,6 +120,14 @@ Methods for accessing auth with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item new
+
+Returns a new instance of this class.
+
+=item base
+
+The L<WWW::Facebook::API::Base> object to use to access settings.
 
 =item create_token
 
@@ -171,8 +179,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Facebook::API>
+See L<WWW::Facebook::API>
 
 =head1 INCOMPATIBILITIES
 

@@ -96,19 +96,21 @@ This document describes WWW::Facebook::API::Login version 0.1.6
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Login;
+    use WWW::Facebook::API;
 
 
 =head1 DESCRIPTION
 
 This uses the L<WWW::Mechanize> object to login a user to the Facebook. Useful
-for quick testing, by replacing L<WWW::Facebook::API::Auth> in
-Client.pm with this module since this module subclasses that one.
-
+for quick testing.
 
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item new
+
+Returns a new instance of this class.
 
 =item base
 
@@ -155,8 +157,7 @@ files or environment variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Facebook::API::Base>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

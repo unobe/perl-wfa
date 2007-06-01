@@ -246,7 +246,7 @@ This document describes WWW::Facebook::API::Base version 0.1.6
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Base;
+    use WWW::Facebook::API;
 
 
 =head1 DESCRIPTION
@@ -258,17 +258,27 @@ Base methods and data for WWW::Facebook::API and friends.
 
 =over
 
+=item new
+
+Returns a new instance of this class.
+
 =item format
 
 The default format to use if none is supplied with an API method call.
 Currently available options are XML and JSON. Defaults to XML.
 
+=item parse_response
+
+Defaults to 0. If set to true, if the format is set to XML, L<XML::Simple> is
+used to parse the response from the server. Likewise, if the format is set to
+JSON, <JSON::XS> is used JSON to return a Perlish data structure.
+
 =item call
 
 The method which other submodules within WWW::Facebook::API use
 to call the Facebook REST interface. It takes in a hash signifying the method
-to be called (e.g., 'auth.getSession'), the parameters to pass through, and
-(optionally) the secret to use.
+to be called (e.g., 'auth.getSession'), and key/value pairs for the parameters
+to use.
 
 =item mech
 
@@ -278,15 +288,16 @@ Shouldn't be needed for anything. The agent_alias is set to
 
 =item server_uri
 
-The server uri to access the Facebook REST server. See the Facebook API
+The server uri to access the Facebook REST server. Default is
+C<'http://api.facebook.com/restserver.php'>. See the Facebook API
 documentation.
 
 =item secret
 
 For a desktop application, this is the secret that is used for calling
-create_token and get_session. See the Facebook API documentation under
-Authentication. If no secret is passed in to the C<new> method, it will prompt
-for one to be entered from STDIN.
+C<auth->create_token> and C<auth->get_session>. See the Facebook API
+documentation under Authentication. If no secret is passed in to the C<new>
+method, it will prompt for one to be entered from STDIN.
 
 =item api_key
 
@@ -396,10 +407,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<WWW::Mechanize>
-L<Digest::MD5>
-L<Time::HiRes>
-L<Crypt::SSLeay>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

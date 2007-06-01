@@ -70,7 +70,7 @@ This document describes WWW::Facebook::API::Errors version 0.1.6
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Errors;
+    use WWW::Facebook::API;
 
 
 =head1 DESCRIPTION
@@ -81,6 +81,10 @@ Error methods and data used by L<WWW::Facebook::API::Base>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item new
+
+Returns a new instance of this class.
 
 =item base
 
@@ -110,10 +114,6 @@ Pass in the params and the response from a call, and it will make a formatted
 string out of it showing the server_uri, the parameters used, and the response
 received. Used by log_debug and log_error.
 
-=item meta
-
-L<Moose>
-
 =back
 
 
@@ -140,8 +140,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<XML::Simple>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

@@ -25,6 +25,10 @@ sub new {
     return $self;
 }
 
+sub set_fbml    { shift->base->call( 'profile.setFBML', @_ )  }
+sub get_fbml    { shift->base->call( 'profile.getFBML', @_ )  }
+
+# Just in case ...
 sub set_FBML    { shift->base->call( 'profile.setFBML', @_ )  }
 sub get_FBML    { shift->base->call( 'profile.getFBML', @_ )  }
 
@@ -53,16 +57,20 @@ Methods for accessing photos with L<WWW::Facebook::API>
 
 =over
 
+=item new
+
+Returns a new instance of this class.
+
 =item base
 
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item set_FBML
+=item set_fbml
 
 The profile.setFBML method of the Facebook API.
 
-=item get_FBML
+=item get_fbml
 
 The profile.getFBML method of the Facebook API.
 
@@ -81,8 +89,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Facebook::API::Base>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES

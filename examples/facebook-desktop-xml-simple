@@ -3,17 +3,17 @@ use strict;
 use warnings;
 use WWW::Facebook::API::Simple;
 
-my $cb = 'http://www.unobe.com/perl-wfa/test.cgi';
 my $client = WWW::Facebook::API::Simple->new(
-    callback => $cb,
-    desktop => 0,
+    desktop => 1,
     throw_errors => 1,
     parse_response => 1, # uses XML::Simple if set to 1
 );
 
 # Session initialization
+my $token = $client->auth->create_token;
+
 # prompts for login credentials from STDIN
-my $token = $client->login->login();
+$client->login->login( $token );
 $client->auth->get_session( auth_token => $token );
 
 # Dump XML data returned
@@ -25,7 +25,7 @@ print Dumper $client->friends->are_friends(
 );
 
 my $unread_pokes = $client->notifications->get->{pokes}->[0]->{unread}->[0];
-print "You have $unread_pokes unread poke(s).\n";
+print "You have $unread_pokes unread poke(s).";
 
 my @users
     = @{ $client->users->get_info( uids => \@friends, fields => ['quotes'] ) };

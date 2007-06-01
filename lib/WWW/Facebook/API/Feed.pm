@@ -58,6 +58,10 @@ Methods for accessing photos with L<WWW::Facebook::API>
 
 =over
 
+=item new
+
+Returns a new instance of this class.
+
 =item base
 
 The L<WWW::Facebook::API::Base> object to use to make calls to
@@ -86,8 +90,7 @@ environment variables.
 
 =head1 DEPENDENCIES
 
-L<Moose>
-L<WWW::Facebook::API::Base>
+See L<WWW::Facebook::API>
 
 
 =head1 INCOMPATIBILITIES
