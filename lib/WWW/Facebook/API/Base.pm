@@ -334,6 +334,10 @@ Which version to use (default is "1.0", which is the only one supported
 currently. Corresponds to the argument C<v> that is passed in to methods as a
 parameter.
 
+=item callback
+
+The callback URL for your application. See the Facebook API documentation.
+
 =item next
 
 See the Facebook API documentation.

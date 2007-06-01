@@ -151,6 +151,7 @@ methods C<call>, C<new>, and its internal methods ):
         session_uid     => 'session_uid',
         desktop         => 1,
         api_version     => '1.0',
+        callback        => 'callback_url',
         next            => 'next',
         popup           => 'popup',
         skipcookie      => 'skip_cookie',

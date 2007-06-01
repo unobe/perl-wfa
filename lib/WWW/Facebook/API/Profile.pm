@@ -74,6 +74,14 @@ The profile.setFBML method of the Facebook API.
 
 The profile.getFBML method of the Facebook API.
 
+=item set_FBML (DEPRECATED)
+
+The profile.setFBML method of the Facebook API.
+
+=item get_FBML (DEPRECATED)
+
+The profile.getFBML method of the Facebook API.
+
 =back
 
 
