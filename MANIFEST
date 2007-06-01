@@ -6,7 +6,7 @@ README
 examples/facebook-web-json
 examples/facebook-web-xml
 examples/facebook-desktop-xml
-examples/facebook-desktop-xml-simpe
+examples/facebook-desktop-xml-simple
 examples/facebook-desktop-json
 lib/WWW/Facebook/API.pm
 lib/WWW/Facebook/API/Simple.pm
