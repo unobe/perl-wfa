@@ -1,6 +1,7 @@
 Revision history for WWW-Facebook-API
 
-HEAD
+0.2.0	Fri Jun  1 02:55:17 PDT 2007
+	Perltidy'd
 	Updated docs to match current usage
 	Removed Moose and XML::Simple dependency
 	fixed last_call_success method being called on wrong object

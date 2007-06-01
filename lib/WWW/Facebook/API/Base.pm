@@ -13,7 +13,7 @@ use WWW::Mechanize;
 use Time::HiRes qw(time);
 use Digest::MD5;
 
-use version; our $VERSION = qv('0.1.6');
+use version; our $VERSION = qv('0.2.0');
 
 use WWW::Facebook::API::Errors;
 
@@ -235,7 +235,7 @@ WWW::Facebook::API::Base - Base class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Base version 0.1.6
+This document describes WWW::Facebook::API::Base version 0.2.0
 
 
 =head1 SYNOPSIS

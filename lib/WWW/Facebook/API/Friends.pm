@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.1.6');
+use version; our $VERSION = qv('0.2.0');
 
 sub base { return shift->{'base'}; }
 
@@ -39,7 +39,7 @@ WWW::Facebook::API::Friends - Friend methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Friends version 0.1.6
+This document describes WWW::Facebook::API::Friends version 0.2.0
 
 
 =head1 SYNOPSIS
