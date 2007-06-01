@@ -88,7 +88,7 @@ sub call {
         carp $self->errors->log_string( $params, $response );
     }
     if ( $response =~ m!<error_code>(\d+)|^{"error_code"\D(\d+)!mx ) {
-        $self->last_call_success( 0 );
+        $self->errors->last_call_success( 0 );
         $self->errors->last_error( $1 );
 
         if ( $self->throw_errors ) {
