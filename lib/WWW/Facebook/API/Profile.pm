@@ -25,14 +25,14 @@ sub new {
     return $self;
 }
 
-sub set_fbml    { shift->base->call( 'profile.setFBML', @_ )  }
-sub get_fbml    { shift->base->call( 'profile.getFBML', @_ )  }
+sub set_fbml { shift->base->call( 'profile.setFBML', @_ ) }
+sub get_fbml { shift->base->call( 'profile.getFBML', @_ ) }
 
 # Just in case ...
-sub set_FBML    { shift->base->call( 'profile.setFBML', @_ )  }
-sub get_FBML    { shift->base->call( 'profile.getFBML', @_ )  }
+sub set_FBML { shift->base->call( 'profile.setFBML', @_ ) }
+sub get_FBML { shift->base->call( 'profile.getFBML', @_ ) }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

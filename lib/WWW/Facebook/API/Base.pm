@@ -46,43 +46,35 @@ sub secret {
     return $self->{'secret'};
 }
 
-sub format      { shift->_check_default( 'XML', 'format', @_ );      }
+sub format      { shift->_check_default( 'XML', 'format',      @_ ); }
 sub api_version { shift->_check_default( '1.0', 'api_version', @_ ); }
-sub desktop     { shift->_check_default( 0, 'desktop', @_ );         }
+sub desktop     { shift->_check_default( 0,     'desktop',     @_ ); }
 
-sub skipcookie { shift->_check_default( 0, 'skipcookie', @_ ); }
-sub popup      { shift->_check_default( 0, 'popup', @_ );      }
-sub next       { shift->_check_default( '', 'next', @_ );      }
+sub skipcookie { shift->_check_default( 0,  'skipcookie', @_ ); }
+sub popup      { shift->_check_default( 0,  'popup',      @_ ); }
+sub next       { shift->_check_default( '', 'next',       @_ ); }
 
 sub server_uri {
-    shift->_check_default(
-        'http://api.facebook.com/restserver.php',
-        'server_uri',
-        @_,
-    );
+    shift->_check_default( 'http://api.facebook.com/restserver.php',
+        'server_uri', @_, );
 }
 
-sub session_key     { shift->_check_default( '', 'session_key', @_);      }
+sub session_key     { shift->_check_default( '', 'session_key',     @_ ); }
 sub session_expires { shift->_check_default( '', 'session_expires', @_ ); }
-sub session_uid     { shift->_check_default( '', 'session_uid', @_ );     }
-sub callback        { shift->_check_default( '', 'callback', @_ );        }
-sub parse_response  { shift->_check_default( 0, 'parse_response', @_ );   }
+sub session_uid     { shift->_check_default( '', 'session_uid',     @_ ); }
+sub callback        { shift->_check_default( '', 'callback',        @_ ); }
+sub parse_response  { shift->_check_default( 0,  'parse_response',  @_ ); }
 
 sub mech {
     shift->_check_default(
         WWW::Mechanize->new( agent => "Perl-WWW-Facebook-API/$VERSION" ),
-        'mech',
-        @_,
-    );
+        'mech', @_, );
 }
 
 sub errors {
     my $self = shift;
-    $self->_check_default(
-        WWW::Facebook::API::Errors->new( base => $self ),
-        'errors',
-        @_,
-    );
+    $self->_check_default( WWW::Facebook::API::Errors->new( base => $self ),
+        'errors', @_, );
 }
 
 sub new {
@@ -99,15 +91,15 @@ sub new {
 
 sub call {
     my ( $self, $method, %args, $params, $secret, $response ) = @_;
-    $self->errors->last_call_success( 1 );
-    $self->errors->last_error( undef );
+    $self->errors->last_call_success(1);
+    $self->errors->last_error(undef);
 
     $params = delete $args{'params'} || {};
     $params->{$_} = $args{$_} for keys %args;
 
     $secret = $args{'secret'} || $self->secret;
     $params->{'method'} ||= $method;
-    $self->_update_params( $params );
+    $self->_update_params($params);
     my $sig = _create_sig_for( $params, $secret );
     $response = $self->_post_request( $params, $secret );
 
@@ -116,25 +108,25 @@ sub call {
     }
     $response =~ s/(?<!\\)(\\.)/qq("$1")/gee unless $self->desktop;
 
-    if ($self->errors->debug) {
-        $params->{ 'sig'    }   = $sig;
-        $params->{ 'secret' }   = $secret;
+    if ( $self->errors->debug ) {
+        $params->{'sig'}    = $sig;
+        $params->{'secret'} = $secret;
         carp $self->errors->log_string( $params, $response );
     }
     if ( $response =~ m!<error_code>(\d+)|^{"error_code"\D(\d+)!mx ) {
-        $params->{ 'sig'    }   = $sig;
-        $params->{ 'secret' }   = $secret;
-        $self->errors->last_call_success( 0 );
-        $self->errors->last_error( $1 );
+        $params->{'sig'}    = $sig;
+        $params->{'secret'} = $secret;
+        $self->errors->last_call_success(0);
+        $self->errors->last_error($1);
 
         if ( $self->errors->throw_errors ) {
             confess "Error during REST $method call:\n",
-                    $self->errors->log_string( $params, $response );
+                $self->errors->log_string( $params, $response );
         }
     }
- 
+
     return $response unless $self->parse_response;
-    
+
     return $self->_parse( $params->{'format'}, $response );
 }
 
@@ -149,12 +141,14 @@ sub _parse {
     eval 'use XML::Simple qw(xml_in)';
     croak "Unable to load XML module for parsing\n" if $@;
 
-    $xml = xml_in( $response,
+    $xml = xml_in(
+        $response,
         ForceArray => 1,
-        KeepRoot => !$self->simple,
+        KeepRoot   => !$self->simple,
     );
 
     if ( $self->simple ) {
+
         # remove meta-data
         for ( keys %$xml ) {
             delete $xml->{$_} if /^x(ml|si)|list/;
@@ -162,7 +156,7 @@ sub _parse {
 
         # keys is screwy: will give uninit warnings otherwise
         if ( keys %$xml ) {
-            return $xml->{ [keys %$xml]->[0] } if keys %$xml == 1;
+            return $xml->{ [ keys %$xml ]->[0] } if keys %$xml == 1;
         }
         elsif ( exists $xml->{$_}->[0]->{content} ) {
             return $xml->{content};
@@ -177,28 +171,28 @@ sub _update_params {
         $params->{'session_key'} = $self->session_key;
         $params->{'callback'} ||= $self->callback if $self->callback;
     }
-    $params->{ 'call_id' }  =   time if $self->desktop;
-    $params->{ 'method'  }  =   "facebook.$params->{'method'}";
-    $params->{ 'api_key' }  ||= $self->api_key;
-    $params->{ 'format'  }  ||= $self->format;
-    $params->{ 'v'       }  ||= $self->api_version;
+    $params->{'call_id'} = time if $self->desktop;
+    $params->{'method'} = "facebook.$params->{'method'}";
+    $params->{'api_key'} ||= $self->api_key;
+    $params->{'format'}  ||= $self->format;
+    $params->{'v'}       ||= $self->api_version;
 
     for (qw/popup next skipcookie/) {
         if ( $self->$_ ) { $params->{$_} = q{} }
     }
     return;
- }
+}
 
 sub _post_request {
-    my ($self, $params, $secret, $sig, $post_params ) = @_;
+    my ( $self, $params, $secret, $sig, $post_params ) = @_;
 
-    _reformat_params( $params );
+    _reformat_params($params);
     $sig = _create_sig_for( $params, $secret );
     $post_params = [ map { $_, $params->{$_} } sort keys %$params ];
     push @$post_params, 'sig', $sig;
 
     $self->mech->post( $self->server_uri, $post_params );
-    
+
     return $self->mech->content;
 }
 
@@ -213,25 +207,25 @@ sub _reformat_params {
 }
 
 sub _create_sig_for {
-    my ($params, $secret ) = @_;
+    my ( $params, $secret ) = @_;
 
     my $md5 = Digest::MD5->new;
-    $md5->add( map { "$_=$params->{$_}" } sort keys %$params );
-    $md5->add( $secret );
+    $md5->add( map {"$_=$params->{$_}"} sort keys %$params );
+    $md5->add($secret);
 
     return $md5->hexdigest;
 }
 
 sub _check_default {
-    my $self        = shift;
-    my $default     = shift;
-    my $attribute   = shift;
+    my $self      = shift;
+    my $default   = shift;
+    my $attribute = shift;
     return $self->{$attribute} = shift if @_;
     return $self->{$attribute} if defined $self->{$attribute};
     return $self->{$attribute} = $default;
 }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

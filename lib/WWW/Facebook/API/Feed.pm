@@ -33,7 +33,7 @@ sub publish_action_of_user {
     shift->base->call( 'feed.publishActionOfUser', @_ );
 }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

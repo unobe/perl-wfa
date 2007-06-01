@@ -25,11 +25,11 @@ sub new {
     return $self;
 }
 
-sub get             { shift->base->call( 'friends.get', @_ )          }
-sub get_app_users   { shift->base->call( 'friends.getAppUsers', @_ )  }
-sub are_friends     { shift->base->call( 'friends.areFriends', @_ )   }
+sub get           { shift->base->call( 'friends.get',         @_ ) }
+sub get_app_users { shift->base->call( 'friends.getAppUsers', @_ ) }
+sub are_friends   { shift->base->call( 'friends.areFriends',  @_ ) }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

@@ -14,7 +14,8 @@ use version; our $VERSION = qv('0.1.6');
 
 my @attributes = qw( base login_uri );
 
-sub base      { return shift->{'base'}; }
+sub base { return shift->{'base'}; }
+
 sub login_uri {
     return shift->{'login_uri'} ||= 'http://api.facebook.com/login.php';
 }
@@ -35,17 +36,19 @@ sub _login_form {
     my $self = shift;
     $self->base->mech->submit_form(
         form_number => 1,
-        fields  => {
+        fields      => {
             email => sub {
                 print 'Email address: ';
-                chomp(my $email = <STDIN>);
+                chomp( my $email = <STDIN> );
                 return $email;
-            }->(),
-            pass  => sub {
+                }
+                ->(),
+            pass => sub {
                 print 'Password: ';
-                chomp(my $pass = <STDIN>);
+                chomp( my $pass = <STDIN> );
                 return $pass;
-            }->(),
+                }
+                ->(),
         },
         button => 'login',
     );
@@ -54,7 +57,7 @@ sub _login_form {
 
 sub login {
     my ( $self, $token ) = @_;
-    my $params = join '&', '?api_key='.$self->base->api_key,'v=1.0';
+    my $params = join '&', '?api_key=' . $self->base->api_key, 'v=1.0';
     if ( $self->base->desktop ) {
         croak "A desktop app must have a token passed in!\n" unless $token;
         $params .= "&auth_token=$token";
@@ -62,7 +65,7 @@ sub login {
     my $url = $self->login_uri . $params;
     system qq(open $url);
     sleep 10;
-    my $agent = $self->base->mech->agent_alias( 'Mac Mozilla' );
+    my $agent = $self->base->mech->agent_alias('Mac Mozilla');
     $self->base->mech->get( $self->login_uri . $params );
     if ( not $self->base->mech->forms ) {
         confess 'No form to submit!';
@@ -71,13 +74,15 @@ sub login {
     if ( $self->base->errors->debug ) {
         carp $self->base->mech->content;
     }
-    if ( $self->base->desktop and $self->base->mech->content !~ m{Logout</a>}mix ) {
-        confess "Unable to login:\n\n". $self->base->mech->content;
+    if (    $self->base->desktop
+        and $self->base->mech->content !~ m{Logout</a>}mix )
+    {
+        confess "Unable to login:\n\n" . $self->base->mech->content;
     }
     if ( not $self->base->desktop ) {
-        ($token) = ($self->base->mech->uri =~ /auth_token=(.+)$/g);
+        ($token) = ( $self->base->mech->uri =~ /auth_token=(.+)$/g );
     }
-    $self->base->mech->agent( $agent );
+    $self->base->mech->agent($agent);
     return $token;
 }
 

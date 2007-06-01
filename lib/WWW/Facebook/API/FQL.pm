@@ -27,7 +27,7 @@ sub new {
 
 sub query { shift->base->call( 'fql.query', @_ ) }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

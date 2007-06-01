@@ -16,7 +16,7 @@ use base 'WWW::Facebook::API::Base';
 
 our @attributes = qw(simple);
 
-sub simple { shift->_check_default(0, 'simple', @_ ) }
+sub simple { shift->_check_default( 0, 'simple', @_ ) }
 
 our @namespaces = qw(
     Auth        Events      FBML
@@ -27,8 +27,8 @@ our @namespaces = qw(
 );
 
 my $create_attribute_code = sub {
-    local $_        = shift;
-    my $attribute   = shift;
+    local $_ = shift;
+    my $attribute = shift;
     eval qq(
         use WWW::Facebook::API::$_;
         sub $attribute {
@@ -49,15 +49,14 @@ sub new {
     my $class = ref $self || $self;
 
     my %no_super;
-    for ( @attributes ) {
+    for (@attributes) {
         $no_super{$_} = delete $args{$_} if exists $args{$_};
     }
-    $self = WWW::Facebook::API::Base->new( %args );
+    $self = WWW::Facebook::API::Base->new(%args);
     bless $self, $class;
 
-    $self->$_($no_super{$_})    for @attributes;
-    $self->$_($self)            for map { "\L$_" } @namespaces;
-
+    $self->$_( $no_super{$_} ) for @attributes;
+    $self->$_($self) for map {"\L$_"} @namespaces;
 
     return $self;
 }

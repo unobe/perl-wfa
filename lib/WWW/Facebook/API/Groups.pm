@@ -25,10 +25,10 @@ sub new {
     return $self;
 }
 
-sub get         { shift->base->call( 'groups.get', @_ ) }
+sub get         { shift->base->call( 'groups.get',        @_ ) }
 sub get_members { shift->base->call( 'groups.getMembers', @_ ) }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

@@ -18,11 +18,11 @@ our @attributes = qw(
     last_call_success
 );
 
-sub base         { return shift->{'base'}; }
+sub base { return shift->{'base'}; }
 
-sub debug        { return shift->{'debug'       } ||= @_ ? shift != 0 : 0; }
+sub debug        { return shift->{'debug'}        ||= @_ ? shift != 0 : 0; }
 sub throw_errors { return shift->{'throw_errors'} ||= @_ ? shift != 0 : 1; }
-sub last_error   { return shift->{'last_error'  } ||= @_ ? shift : 0;      }
+sub last_error   { return shift->{'last_error'}   ||= @_ ? shift      : 0; }
 
 sub last_call_success {
     return shift->{'last_call_success'} ||= @_ ? shift != 0 : 0;
@@ -41,9 +41,9 @@ sub new {
 }
 
 sub log_string {
-    my ($self, $params, $response ) = @_;
+    my ( $self, $params, $response ) = @_;
 
-    my $string =  "uri = ".$self->base->server_uri;
+    my $string = "uri = " . $self->base->server_uri;
 
     $string .= "\n\nparams = \n";
     for ( keys %{$params} ) {

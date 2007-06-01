@@ -25,10 +25,10 @@ sub new {
     return $self;
 }
 
-sub get_info           { shift->base->call( 'users.getInfo', @_ );        }
+sub get_info           { shift->base->call( 'users.getInfo',         @_ ); }
 sub get_logged_in_user { shift->base->call( 'users.getLoggedInUser', @_ ) }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

@@ -23,7 +23,7 @@ sub refresh_img_src { shift->base->call( 'fbml.refreshImgSrc', @_ ) }
 sub refresh_ref_url { shift->base->call( 'fbml.refreshRefUrl', @_ ) }
 sub set_ref_handle  { shift->base->call( 'fbml.setRefHandle',  @_ ) }
 
-1; # Magic true value required at end of module
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME

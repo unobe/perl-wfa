@@ -25,7 +25,7 @@ sub new {
     return $self;
 }
 
-sub create_token    {
+sub create_token {
     my $self = shift;
     my $token = $self->base->call( 'auth.createToken', @_ );
     $token =~ s/\W//g if $self->base->format eq 'JSON';
@@ -36,8 +36,9 @@ sub get_session {
     my $self = shift;
 
     if ( $self->base->desktop ) {
+
         # swap to using https for the sake of getting the session secret
-        $self->base->server_uri( _make_secure( $self->base->server_uri ) )
+        $self->base->server_uri( _make_secure( $self->base->server_uri ) );
     }
 
     my $response = $self->base->call( 'auth.getSession', @_ );
@@ -48,26 +49,27 @@ sub get_session {
         uid             session_uid
     );
 
-    print STDERR "desktop is ".$self->base->desktop."\n";
+    print STDERR "desktop is " . $self->base->desktop . "\n";
     if ( $self->base->desktop ) {
         $field{'secret'} = 'secret';
         $self->base->server_uri( _make_unsecure( $self->base->server_uri ) );
     }
 
-    if ($self->base->format eq 'XML') {
+    if ( $self->base->format eq 'XML' ) {
 
-        my $value = $self->base->simple
+        my $value =
+              $self->base->simple
             ? $response
             : $response->{auth_getSession_response}->[0];
 
-        while ( my ($key, $val) = each %field ) {
+        while ( my ( $key, $val ) = each %field ) {
             $self->base->$val( $value->{$key}->[0] );
         }
     }
-    else { # JSON
-        while ( my ($key, $val) = each %field ) {
+    else {    # JSON
+        while ( my ( $key, $val ) = each %field ) {
             $response =~ /$key"\W+([\w-]+)/g;
-            $self->base->$val( $1 );
+            $self->base->$val($1);
         }
     }
     return $response;
@@ -76,8 +78,7 @@ sub get_session {
 sub logout {
     my $self = shift;
     $self->base->mech->post( 'http://www.facebook.com/logout.php',
-                             { confirm => 1 }
-    );
+        { confirm => 1 } );
 }
 
 sub _make_secure {
