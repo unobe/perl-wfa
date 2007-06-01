@@ -62,9 +62,6 @@ sub login {
         croak "A desktop app must have a token passed in!\n" unless $token;
         $params .= "&auth_token=$token";
     }
-    my $url = $self->login_uri . $params;
-    system qq(open $url);
-    sleep 10;
     my $agent = $self->base->mech->agent_alias('Mac Mozilla');
     $self->base->mech->get( $self->login_uri . $params );
     if ( not $self->base->mech->forms ) {
