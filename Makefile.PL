@@ -13,6 +13,7 @@ WriteMakefile(
         'version'           => 0,
         'WWW::Mechanize'    => 0,
         'Digest::MD5'       => 0,
+        'XML::Simple'       => 0,
         'Time::HiRes'       => 0,
         'Crypt::SSLeay'     => 0,
     },
