@@ -64,10 +64,11 @@ sub session_expires { shift->_check_default( '', 'session_expires', @_ ); }
 sub session_uid     { shift->_check_default( '', 'session_uid',     @_ ); }
 sub callback        { shift->_check_default( '', 'callback',        @_ ); }
 sub parse_response  { shift->_check_default( 0,  'parse_response',  @_ ); }
-sub parse_params   { 
+
+sub parse_params {
     my $self = shift;
     if ( $self->format eq 'JSON' ) {
-        $self->_check_default( { utf8 => 1 },  'parse_params_JSON', @_ );
+        $self->_check_default( { utf8 => 1 }, 'parse_params_JSON', @_ );
     }
     else {
         $self->_check_default( { KeepRoot => 1, ForceArray => 1 },
@@ -95,11 +96,11 @@ sub new {
     my $is_attribute = join '|', @attributes;
     delete $self->{$_} for grep !/^($is_attribute)$/, keys %$self;
 
-    for (sort grep !/^parse_params$/, @attributes ) {
+    for ( sort grep !/^parse_params$/, @attributes ) {
         $self->$_;
     }
     if ( $self->{'parse_params'} ) {
-        $self->parse_params(delete $self->{'parse_params'});
+        $self->parse_params( delete $self->{'parse_params'} );
     }
 
     return $self;
@@ -122,7 +123,7 @@ sub call {
     if ( $params->{'callback'} ) {
         $response =~ s/^$params->{'callback'}.+(?=\<\?xml)(.+).\);$/$1/;
     }
-    $response = $self->unescape_string ( $response ) unless $self->desktop;
+    $response = $self->unescape_string($response) unless $self->desktop;
 
     if ( $self->errors->debug ) {
         $params->{'sig'}    = $sig;
@@ -155,8 +156,8 @@ sub generate_sig {
 sub verify_sig {
     my $self = shift;
     my %args = shift;
-    return 
-        $args{'sig'} eq $self->generate_sig( $args{'params'}, $self->secret );
+    return $args{'sig'} eq
+        $self->generate_sig( $args{'params'}, $self->secret );
 }
 
 sub session {
@@ -167,8 +168,8 @@ sub session {
 }
 
 sub unescape_string {
-    my $self    = shift;
-    my $string  = shift;
+    my $self   = shift;
+    my $string = shift;
     $string =~ s/(?<!\\)(\\.)/qq("$1")/gee;
     return $string;
 }
@@ -179,18 +180,16 @@ sub _parse {
     if ( $format eq 'JSON' ) {
         eval 'use JSON::XS';
         croak "Unable to load JSON module for parsing\n" if $@;
-        my $json = JSON::XS->new;
-        my %params = %{$self->parse_params};
-        $json = $json->$_ for grep { $params{$_} } keys %{$self->parse_params};
-        return $json->decode( $response );
+        my $json   = JSON::XS->new;
+        my %params = %{ $self->parse_params };
+        $json = $json->$_
+            for grep { $params{$_} } keys %{ $self->parse_params };
+        return $json->decode($response);
     }
     eval 'use XML::Simple qw(xml_in)';
     croak "Unable to load XML module for parsing\n" if $@;
 
-    $xml = xml_in(
-        $response,
-        %{ $self->parse_params },
-    );
+    $xml = xml_in( $response, %{ $self->parse_params }, );
 
     if ( $self->simple ) {
         my ($response_node) = keys %$xml;

@@ -20,43 +20,39 @@ sub new {
 }
 
 sub get_fb_params {
-    my($self, $q) = @_;
-    return { map { (/^fb_sig_(.*)/)[0] => $q->param($_) }
-        sort grep { /^fb_sig_/ } $q->param };
+    my ( $self, $q ) = @_;
+    return {
+        map { (/^fb_sig_(.*)/)[0] => $q->param($_) }
+            sort grep {/^fb_sig_/} $q->param
+    };
 }
 
 sub validate_sig {
-    my($self, $q) = @_;
+    my ( $self, $q ) = @_;
     my $fb_params = $self->get_fb_params($q);
-    my $sig = WWW::Facebook::API::Base::_create_sig_for($fb_params, $self->base->secret);
-    if($sig eq $q->param("fb_sig")) {
-        return $fb_params;
-    } else {
-        return;
-    }
+    return $fb_params
+        if $self->base->validate_sig( $fb_params, $q->param('fb_sig') );
+    return;
 }
 
 sub get_user {
-    my($self, $q) = @_;
+    my ( $self, $q ) = @_;
     my $fb_params = $self->validate_sig($q);
 
-    if(defined $fb_params) {
-        return $fb_params->{user};
-    } else {
-        return "";
-    }
+    return $fb_params->{'user'} if $fb_params;
+    return "";
 }
 
 sub in_fb_canvas {
-    my($self, $q) = @_;
-    return $self->get_fb_params($q)->{in_canvas};
+    my ( $self, $q ) = @_;
+    return $self->get_fb_params($q)->{'in_canvas'};
 }
 
 sub in_frame {
-    my($self, $q) = @_;
+    my ( $self, $q ) = @_;
     my $fb_params = $self->get_fb_params($q);
-    return 1 if $fb_params->{in_canvas};
-    return 1 if $fb_params->{in_frame};
+    return 1 if $fb_params->{'in_canvas'} or $fb_params->{'in_frame'};
+    return;
 }
 
 1;
@@ -99,7 +95,7 @@ the REST server.
 
 =item get_user($q)
 
-Return the UID of the canvas user.
+Return the UID of the canvas user or "" if it does not exist.
 
 =item get_fb_params($q)
 
@@ -128,7 +124,7 @@ not have any unique error messages.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Users requires no configuration files or
+WWW::Facebook::API::Canvas requires no configuration files or
 environment variables.
 
 

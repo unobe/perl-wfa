@@ -9,6 +9,7 @@ HEAD   Fri Jun  1 22:58:33 PDT 2007
 	  broken in HEAD
 	Fixed parse_params bug (thanks Patrick)
 	Applied patch for Canvas class (thanks David Leadbeater)
+	Changed Canvas methods a bit (semantics the same)
 
 0.2.1  Fri Jun  1 02:55:17 PDT 2007
 	Removed OSX-specific code in Login.pm (shouldn't cause any major
