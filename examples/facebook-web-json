@@ -3,13 +3,13 @@ use strict;
 use warnings;
 use WWW::Facebook::API::Simple;
 
-my $cb = 'http://www.unobe.com/perl-wfa/test.cgi';
+my $cb     = 'http://www.unobe.com/perl-wfa/test.cgi';
 my $client = WWW::Facebook::API::Simple->new(
-    callback => $cb,
-    desktop => 0,
-    format => 'JSON',
-    throw_errors => 1,
-    parse_response => 0, # uses JSON::XS if set to 1
+    callback       => $cb,
+    desktop        => 0,
+    format         => 'JSON',
+    throw_errors   => 1,
+    parse_response => 0,        # uses JSON::XS if set to 1
 );
 
 # prompts for login credentials from STDIN
@@ -24,10 +24,9 @@ my $notifications_json = $client->notifications->get;
 print Dumper $notifications_json;
 
 # Current user's quotes
-my $quotes_json
-    = $client->users->get_info(
-            uids => [$client->session_uid],
-            fields => ['quotes']
+my $quotes_json = $client->users->get_info(
+    uids   => [ $client->session_uid ],
+    fields => ['quotes']
 );
 print Dumper $quotes_json;
 

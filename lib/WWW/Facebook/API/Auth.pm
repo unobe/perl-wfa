@@ -59,10 +59,10 @@ sub get_session {
         my $value =
               $self->base->simple
             ? $response
-            : $response->{auth_getSession_response}->[0];
+            : $response->{auth_getSession_response}[0];
 
         while ( my ( $key, $val ) = each %field ) {
-            $self->base->$val( $value->{$key}->[0] );
+            $self->base->$val( $value->{$key}[0] );
         }
     }
     else {    # JSON

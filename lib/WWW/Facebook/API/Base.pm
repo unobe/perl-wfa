@@ -187,6 +187,8 @@ sub _parse {
     );
 
     if ( $self->simple ) {
+        my ($response_node) = keys %$xml;
+        $xml = $xml->{$response_node}[0];
 
         # remove meta-data
         for ( keys %$xml ) {

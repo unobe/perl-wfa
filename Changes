@@ -1,10 +1,12 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Fri Jun  1 19:36:17 PDT 2007
+HEAD   Fri Jun  1 20:15:31 PDT 2007
 	Added method to Base (and paramter to API->new) to configure options
 	  passed to XML or JSON parser (if used): parse_params
 	Added generate_sig, verify_sig, session, unescape_string to Base.pm
 	Added is_app_added to Users.pm
+	Perltidy'd examples, and fixed xml parsing dereferencing that was
+	  broken in HEAD
 
 0.2.1  Fri Jun  1 02:55:17 PDT 2007
 	Removed OSX-specific code in Login.pm (shouldn't cause any major
