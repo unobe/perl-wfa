@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Fri Jun  1 23:18:29 PDT 2007
+HEAD   Fri Jun  1 23:30:25 PDT 2007
 	Added method to Base (and paramter to API->new) to configure options
 	  passed to XML or JSON parser (if used): parse_params
 	Added generate_sig, verify_sig, session, unescape_string to Base.pm
@@ -10,6 +10,7 @@ HEAD   Fri Jun  1 23:18:29 PDT 2007
 	Fixed parse_params bug (thanks Patrick)
 	Applied patch for Canvas class (thanks David Leadbeater)
 	Changed Canvas methods a bit (semantics the same)
+	parse_response is now set to 1 as the default.
 
 0.2.1  Fri Jun  1 02:55:17 PDT 2007
 	Removed OSX-specific code in Login.pm (shouldn't cause any major

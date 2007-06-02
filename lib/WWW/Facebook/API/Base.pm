@@ -63,7 +63,7 @@ sub session_key     { shift->_check_default( '', 'session_key',     @_ ); }
 sub session_expires { shift->_check_default( '', 'session_expires', @_ ); }
 sub session_uid     { shift->_check_default( '', 'session_uid',     @_ ); }
 sub callback        { shift->_check_default( '', 'callback',        @_ ); }
-sub parse_response  { shift->_check_default( 0,  'parse_response',  @_ ); }
+sub parse_response  { shift->_check_default( 1,  'parse_response',  @_ ); }
 
 sub parse_params {
     my $self = shift;
@@ -309,7 +309,7 @@ Currently available options are XML and JSON. Defaults to XML.
 
 =item parse_response
 
-Defaults to 0. If set to true, if the format is set to XML, L<XML::Simple> is
+Defaults to 1. If set to true, if the format is set to XML, L<XML::Simple> is
 used to parse the response from the server. Likewise, if the format is set to
 JSON, <JSON::XS> is used JSON to return a Perlish data structure.
 
