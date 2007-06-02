@@ -142,6 +142,7 @@ methods C<call>, C<new>, and its internal methods ):
     my $client = WWW::Facebook::API->new(
         format          => 'JSON',
         parse_response  => 1,
+        parse_params    => { utf8 => 1, allow_nonref => 1 },
         server_uri      => 'http://www.facebook.com/restserver.php',
         secret          => 'application_secret_key',
         api_key         => 'application_key',

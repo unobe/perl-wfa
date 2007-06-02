@@ -26,7 +26,8 @@ sub new {
 }
 
 sub get_info           { shift->base->call( 'users.getInfo',         @_ ); }
-sub get_logged_in_user { shift->base->call( 'users.getLoggedInUser', @_ ) }
+sub get_logged_in_user { shift->base->call( 'users.getLoggedInUser', @_ ); }
+sub is_app_added       { shift->base->call( 'users.isAppAdded',      @_ ); }
 
 1;    # Magic true value required at end of module
 __END__
@@ -71,6 +72,12 @@ The users.getInfo method of the Facebook API.
 =item get_logged_in_user
 
 The users.getLoggedInUser method of the Facebook API.
+
+=item is_app_added
+
+The users.getIsAppAdded method of the Facebook API. (Currently not documented,
+but is present in the PHP client.) Example:
+    $user_has_app = $client->users->is_app_added;
 
 =back
 

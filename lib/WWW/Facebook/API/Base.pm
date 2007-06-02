@@ -23,7 +23,7 @@ our @attributes = qw(
     skipcookie      popup               next
     session_key     session_expires     session_uid
     callback        mech                errors
-    parse_response
+    parse_response  parse_params
 );
 
 sub api_key {
@@ -64,6 +64,16 @@ sub session_expires { shift->_check_default( '', 'session_expires', @_ ); }
 sub session_uid     { shift->_check_default( '', 'session_uid',     @_ ); }
 sub callback        { shift->_check_default( '', 'callback',        @_ ); }
 sub parse_response  { shift->_check_default( 0,  'parse_response',  @_ ); }
+sub parse_params   { 
+    my $self = shift;
+    if ( $self->format eq 'JSON' ) {
+        $self->_check_default( { utf8 => 1 },  'parse_params_JSON', @_ );
+    }
+    else {
+        $self->_check_default( { KeepRoot => 1, ForceArray => 1 },
+            'parse_params_XML', @_ );
+    }
+}
 
 sub mech {
     shift->_check_default(
@@ -106,7 +116,7 @@ sub call {
     if ( $params->{'callback'} ) {
         $response =~ s/^$params->{'callback'}.+(?=\<\?xml)(.+).\);$/$1/;
     }
-    $response =~ s/(?<!\\)(\\.)/qq("$1")/gee unless $self->desktop;
+    $response = $self->unescape_string ( $response ) unless $self->desktop;
 
     if ( $self->errors->debug ) {
         $params->{'sig'}    = $sig;
@@ -130,21 +140,50 @@ sub call {
     return $self->_parse( $params->{'format'}, $response );
 }
 
+sub generate_sig {
+    my $self = shift;
+    my %args = shift;
+    return _create_sig_for( $args{'params'}, $args{'secret'} );
+}
+
+sub verify_sig {
+    my $self = shift;
+    my %args = shift;
+    return 
+        $args{'sig'} eq $self->generate_sig( $args{'params'}, $self->secret );
+}
+
+sub session {
+    my $self = shift;
+    my %args = shift;
+    $self->{"session_$_"} = $args{$_} for keys %args;
+    return;
+}
+
+sub unescape_string {
+    my $self    = shift;
+    my $string  = shift;
+    $string =~ s/(?<!\\)(\\.)/qq("$1")/gee;
+    return $string;
+}
+
 sub _parse {
     my ( $self, $format, $response, $xml ) = @_;
 
     if ( $format eq 'JSON' ) {
         eval 'use JSON::XS';
         croak "Unable to load JSON module for parsing\n" if $@;
-        return from_json $response;
+        my $json = JSON::XS->new;
+        my %params = %{$self->parse_params};
+        $json = $json->$_ for grep { $params{$_} } keys %{$self->parse_params};
+        return $json->decode( $response );
     }
     eval 'use XML::Simple qw(xml_in)';
     croak "Unable to load XML module for parsing\n" if $@;
 
     $xml = xml_in(
         $response,
-        ForceArray => 1,
-        KeepRoot   => !$self->simple,
+        %{ $self->parse_params },
     );
 
     if ( $self->simple ) {
@@ -267,12 +306,58 @@ Defaults to 0. If set to true, if the format is set to XML, L<XML::Simple> is
 used to parse the response from the server. Likewise, if the format is set to
 JSON, <JSON::XS> is used JSON to return a Perlish data structure.
 
+=item parse_params
+
+Defaults to C<{ ForceArray => 1, KeepRoot=> 1 }> if the format is XML and
+C<parse_response()> returns true for the current method call to the Facebook
+server. These defaults are then added to the parameter list for calling
+C<xml_in()> of L<XML::Simple>.
+
+For JSON, the default is different: C<{ utf8 => 1 }>. Since L<JSON::XS> doesn't
+allow you to pass in parameters to its function C<from_json()>, these keys in
+the received hash are used as method calls to construct the L<JSON::XS>
+object. So the default call made is:
+    JSON::XS->new->utf8->decode( $response )
+
+Passing in C<{ utf8 => 1, allow_nonref = 1 }> will result in this call:
+    JSON::XS->new->utf8->allow_nonref->decode( $response )
+
+The parameters for each parse are actually stored in different variables, so
+L<JSON::XS> will never be called with the wrong arguments, and neither will
+L<XML::Simple>.
+
 =item call
 
 The method which other submodules within WWW::Facebook::API use
 to call the Facebook REST interface. It takes in a hash signifying the method
 to be called (e.g., 'auth.getSession'), and key/value pairs for the parameters
 to use.
+
+=item generate_sig
+
+Generates a sig when given a parameters hash reference and a secret key.
+    $client->generate_sig( params => $params_hashref, secret => $secret );
+
+=item verify_sig
+
+Checks the signature for a given set of parameters against an expected
+signature value:
+    $client->verify_sig( params => $params_hashref, sig => expected_sig );
+
+=item session
+
+Sets the C<user>, C<session_key>, and C<session_expires> all at once.
+    $client->session(
+        uid     => $uid,
+        key     => $session_key,
+        expires => $session_expires,
+    );
+
+=item unescape_string
+
+Returns its parameter with all the escape sequences unescaped. If you're using
+a web app, this is done automatically to the response.
+    $client->unescape_string( $response );
 
 =item mech
 
