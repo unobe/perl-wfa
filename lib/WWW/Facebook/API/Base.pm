@@ -94,7 +94,13 @@ sub new {
 
     my $is_attribute = join '|', @attributes;
     delete $self->{$_} for grep !/^($is_attribute)$/, keys %$self;
-    $self->$_ for sort @attributes;
+
+    for (sort grep !/^parse_params$/, @attributes ) {
+        $self->$_;
+    }
+    if ( $self->{'parse_params'} ) {
+        $self->parse_params(delete $self->{'parse_params'});
+    }
 
     return $self;
 }
