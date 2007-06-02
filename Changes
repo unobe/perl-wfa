@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Fri Jun  1 22:58:33 PDT 2007
+HEAD   Fri Jun  1 23:18:29 PDT 2007
 	Added method to Base (and paramter to API->new) to configure options
 	  passed to XML or JSON parser (if used): parse_params
 	Added generate_sig, verify_sig, session, unescape_string to Base.pm
