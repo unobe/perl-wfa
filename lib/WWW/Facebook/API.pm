@@ -178,6 +178,10 @@ You only need ot call $client->auth->create_token if you're running a Desktop
 application. Otherwise, the token is created during the user's login, which is
 sent to your callback URL as a single parameter (auth_token).
 
+=item canvas
+
+See L<WWW::Facebook::API::Canvas>.
+
 =item login
 
 Not defined in the API, but useful for testing with your own account. Asks for
