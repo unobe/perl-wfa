@@ -23,7 +23,7 @@ our @namespaces = qw(
     Feed        FQL         Friends
     Groups      Login       Notifications
     Photos      Profile     Update
-    Users
+    Users       Canvas
 );
 
 my $create_attribute_code = sub {
