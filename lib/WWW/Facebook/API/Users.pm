@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.2.0');
+use version; our $VERSION = qv('0.2.2');
 
 sub base { return shift->{'base'}; }
 
@@ -39,7 +39,7 @@ WWW::Facebook::API::Users - Users methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.2.0
+This document describes WWW::Facebook::API::Users version 0.2.2
 
 
 =head1 SYNOPSIS

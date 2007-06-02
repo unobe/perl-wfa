@@ -10,7 +10,7 @@ use strict;
 use warnings;
 use Carp;
 
-use version; our $VERSION = qv('0.2.0');
+use version; our $VERSION = qv('0.2.2');
 
 our @attributes = qw(
     base
@@ -65,7 +65,7 @@ WWW::Facebook::API::Errors - Errors class for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Errors version 0.2.0
+This document describes WWW::Facebook::API::Errors version 0.2.2
 
 
 =head1 SYNOPSIS

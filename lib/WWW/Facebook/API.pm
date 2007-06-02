@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.2.1');
+use version; our $VERSION = qv('0.2.2');
 
 use base 'WWW::Facebook::API::Base';
 
@@ -71,7 +71,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.2.1
+This document describes WWW::Facebook::API version 0.2.2
 
 
 =head1 SYNOPSIS
@@ -337,7 +337,6 @@ WWW::Facebook::API requires no configuration files or environment variables.
 
 L<version>
 L<WWW::Mechanize>
-L<XML::Simple>
 L<Digest::MD5>
 L<Crypt::SSLeay>
 
