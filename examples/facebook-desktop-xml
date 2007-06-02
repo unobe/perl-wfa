@@ -19,6 +19,10 @@ $client->auth->get_session( auth_token => $token );
 
 # Dump XML data returned
 use Data::Dumper;
+$client->parse_params({ SuppressEmpty => 1, NoAttr => 1, ForceArray => 1 });
+my $res = $client->friends->get;
+print Dumper $res;
+exit;
 my @friends = @{ $client->friends->get->{friends_get_response}[0]{uid} };
 print Dumper $client->friends->are_friends(
     uids1 => [ @friends[ 0, 1, 2, 3 ] ],
