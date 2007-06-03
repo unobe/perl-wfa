@@ -39,11 +39,9 @@ __END__
 
 WWW::Facebook::API::Photos - Photos methods for Client
 
-
 =head1 VERSION
 
 This document describes WWW::Facebook::API::Photos version 0.3.1
-
 
 =head1 SYNOPSIS
 
@@ -92,7 +90,6 @@ The photos.upload method of the Facebook API.
 
 =back
 
-
 =head1 DIAGNOSTICS
 
 None.
@@ -102,16 +99,13 @@ None.
 WWW::Facebook::API::Photos requires no configuration files or
 environment variables.
 
-
 =head1 DEPENDENCIES
 
 See L<WWW::Facebook::API>
 
-
 =head1 INCOMPATIBILITIES
 
 None reported.
-
 
 =head1 BUGS AND LIMITATIONS
 
@@ -121,11 +115,9 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 David Romano  C<< <unobe@cpan.org> >>
-
 
 =head1 LICENSE AND COPYRIGHT
 
@@ -133,7 +125,6 @@ Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
-
 
 =head1 DISCLAIMER OF WARRANTY
 

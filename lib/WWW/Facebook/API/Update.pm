@@ -34,16 +34,13 @@ __END__
 
 WWW::Facebook::API::Update - Update methods for Client
 
-
 =head1 VERSION
 
 This document describes WWW::Facebook::API::Update version 0.3.1
 
-
 =head1 SYNOPSIS
 
     use WWW::Facebook::API;
-
 
 =head1 DESCRIPTION
 
@@ -73,22 +70,18 @@ The update.decodeIDs method of the Facebook API.
 This module is used by L<WWW::Facebook::API> and right now does
 not have any unique error messages.
 
-
 =head1 CONFIGURATION AND ENVIRONMENT
 
 WWW::Facebook::API::Update requires no configuration files or
 environment variables.
 
-
 =head1 DEPENDENCIES
 
 See L<WWW::Facebook::API>
 
-
 =head1 INCOMPATIBILITIES
 
 None reported.
-
 
 =head1 BUGS AND LIMITATIONS
 
@@ -98,11 +91,9 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 David Romano  C<< <unobe@cpan.org> >>
-
 
 =head1 LICENSE AND COPYRIGHT
 
@@ -110,7 +101,6 @@ Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
-
 
 =head1 DISCLAIMER OF WARRANTY
 

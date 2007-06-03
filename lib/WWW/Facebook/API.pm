@@ -280,11 +280,9 @@ __END__
 
 WWW::Facebook::API - Facebook API implementation
 
-
 =head1 VERSION
 
 This document describes WWW::Facebook::API version 0.3.1
-
 
 =head1 SYNOPSIS
 
@@ -720,7 +718,6 @@ structure, and returns the result.
 
 =back
 
-
 =head1 DIAGNOSTICS
 
 =over
@@ -753,7 +750,6 @@ Cannot create the needed attribute method. Contact the developer to report.
 WWW::Facebook::API requires no configuration files or
 environment variables.
 
-
 =head1 DEPENDENCIES
 
 L<version>
@@ -763,11 +759,9 @@ L<JSON::Any>
 L<Time::HiRes>
 L<WWW::Mechanize>
 
-
 =head1 INCOMPATIBILITIES
 
 None.
-
 
 =head1 BUGS AND LIMITATIONS
 
@@ -777,11 +771,9 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 David Romano  C<< <unobe@cpan.org> >>
-
 
 =head1 LICENSE AND COPYRIGHT
 
@@ -789,7 +781,6 @@ Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
-
 
 =head1 DISCLAIMER OF WARRANTY
 

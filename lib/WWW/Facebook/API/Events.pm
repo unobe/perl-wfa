@@ -35,11 +35,9 @@ __END__
 
 WWW::Facebook::API::Events - Events for Client
 
-
 =head1 VERSION
 
 This document describes WWW::Facebook::API::Events version 0.3.1
-
 
 =head1 SYNOPSIS
 
@@ -49,7 +47,6 @@ This document describes WWW::Facebook::API::Events version 0.3.1
 =head1 DESCRIPTION
 
 Methods for accessing events with L<WWW::Facebook::API>
-
 
 =head1 SUBROUTINES/METHODS 
 
@@ -74,28 +71,23 @@ The events.getMembers method of the Facebook API.
 
 =back
 
-
 =head1 DIAGNOSTICS
 
 This module is used by L<WWW::Facebook::API> and right now does
 not have any unique error messages.
-
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
 WWW::Facebook::API::Events requires no configuration files or
 environment variables.
 
-
 =head1 DEPENDENCIES
 
 See L<WWW::Facebook::API>
 
-
 =head1 INCOMPATIBILITIES
 
 None reported.
-
 
 =head1 BUGS AND LIMITATIONS
 
@@ -104,7 +96,6 @@ No bugs have been reported.
 Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
-
 
 =head1 AUTHOR
 
