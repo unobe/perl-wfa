@@ -293,39 +293,41 @@ This document describes WWW::Facebook::API version 0.3.0
     my $client = WWW::Facebook::API->new(
         desktop        => 1,
         throw_errors   => 1,
+        parse           => 1,
     );
     
-    # Session initialization
-    my $token = $client->auth->create_token;
+    print "Enter your public API key: ";
+    chomp( my $val = <STDIN> );
+    $client->api_key($val);
+    print "Enter your API secret: ";
+    chomp($val = <STDIN> );
+    $client->secret($val);
     
-    # prompts for login credentials from STDIN
-    $client->login->login($token);
-    $client->auth->get_session( auth_token => $token );
+    print "Enter your e-mail address: ";
+    chomp(my $email = <STDIN> );
+    $client->secret($val);
+    print "Enter your password: ";
+    chomp(my $pass = <STDIN> );
     
-    # Dump XML data returned
+    my $token = $client->auth->login( email => $email,  pass => $pass );
+    $client->auth->get_session( $token );
+    
     use Data::Dumper;
-    my @friends = @{ $client->friends->get->{'uid'} };
-    print Dumper $client->friends->are_friends(
-        uids1 => [ @friends[ 0, 1, 2, 3 ] ],
-        uids2 => [ @friends[ 4, 5, 6, 7 ] ],
+    my $friends_perl = $client->friends->get;
+    print Dumper $friends_perl;
+    
+    my $notifications_perl = $client->notifications->get;
+    print Dumper $notifications_perl;
+    
+    # Current user's quotes
+    my $quotes_perl = $client->users->get_info(
+        uids   => $friends_perl,
+        fields => ['quotes']
     );
-    
-    my $unread_pokes = $client->notifications->get->{'pokes'}{'unread'};
-    print "You have $unread_pokes unread poke(s).";
-    
-    my @users =
-        @{ $client->users->get_info( uids => \@friends, fields => ['quotes'])->{'user'} };
-    print "Number of friends:" . @users . "\n";
-    
-    # Get number of quotes by derefrencing, and then removing the null items (hash
-    # refs)
-    my @quotes = grep !ref, map { $_->{'quotes'} } @users;
-    print "Number of quotes: " . @quotes . "\n";
-    print "Random quote: " . $quotes[ int rand @quotes ] . "\n";
+    print Dumper $quotes_perl;
     
     $client->auth->logout;
- 
-
+    
 =head1 DESCRIPTION
     
 A Perl implementation of the Facebook API, working off of the canonical Java
@@ -341,6 +343,7 @@ in either XML or JSON (See the C<parse> method below).
 
 Returns a new instance of this class. You are able to pass in any of the
 attribute method names in L<WWW::Facebook::API> to set its value:
+
     my $client = WWW::Facebook::API->new(
         parse           => 1,
         format          => 'JSON',
@@ -377,6 +380,7 @@ true and C<$token> isn't passed in, the return value from
 $client->auth->create_token will be used. If the desktop attribute is set to
 false and C<$token> isn't passed in, the return value from $client->secret
 will be used:
+
     $client->auth->get_session;
 
 =item canvas
@@ -387,6 +391,7 @@ See L<WWW::Facebook::API::Canvas>.
 
 events namespace of the API (See L<WWW::Facebook::API::Events>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->events->get( uid => 234233, eids => [23,2343,54545] );
     $response = $client->events->get_members( eid => 233 );
 
@@ -394,6 +399,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 fbml namespace of the API (See L<WWW::Facebook::API::FBML>):
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->fbml->set_ref_handle;
     $response = $client->fbml->refresh_img_src;
     $response = $client->fbml->refresh_ref_url;
@@ -401,6 +407,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 =item fql
 
 fql namespace of the API (See L<WWW::Facebook::API::FQL>):
+
     $response = $client->fql->query( query => 'FQL query' );
 
 
@@ -408,6 +415,7 @@ fql namespace of the API (See L<WWW::Facebook::API::FQL>):
 
 feed namespace of the API (See L<WWW::Facebook::API::Feed>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response 
         = $client->feed->publish_story_to_user(
             title   => 'title',
@@ -427,6 +435,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 friends namespace of the API (See L<WWW::Facebook::API::Friends>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->friends->get;
     $response = $client->friends->get_app_users;
     $response
@@ -436,6 +445,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 groups namespace of the API (See L<WWW::Facebook::API::Groups>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->groups->get_members( gid => 32 );
     $response    = $client->groups->get( uid => 234324, gids => [2423,334] );
 
@@ -443,6 +453,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 notifications namespace of the API (See L<WWW::Facebook::API::Notifications>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->notifications->get;
     $response = $client->notifications->send(
         to_ids => [1],
@@ -461,6 +472,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 photos namespace of the API (See L<WWW::Facebook::API::Photos>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response
         = $client->photos->add_tag(
             pid => 2,
@@ -487,6 +499,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 profile namespace of the API (See L<WWW::Facebook::API::Profile>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->profile->get_fbml( uid => 3 );
     $response = $client->profile->set_fbml( uid => 5, markup => 'markup' );
 
@@ -494,12 +507,14 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 update namespace of the API (See L<WWW::Facebook::API::Update>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->update->decode_ids( ids => [5,4,3] );
 
 =item users
 
 users namespace of the API (See L<WWW::Facebook::API::Users>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
+
     $response = $client->users->get_info(
         uids => [12,453,67],
         fields => ['quotes','activities','books']
@@ -523,14 +538,14 @@ Which version to use (default is "1.0", which is the only one supported
 currently. Corresponds to the argument C<v> that is passed in to methods as a
 parameter.
 
-=item apps_uri
-
-The apps uri for Facebook apps. The default is http://apps.facebook.com/.
-
 =item app_path
 
 If using the Facebook canvas, the path to your application. For example if your
 application is at http://apps.facebook.com/example/ this should be C<"example">.
+
+=item apps_uri
+
+The apps uri for Facebook apps. The default is http://apps.facebook.com/.
 
 =item callback
 
