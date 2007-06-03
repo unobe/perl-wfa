@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.0');
+use version; our $VERSION = qv('0.3.1');
 
 sub base { return shift->{'base'}; }
 
@@ -28,8 +28,7 @@ sub new {
 sub create_token {
     my $self = shift;
     my $token;
-    my $orig_format = $self->base->format;
-    my $orig_parse  = $self->base->parse; 
+    my ( $format, $parse ) = ( $self->base->format, $self->base->parse );
 
     $self->base->format('JSON');
     $self->base->parse(0);
@@ -37,11 +36,11 @@ sub create_token {
     $token = $self->base->call( 'auth.createToken', @_ );
     $token =~ s/\W//g;
 
-    $self->base->format($orig_format);
-    $self->base->parse($orig_parse);
+    $self->base->format($format);
+    $self->base->parse($parse);
 
     return $token;
-}
+} 
 
 sub get_session {
     my $self = shift;
@@ -49,22 +48,22 @@ sub get_session {
     my $token = shift;
     if ( $self->base->desktop ) {
         $token ||= $self->base->create_token;
-        $self->base->server_uri( _make_secure( $self->base->server_uri ) );
+        (my $uri_https = $self->base->server_uri) =~ s{http://}{https://}mx;
+        $self->base->server_uri( $uri_https );
     }
     else {
         $token ||= $self->base->secret;
     }
 
-    my $orig_format = $self->base->format;
-    my $orig_parse  = $self->base->parse; 
+    my ( $format, $parse ) = ( $self->base->format, $self->base->parse );
 
     $self->base->format('JSON');
     $self->base->parse(0);
 
     my $response = $self->base->call( 'auth.getSession', auth_token => $token );
 
-    $self->base->format($orig_format);
-    $self->base->parse($orig_parse);
+    $self->base->format($format);
+    $self->base->parse($parse);
 
     my %field = qw(
         session_key     session_key
@@ -74,7 +73,8 @@ sub get_session {
 
     if ( $self->base->desktop ) {
         $field{'secret'} = 'secret';
-        $self->base->server_uri( _make_unsecure( $self->base->server_uri ) );
+        (my $uri_http = $self->base->server_uri) =~ s{https://}{http://}mx;
+        $self->base->server_uri( $uri_http );
     }
 
     while ( my ( $key, $val ) = each %field ) {
@@ -118,7 +118,11 @@ sub login {
         $token = ( $self->base->mech->uri =~ /auth_token=(.+)$/ )[0]
     }
     elsif ( $self->base->mech->content !~ m{Logout</a>}mix ) {
-        confess "Unable to login to Facebook using WWW::Mechanize\n";
+        my $error = "Unable to login to Facebook using WWW::Mechanize";
+        $errors .= ': '.$self->base->mech->content if $self->base->debug;
+
+        confess $error if $self->base->throw_errors;
+        carp $error;
     }
 
     $self->base->mech->agent($agent);
@@ -131,18 +135,6 @@ sub logout {
         { confirm => 1 } );
 }
 
-sub _make_secure {
-    my $uri = shift;
-    $uri =~ s{http://}{https://}mx;
-    return $uri;
-}
-
-sub _make_unsecure {
-    my $uri = shift;
-    $uri =~ s{https://}{http://}mx;
-    return $uri;
-}
-
 1;
 __END__
 
@@ -153,7 +145,7 @@ WWW::Facebook::API::Auth - Authentication utilities for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.3.0
+This document describes WWW::Facebook::API::Auth version 0.3.1
 
 
 =head1 SYNOPSIS
@@ -207,25 +199,12 @@ http://developers.facebook.com/documentation.php?v=1.0&doc=auth )
 =back
 
 
-=head1 INTERNAL FUNCTIONS
-
-=over
-
-=item _make_secure
-
-Changes the server_uri to https for C<get_session>.
-
-=item _make_unsecure
-
-Changes the server_uri back to http at the end of C<get_session>.
-
-=back
-
-
 =head1 DIAGNOSTICS
 
-None.
+=item C< Unable to login to Facebook using WWW::Mechanize: %s >
 
+The login() method was not able to sign in to Facebook using WWW::Mechanize.
+The HTML for the page that was retrieve is returned if in debugging mode.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

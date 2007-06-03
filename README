@@ -1,27 +1,453 @@
-WWW-Facebook-API version 0.3.0
+NAME
+    WWW::Facebook::API - Facebook API implementation
 
-INSTALLATION
+VERSION
+    This document describes WWW::Facebook::API version 0.3.1
 
-To install this module, run the following commands:
+SYNOPSIS
+        use WWW::Facebook::API;
 
-    perl Makefile.PL
-    make
-    make test
-    make install
+        my $client = WWW::Facebook::API->new(
+            desktop        => 1,
+            throw_errors   => 1,
+            parse           => 1,
+        );
+    
+        print "Enter your public API key: ";
+        chomp( my $val = <STDIN> );
+        $client->api_key($val);
+        print "Enter your API secret: ";
+        chomp($val = <STDIN> );
+        $client->secret($val);
+    
+        print "Enter your e-mail address: ";
+        chomp(my $email = <STDIN> );
+        $client->secret($val);
+        print "Enter your password: ";
+        chomp(my $pass = <STDIN> );
+    
+        my $token = $client->auth->login( email => $email,  pass => $pass );
+        $client->auth->get_session( $token );
+    
+        use Data::Dumper;
+        my $friends_perl = $client->friends->get;
+        print Dumper $friends_perl;
+    
+        my $notifications_perl = $client->notifications->get;
+        print Dumper $notifications_perl;
+    
+        # Current user's quotes
+        my $quotes_perl = $client->users->get_info(
+            uids   => $friends_perl,
+            fields => ['quotes']
+        );
+        print Dumper $quotes_perl;
+    
+        $client->auth->logout;
+    
+DESCRIPTION
+    A Perl implementation of the Facebook API, working off of the canonical
+    Java and PHP implementations. By default it uses JSON::Any to parse the
+    response returned by Facebook's server. There is an option to return the
+    raw response in either XML or JSON (See the "parse" method below).
 
+SUBROUTINES/METHODS
+    new Returns a new instance of this class. You are able to pass in any of
+        the attribute method names in WWW::Facebook::API to set its value:
+
+            my $client = WWW::Facebook::API->new(
+                parse           => 1,
+                format          => 'JSON',
+                secret          => 'application_secret_key',
+                api_key         => 'application_key',
+                session_key     => 'session_key',
+                session_expires => 'session_expires',
+                session_uid     => 'session_uid',
+                desktop         => 1,
+                api_version     => '1.0',
+                callback        => 'callback_url',
+                next            => 'next',
+                popup           => 'popup',
+                skipcookie      => 'skip_cookie',
+            );
+            $copy = $client->new;
+
+NAMESPACE METHODS
+    All method names from the Facebook API are lower_cased instead of
+    CamelCase.
+
+    auth
+            my $token = $client->auth->create_token;
+            $client->auth->get_session( $token );
+
+        You only really need to call $client->auth->get_session. See
+        WWW::Facebook::API::Auth. If you have the desktop attribute set to
+        true and $token isn't passed in, the return value from
+        $client->auth->create_token will be used. If the desktop attribute
+        is set to false and $token isn't passed in, the return value from
+        $client->secret will be used:
+
+            $client->auth->get_session;
+
+    canvas
+        See WWW::Facebook::API::Canvas.
+
+    events
+        events namespace of the API (See WWW::Facebook::API::Events). All
+        method names from the Facebook API are lower_cased instead of
+        CamelCase:
+
+            $response = $client->events->get( uid => 234233, eids => [23,2343,54545] );
+            $response = $client->events->get_members( eid => 233 );
+
+    fbml
+        fbml namespace of the API (See WWW::Facebook::API::FBML): All method
+        names from the Facebook API are lower_cased instead of CamelCase:
+
+            $response = $client->fbml->set_ref_handle;
+            $response = $client->fbml->refresh_img_src;
+            $response = $client->fbml->refresh_ref_url;
+
+    fql fql namespace of the API (See WWW::Facebook::API::FQL):
+
+            $response = $client->fql->query( query => 'FQL query' );
+
+    feed
+        feed namespace of the API (See WWW::Facebook::API::Feed). All method
+        names from the Facebook API are lower_cased instead of CamelCase:
+
+            $response 
+                = $client->feed->publish_story_to_user(
+                    title   => 'title',
+                    body    => 'body',
+                    priority => 5,
+                    ...
+            );
+            $response 
+                = $client->feed->publish_action_of_user(
+                    title   => 'title',
+                    body    => 'body',
+                    priority => 7,
+                    ...
+            );
+
+    friends
+        friends namespace of the API (See WWW::Facebook::API::Friends). All
+        method names from the Facebook API are lower_cased instead of
+        CamelCase:
+
+            $response = $client->friends->get;
+            $response = $client->friends->get_app_users;
+            $response
+                = $client->friends->are_friends( uids => [1,5,7,8], uids2 => [2,3,4]);
+
+    groups
+        groups namespace of the API (See WWW::Facebook::API::Groups). All
+        method names from the Facebook API are lower_cased instead of
+        CamelCase:
+
+            $response = $client->groups->get_members( gid => 32 );
+            $response    = $client->groups->get( uid => 234324, gids => [2423,334] );
+
+    notifications
+        notifications namespace of the API (See
+        WWW::Facebook::API::Notifications). All method names from the
+        Facebook API are lower_cased instead of CamelCase:
+
+            $response = $client->notifications->get;
+            $response = $client->notifications->send(
+                to_ids => [1],
+                markup => 'markup',
+                no_email => 1,
+            );
+            $response = $client->notifications->send_request(
+                to_ids => [1],
+                type => 'event',
+                content => 'markup',
+                image   => 'string',
+                invite  => 0,
+            );
+
+    photos
+        photos namespace of the API (See WWW::Facebook::API::Photos). All
+        method names from the Facebook API are lower_cased instead of
+        CamelCase:
+
+            $response
+                = $client->photos->add_tag(
+                    pid => 2,
+                    tag_uid => 3,
+                    tag_text => "me",
+                    x => 5,
+                    y => 6
+                );
+            $response = $client->photos->create_album(
+                    name => 'fun in the sun',
+                    location => 'California',
+                    description => "Summer '07",
+            );
+            $response = $client->photos->get( aid => 2, pids => [4,7,8] );
+            $response = $client->photos->get_albums( uid => 1, pids => [3,5] );
+            $response = $client->photos->get_tags( pids => [4,5] );
+            $response = $client->photos->upload(
+                aid => 5,
+                caption => 'beach',
+                data => 'raw data',
+            );
+
+    profile
+        profile namespace of the API (See WWW::Facebook::API::Profile). All
+        method names from the Facebook API are lower_cased instead of
+        CamelCase:
+
+            $response = $client->profile->get_fbml( uid => 3 );
+            $response = $client->profile->set_fbml( uid => 5, markup => 'markup' );
+
+    update
+        update namespace of the API (See WWW::Facebook::API::Update). All
+        method names from the Facebook API are lower_cased instead of
+        CamelCase:
+
+            $response = $client->update->decode_ids( ids => [5,4,3] );
+
+    users
+        users namespace of the API (See WWW::Facebook::API::Users). All
+        method names from the Facebook API are lower_cased instead of
+        CamelCase:
+
+            $response = $client->users->get_info(
+                uids => [12,453,67],
+                fields => ['quotes','activities','books']
+            );
+
+ATTRIBUTE METHODS
+    These are methods to get/set the object's attributes.
+
+    api_key
+        The developer's API key. See the Facebook API documentation.
+
+    api_version
+        Which version to use (default is "1.0", which is the only one
+        supported currently. Corresponds to the argument "v" that is passed
+        in to methods as a parameter.
+
+    app_path
+        If using the Facebook canvas, the path to your application. For
+        example if your application is at http://apps.facebook.com/example/
+        this should be "example".
+
+    apps_uri
+        The apps uri for Facebook apps. The default is
+        http://apps.facebook.com/.
+
+    callback
+        The callback URL for your application. See the Facebook API
+        documentation. Just a convenient place holder for the value.
+
+    debug
+        A boolean set to either true or false, determining if debugging
+        messages should be carped for REST calls.
+
+    desktop
+        A boolean signifying if the client is being used for a desktop
+        application. See the Facebook API documentation.
+
+    format('JSON'|'XML')
+        The default format to use if none is supplied with an API method
+        call. Currently available options are XML and JSON. Defaults to
+        JSON.
+
+    last_call_success
+        A boolean. True if the last call was a success, false otherwise.
+
+    last_error
+        A string holding the error message of the last failed call to the
+        REST server.
+
+    mech
+        The WWW::Mechanize agent used to communicate with the REST server.
+        The agent_alias is set initially set to
+        "Perl-WWW-Facebook-API/0.3.1".
+
+    next
+        See the Facebook API documentation. Just a convenient place holder
+        for the value.
+
+    parse(1|0)
+        Defaults to 1. If set to true, the response returned by each method
+        call will be a Perl structure (see each method for the structure it
+        will return). If it is set to 0, the response string from the server
+        will be returned. (The response string is unescaped if the 'desktop'
+        attribute is false).
+
+    popup
+        See the Facebook API documentation. Just a convenient place holder
+        for the value.
+
+    secret
+        For a desktop application, this is the secret that is used for
+        calling "auth-"create_token> and "auth-"get_session>. See the
+        Facebook API documentation under Authentication.
+
+    server_uri
+        The server uri to access the Facebook REST server. Default is
+        'http://api.facebook.com/restserver.php'. See the Facebook API
+        documentation.
+
+    session_expires
+        The session expire timestamp for the client's user. See the Facebook
+        API documentation.
+
+    session_key
+        The session key for the client's user. See the Facebook API
+        documentation.
+
+    session_uid
+        The session's uid for the client's user. See the Facebook API
+        documentation.
+
+    skipcookie
+        See the Facebook API documentation. Just a convenient place holder
+        for the value.
+
+    throw_errors
+        A boolean set to either true of false, signifying whether or not
+        log_error should confess when an error is returned from the REST
+        server.
+
+PUBLIC METHODS
+    call( $method, %args )
+        The method which other submodules within WWW::Facebook::API use to
+        call the Facebook REST interface. It takes in a string signifying
+        the method to be called (e.g., 'auth.getSession'), and key/value
+        pairs for the parameters to use: $client->call( 'auth.getSession',
+        auth_token => 'b3324235e' );
+
+    generate_sig( params => $params_hashref, secret => $secret )
+        Generates a sig when given a parameters hash reference and a secret
+        key.
+
+    get_facebook_url
+        Returns the URL to Facebook. You can specifiy a specific network as
+        a parameter.
+
+    get_add_url( %params)
+        Returns the URL to add your application with the parameters (that
+        are defined) included. If the "next" parameter is passed in, it's
+        escaped. Used for platform applications.
+
+    get_login_url( %params )
+        Returns the URL to login to your application with the parameters
+        (that are defined) included. If the "next" parameter is passed in,
+        it's escaped.
+
+    get_app_url
+        Returns the URL to your application, if using the Facebook canvas.
+
+    log_string($params_hashref, $response)
+        Pass in the params and the response from a call, and it will make a
+        formatted string out of it showing the parameters used, and the
+        response received.
+
+    session( uid => $uid, key => $session_key, expires => $session_expires )
+        Sets the "user", "session_key", and "session_expires" all at once.
+
+    unescape_string($escaped_string)
+        Returns its parameter with all the escape sequences unescaped. If
+        you're using a web app, this is done automatically to the response.
+
+    verify_sig( params => $params_hashref, sig => expected_sig )
+        Checks the signature for a given set of parameters against an
+        expected value.
+
+PRIVATE METHODS
+    _add_url_params( %params )
+        Called by both "get_login_url" and "get_add_url" to process any of
+        their parameters. Prepends the api_key and the version number as
+        parameters and returns the parameter string.
+
+    _check_values_of($params_hashref)
+        Makes sure all the values of the $params_hashref that need to be set
+        are set. Uses the defaults for those values that are needed and not
+        supplied.
+
+    _format_params($params_hashref)
+        Format parameters according to Facebook API spec.
+
+    _post_request( $params_hashref, $secret )
+        Used by "call" to post the request to the REST server and return the
+        response.
+
+    _parse($string)
+        Parses the response from a call to the Facebook server to make it a
+        Perl data structure, and returns the result.
+
+DIAGNOSTICS
+    " Unable to load JSON module for parsing: %s "
+        JSON::Any was not able to load one of the JSON modules it uses to
+        parse JSON. Please make sure you have one (of the several) JSON
+        modules it can use installed.
+
+    " Error during REST call: %s "
+        This means that there's most likely an error in the server you are
+        using to communicate to the Facebook REST server. Look at the
+        traceback to determine why an error was thrown. Double-check that
+        "server_uri" is set to the right location.
+
+    " Cannot create subclass %s: %s "
+        Cannot create the needed subclass method. Contact the developer to
+        report.
+
+    " Cannot create attribute %s: %s "
+        Cannot create the needed attribute method. Contact the developer to
+        report.
+
+CONFIGURATION AND ENVIRONMENT
+    WWW::Facebook::API requires no configuration files or environment
+    variables.
 
 DEPENDENCIES
+    version Crypt::SSLeay Digest::MD5 JSON::Any Time::HiRes WWW::Mechanize
 
-version
-Crypt::SSLeay
-Digest::MD5
-JSON::Any
-Time::HiRes
-WWW::Mechanize
+INCOMPATIBILITIES
+    None.
 
-COPYRIGHT AND LICENSE
+BUGS AND LIMITATIONS
+    No bugs have been reported.
 
-Copyright (C) 2007, David Romano
+    Please report any bugs or feature requests to
+    "bug-www-facebook-api@rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org>.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+AUTHOR
+    David Romano "<unobe@cpan.org>"
+
+LICENSE AND COPYRIGHT
+    Copyright (c) 2007, David Romano "<unobe@cpan.org>". All rights
+    reserved.
+
+    This module is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself. See perlartistic.
+
+DISCLAIMER OF WARRANTY
+    BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+    FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+    OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+    PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+    EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+    ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+    YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+    NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+    IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+    REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENSE, BE LIABLE
+    TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, OR
+    CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE
+    SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+    RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+    FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+    SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGES.
+

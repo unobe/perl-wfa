@@ -1,5 +1,11 @@
 Revision history for WWW-Facebook-API
 
+0.3.1  Sun Jun  3 13:46:03 PDT 2007
+	Fixed POD formatting and synopsis example
+	Updated docs for diagnostics messages
+	Removed internal methods in Auth.pm
+	README now has doc for API.pm
+
 0.3.0  Sun Jun  3 01:16:18 PDT 2007
 	*** API changes ***
 	JSON::Any is used by default, and parse is on by default, so

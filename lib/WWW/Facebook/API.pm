@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.0');
+use version; our $VERSION = qv('0.3.1');
 
 use WWW::Mechanize;
 use Time::HiRes qw(time);
@@ -283,7 +283,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.3.0
+This document describes WWW::Facebook::API version 0.3.1
 
 
 =head1 SYNOPSIS
@@ -555,7 +555,7 @@ Just a convenient place holder for the value.
 =item debug
 
 A boolean set to either true or false, determining if debugging messages
-should be carped to STDERR for REST calls.
+should be carped for REST calls.
 
 =item desktop
 
@@ -578,7 +578,7 @@ A string holding the error message of the last failed call to the REST server.
 =item mech
 
 The L<WWW::Mechanize> agent used to communicate with the REST server.
-The agent_alias is set initially set to "Perl-WWW-Facebook-API/0.3.0".
+The agent_alias is set initially set to "Perl-WWW-Facebook-API/0.3.1".
 
 =item next
 
@@ -630,7 +630,7 @@ value.
 =item throw_errors
 
 A boolean set to either true of false, signifying whether or not log_error
-should carp when an error is returned from the REST server.
+should confess when an error is returned from the REST server.
 
 =back
 
@@ -725,7 +725,7 @@ structure, and returns the result.
 
 =over
 
-=item C< Unable to load %s module for parsing >
+=item C< Unable to load JSON module for parsing: %s >
 
 L<JSON::Any> was not able to load one of the JSON modules it uses to parse
 JSON. Please make sure you have one (of the several) JSON modules it can use
@@ -737,6 +737,14 @@ This means that there's most likely an error in the server you are using to
 communicate to the Facebook REST server. Look at the traceback to determine
 why an error was thrown. Double-check that C<server_uri> is set to the right
 location.
+
+=item C< Cannot create subclass %s: %s >
+
+Cannot create the needed subclass method. Contact the developer to report.
+
+=item C< Cannot create attribute %s: %s >
+
+Cannot create the needed attribute method. Contact the developer to report.
 
 =back
 

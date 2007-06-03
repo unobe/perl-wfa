@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.0');
+use version; our $VERSION = qv('0.3.1');
 
 sub base { return shift->{'base'}; }
 
@@ -71,7 +71,7 @@ WWW::Facebook::API::Canvas - Facebook canvas related methods
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Canvas version 0.3.0
+This document describes WWW::Facebook::API::Canvas version 0.3.1
 
 
 =head1 SYNOPSIS
