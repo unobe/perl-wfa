@@ -10,7 +10,8 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.2.3');
+use version; our $VERSION = qv('0.3.0');
+>>>>>>> .merge-right.r78
 
 sub base { return shift->{'base'}; }
 
@@ -43,7 +44,7 @@ WWW::Facebook::API::Feed - Feed methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Feed version 0.2.3
+This document describes WWW::Facebook::API::Feed version 0.3.0
 
 
 =head1 SYNOPSIS

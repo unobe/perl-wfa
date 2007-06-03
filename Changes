@@ -1,5 +1,36 @@
 Revision history for WWW-Facebook-API
 
+0.3.0  Sun Jun  3 01:16:18 PDT 2007
+	*** API changes ***
+	JSON::Any is used by default, and parse is on by default, so
+	  a Perl data structure will be returned
+	The JSON or XML response is still returned if parse is set to 0
+	Removed the (now unneeded) parse variables.
+	Removed API::Base, API::Simple, API::Errors
+	Removed Login.pm and moved its login method to Auth.pm
+	Changed get_add_url and get_login_url to take in a hash. Those, along
+	  with auth->login now use the _add_url_params method.
+	Added some API tests
+	Updated examples/facebook-{desktop,web}-json to reflect new API
+	Added examples/facebook-{desktop,web}-raw to show XML output on calls
+	Removed examples/facebook-{desktop,web}-xml
+	Updated examples/facebook-canvas-xml and renamed to facebook-canvas-json
+	Fixed bug in get_session parsing
+	Fixed POD errors in API.pm
+	Tests: updated t/auth.t and and t/00.load.t; removed t/api_simple.t
+
+Branch Sat Jun  2 01:40:44 PDT 2007
+	simple is now the default. { NoAttr => 1, SuppressEmpty => 1}
+	  is default parse_params for XML
+	Updated docs
+	Updated examples
+	Updated Auth.pm and Base.pm to account for simple change
+	Removed now defunct WWW::Facebook::API::Simple
+	Applied David Leadbeater's patch
+	  fixes generat_sig and verify_sig in Base.pm
+	  adds get_facebook_url, get_add_url, get_login_url, get_app_url
+	  added canvas example
+
 0.2.3  Sat Jun  2 01:59:54 PDT 2007
 	Add XML::Simple dependency until streamline is complete
 

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.2.3');
+use version; our $VERSION = qv('0.3.0');
 
 sub base { return shift->{'base'}; }
 
@@ -27,21 +27,44 @@ sub new {
 
 sub create_token {
     my $self = shift;
-    my $token = $self->base->call( 'auth.createToken', @_ );
-    $token =~ s/\W//g if $self->base->format eq 'JSON';
+    my $token;
+    my $orig_format = $self->base->format;
+    my $orig_parse  = $self->base->parse; 
+
+    $self->base->format('JSON');
+    $self->base->parse(0);
+
+    $token = $self->base->call( 'auth.createToken', @_ );
+    $token =~ s/\W//g;
+
+    $self->base->format($orig_format);
+    $self->base->parse($orig_parse);
+
     return $token;
 }
 
 sub get_session {
     my $self = shift;
 
+    my $token = shift;
     if ( $self->base->desktop ) {
-
-        # swap to using https for the sake of getting the session secret
+        $token ||= $self->base->create_token;
         $self->base->server_uri( _make_secure( $self->base->server_uri ) );
     }
+    else {
+        $token ||= $self->base->secret;
+    }
 
-    my $response = $self->base->call( 'auth.getSession', @_ );
+    my $orig_format = $self->base->format;
+    my $orig_parse  = $self->base->parse; 
+
+    $self->base->format('JSON');
+    $self->base->parse(0);
+
+    my $response = $self->base->call( 'auth.getSession', auth_token => $token );
+
+    $self->base->format($orig_format);
+    $self->base->parse($orig_parse);
 
     my %field = qw(
         session_key     session_key
@@ -54,24 +77,52 @@ sub get_session {
         $self->base->server_uri( _make_unsecure( $self->base->server_uri ) );
     }
 
-    if ( $self->base->format eq 'XML' ) {
-
-        my $value =
-              $self->base->simple
-            ? $response
-            : $response->{auth_getSession_response}[0];
-
-        while ( my ( $key, $val ) = each %field ) {
-            $self->base->$val( $value->{$key}[0] );
-        }
+    while ( my ( $key, $val ) = each %field ) {
+        $response =~ /$key"\W+([\w-]+)/;
+        carp "Setting $key to $1" if $self->base->debug;
+        $self->base->$val($1);
     }
-    else {    # JSON
-        while ( my ( $key, $val ) = each %field ) {
-            $response =~ /$key"\W+([\w-]+)/g;
-            $self->base->$val($1);
-        }
+
+    return;
+}
+
+
+sub login {
+    my ( $self, %args ) = @_;
+    my $token = $self->base->secret;
+
+    my $url = $self->base->get_login_url;
+
+    if ( $self->base->desktop ) {
+        $token = $self->create_token;
+        $url   = $self->base->get_login_url( auth_token => $token );
     }
-    return $response;
+
+    my $agent = $self->base->mech->agent_alias('Mac Mozilla');
+    $self->base->mech->get( $url );
+
+    confess 'No form to submit!' unless $self->base->mech->forms;
+
+    $self->base->mech->submit_form(
+        form_number => 1,
+        fields      => {
+            email => $args{'email'},
+            pass  => $args{'pass'},
+        },
+        button => 'login',
+    );
+
+    carp $self->base->mech->content if $self->base->debug;
+
+    if ( not $self->base->desktop ) {
+        $token = ( $self->base->mech->uri =~ /auth_token=(.+)$/ )[0]
+    }
+    elsif ( $self->base->mech->content !~ m{Logout</a>}mix ) {
+        confess "Unable to login to Facebook using WWW::Mechanize\n";
+    }
+
+    $self->base->mech->agent($agent);
+    return $token;
 }
 
 sub logout {
@@ -102,7 +153,7 @@ WWW::Facebook::API::Auth - Authentication utilities for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.2.3
+This document describes WWW::Facebook::API::Auth version 0.3.0
 
 
 =head1 SYNOPSIS
@@ -114,27 +165,40 @@ This document describes WWW::Facebook::API::Auth version 0.2.3
 
 Methods for accessing auth with L<WWW::Facebook::API>
 
-=head1 SUBROUTINES/METHODS 
+=head1 METHODS 
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=item base()
 
-The L<WWW::Facebook::API::Base> object to use to access settings.
+The L<WWW::Facebook::API> object that the current object is attached to. (Used
+to access settings.)
 
-=item create_token
+=item create_token()
 
-auth.createToken of the Facebook API.
+auth.createToken of the Facebook API. Will always return the token string,
+regardles of the 'parse' setting in L<WWW::Facebook::API>.
 
-=item get_session
+=item get_session( $auth_token )
 
-auth.getSession of the Facebook API.
+auth.getSession of the Facebook API. If you have a desktop app,
+C<create_token> will be called if C<$auth_token> isn't passed in. If you have
+a web app, the C<secret> in L<WWW::Facebook::API> will be used if
+C<$auth_token> isn't passed in. Either way, it automatically sets
+C<session_uid> C<session_key> and C<session_expires>. Nothing is returned.
 
-=item logout
+=item login( user => $username, pass => $password )
+
+Not part of the official Facebook API. Logs in to Facebook using
+L<WWW::Mechanize>. The 'user' and 'pass' parameters must be supplied. If you
+have a desktop app, C<create_token> will automatically be called. Returns the
+session token.
+
+=item logout()
 
 Sends a POST to http://www.facebook.com/logout.php, with the parameter
 "confirm" set to 1 (Cf.
@@ -143,14 +207,9 @@ http://developers.facebook.com/documentation.php?v=1.0&doc=auth )
 =back
 
 
-=head1 INTERNAL METHODS AND FUNCTIONS
+=head1 INTERNAL FUNCTIONS
 
 =over
-
-=item base
-
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
 
 =item _make_secure
 

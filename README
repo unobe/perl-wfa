@@ -1,4 +1,4 @@
-WWW-Facebook-API version 0.2.3
+WWW-Facebook-API version 0.3.0
 
 INSTALLATION
 
@@ -13,10 +13,11 @@ To install this module, run the following commands:
 DEPENDENCIES
 
 version
-WWW::Mechanize
-Digest::MD5
-Time::HiRes
 Crypt::SSLeay
+Digest::MD5
+JSON::Any
+Time::HiRes
+WWW::Mechanize
 
 COPYRIGHT AND LICENSE
 

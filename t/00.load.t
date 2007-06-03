@@ -4,13 +4,10 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 18;
+use Test::More tests => 14;
 
 BEGIN {
-    use_ok( 'WWW::Facebook::API::Errors' );
-    use_ok( 'WWW::Facebook::API::Base' );
     use_ok( 'WWW::Facebook::API' );
-    use_ok( 'WWW::Facebook::API::Simple' );
 
     for (@WWW::Facebook::API::namespaces) {
         use_ok( "WWW::Facebook::API::$_" );

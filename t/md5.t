@@ -4,28 +4,35 @@
 # $Author: unobe $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 2;
+use Test::More tests => 3;
 use strict;
 use warnings;
 
-BEGIN { use_ok('WWW::Facebook::API::Base'); }
+BEGIN { use_ok('WWW::Facebook::API'); }
 
 chdir 't' if -d 't';
 
 my %params = (
-    v           =>  '1.0',
-    session_key =>  'f849e13d7c31bd1815eab65a-3309787',
-	call_id     =>   1180528987.70698,
-    api_key     =>  'an amazing summer is awaiting',
-    format      =>  'XML',
-    method      =>  'facebook.profile.setFBML',
+    v           => '1.0',
+    session_key => 'f849e13d7c31bd1815eab65a-3309787',
+    call_id     => 1180528987.70698,
+    api_key     => 'an amazing summer is awaiting',
+    format      => 'XML',
+    method      => 'facebook.profile.setFBML',
 );
-my $sig     = 'f73d589a6f305f914b0086654f0b7f43';
-my $secret  = 'garden';
+my $sig    = 'f73d589a6f305f914b0086654f0b7f43';
+my $secret = 'garden';
 $params{'markup'} = join '', <DATA>;
+my $api = WWW::Facebook::API->new;
 
-is  WWW::Facebook::API::Base::_create_sig_for( \%params, $secret ), $sig,
-    'signature generation okay';
+is $api->generate_sig(
+    params => \%params,
+    secret => $secret
+    ),
+    $sig, 'signature generation okay';
+
+$api->secret($secret);
+is $api->verify_sig( params => \%params, sig => $sig ), 1, 'verify_sig ok';
 
 __DATA__
 <h3>Friends With Shared Interests</h3>

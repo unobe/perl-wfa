@@ -6,7 +6,8 @@ use WWW::Facebook::API;
 my $client = WWW::Facebook::API->new(
     desktop        => 1,
     throw_errors   => 1,
-    parse           => 1,
+    parse          => 0,
+    format         => 'XML',
 );
 
 print "Enter your public API key: ";
@@ -26,17 +27,17 @@ my $token = $client->auth->login( email => $email,  pass => $pass );
 $client->auth->get_session( $token );
 
 use Data::Dumper;
-my $friends_perl = $client->friends->get;
-print Dumper $friends_perl;
+my $friends_xml = $client->friends->get;
+print Dumper $friends_xml;
 
-my $notifications_perl = $client->notifications->get;
-print Dumper $notifications_perl;
+my $notifications_xml = $client->notifications->get;
+print Dumper $notifications_xml;
 
 # Current user's quotes
-my $quotes_perl = $client->users->get_info(
-    uids   => $friends_perl,
+my $quotes_xml = $client->users->get_info(
+    uids   => [ $client->session_uid ],
     fields => ['quotes']
 );
-print Dumper $quotes_perl;
+print Dumper $quotes_xml;
 
 $client->auth->logout;

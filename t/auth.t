@@ -10,11 +10,7 @@ BEGIN {
     if ($@) {
         plan skip_all => 'Tests require Test::MockObject::Extends';
     }
-    eval 'use XML::Simple';
-    if ($@) {
-        plan skip_all => 'Tests require XML::Simple';
-    }
-    plan tests => 5;
+    plan tests => 6;
 }
 use WWW::Mechanize;
 use WWW::Facebook::API;
@@ -23,42 +19,31 @@ use warnings;
 
 BEGIN { use_ok('WWW::Facebook::API::Auth'); }
 
-my $base = WWW::Facebook::API->new(
+my $api = WWW::Facebook::API->new(
     api_key => 1,
     secret  => 1,
     mech    => Test::MockObject::Extends->new(WWW::Mechanize->new()),
     parse_response => 1,
+    desktop => 1,
 );
 
 {
     local $/ = "\n\n";
-    $base->mech->set_series('content', <DATA>);
+    $api->mech->set_series('content', <DATA>);
 }
 
-my $auth = WWW::Facebook::API::Auth->new(
-    base => $base, api_key => 1, secret => 1
-);
+my $auth = WWW::Facebook::API::Auth->new( base => $api );
 
-{
-    my $result = $auth->create_token->{auth_createToken_response}->[0];
-    is $result->{content}, '3e4a22bb2f5ed75114b0fc9995ea85f1', 'token correct';
-}
+my $token = $auth->create_token;
+is $token, '3e4a22bb2f5ed75114b0fc9995ea85f1', 'token correct';
 
-{
-    my $result = $auth->get_session( auth_token => '8bd7eb80aef3778f2478921787d7e911' )
-        ->{auth_getSession_response}->[0];
-    is $result->{session_key}->[0], '5f34e11bfb97c762e439e6a5-8055', 'session key correct';
-    is $result->{uid}->[0], '8055', 'uid correct';
-    is $result->{expires}->[0], '1173309298', 'expires correct';
-}
+$auth->get_session( $token );
+is $api->session_key, '5f34e11bfb97c762e439e6a5-8055', 'session key correct';
+is $api->session_uid, '8055', 'uid correct';
+is $api->session_expires, '1173309298', 'expires correct';
+is $api->secret, '23489234289342389', 'secret correct';
 
 __DATA__
-<?xml version="1.0" encoding="UTF-8"?>
-<auth_createToken_response xmlns="http://api.facebook.com/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd">3e4a22bb2f5ed75114b0fc9995ea85f1</auth_createToken_response>
+"3e4a22bb2f5ed75114b0fc9995ea85f1"
 
-<?xml version="1.0" encoding="UTF-8"?>
-<auth_getSession_response xmlns="http://api.facebook.com/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd">
-  <session_key>5f34e11bfb97c762e439e6a5-8055</session_key>
-  <uid>8055</uid>
-  <expires>1173309298</expires>
-</auth_getSession_response>
+{"session_key":"5f34e11bfb97c762e439e6a5-8055","uid":"8055","expires":1173309298,"secret":"23489234289342389"}
