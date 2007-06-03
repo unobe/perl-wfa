@@ -119,7 +119,7 @@ sub login {
     }
     elsif ( $self->base->mech->content !~ m{Logout</a>}mix ) {
         my $error = "Unable to login to Facebook using WWW::Mechanize";
-        $errors .= ': '.$self->base->mech->content if $self->base->debug;
+        $error .= ': '.$self->base->mech->content if $self->base->debug;
 
         confess $error if $self->base->throw_errors;
         carp $error;
