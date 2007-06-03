@@ -11,7 +11,6 @@ use strict;
 use Carp;
 
 use version; our $VERSION = qv('0.3.0');
->>>>>>> .merge-right.r78
 
 sub base { return shift->{'base'}; }
 
