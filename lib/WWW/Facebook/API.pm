@@ -771,6 +771,10 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
+=head1 TODO
+
+Code coverage and add tests accordingly.
+
 =head1 AUTHOR
 
 David Romano  C<< <unobe@cpan.org> >>
