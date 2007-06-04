@@ -3,8 +3,6 @@ MANIFEST
 META.yml # Will be created by "make dist"
 Makefile.PL
 README
-examples/facebook-web-json
-examples/facebook-web-raw
 examples/facebook-desktop-raw
 examples/facebook-desktop-json
 examples/facebook-canvas-json
