@@ -17,13 +17,7 @@ print "Enter your API secret: ";
 chomp($val = <STDIN> );
 $client->secret($val);
 
-print "Enter your e-mail address: ";
-chomp(my $email = <STDIN> );
-$client->secret($val);
-print "Enter your password: ";
-chomp(my $pass = <STDIN> );
-
-my $token = $client->auth->login( email => $email,  pass => $pass );
+my $token = $client->auth->login( sleep => 20 );
 $client->auth->get_session( $token );
 
 use Data::Dumper;
