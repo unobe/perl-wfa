@@ -40,7 +40,7 @@ sub create_token {
     $self->base->parse($parse);
 
     return $token;
-} 
+}
 
 sub get_session {
     my $self = shift;
@@ -48,19 +48,18 @@ sub get_session {
     my $token = shift;
     if ( $self->base->desktop ) {
         croak "Token needed for call to get_session" if not defined $token;
-        (my $uri_https = $self->base->server_uri) =~ s{http://}{https://}mx;
-        $self->base->server_uri( $uri_https );
+        ( my $uri_https = $self->base->server_uri ) =~ s{http://}{https://}mx;
+        $self->base->server_uri($uri_https);
     }
-    else {
-        $token ||= $self->base->secret;
-    }
+    $token ||= $self->base->secret;
 
     my ( $format, $parse ) = ( $self->base->format, $self->base->parse );
 
     $self->base->format('JSON');
     $self->base->parse(0);
 
-    my $response = $self->base->call( 'auth.getSession', auth_token => $token );
+    my $response =
+        $self->base->call( 'auth.getSession', auth_token => $token );
 
     $self->base->format($format);
     $self->base->parse($parse);
@@ -73,8 +72,8 @@ sub get_session {
 
     if ( $self->base->desktop ) {
         $field{'secret'} = 'secret';
-        (my $uri_http = $self->base->server_uri) =~ s{https://}{http://}mx;
-        $self->base->server_uri( $uri_http );
+        ( my $uri_http = $self->base->server_uri ) =~ s{https://}{http://}mx;
+        $self->base->server_uri($uri_http);
     }
 
     while ( my ( $key, $val ) = each %field ) {
@@ -86,34 +85,38 @@ sub get_session {
     return;
 }
 
-
 sub login {
     my ( $self, %args ) = @_;
 
     croak "Cannot use login method with web app" unless $self->base->desktop;
 
     my $token = $self->create_token;
-    my $url   = $self->base->get_login_url( auth_token => $token );
+    my $url = $self->base->get_login_url( auth_token => $token );
     my $browser =
-        $args{'browser'} ? $args{'browser'} :
-        $^O =~ /darwin/  ? 'open'           :
-        $^O =~ /MSWin/   ? 'start'          : '';
+          $args{'browser'} ? $args{'browser'}
+        : $^O =~ /darwin/ ? 'open'
+        : $^O =~ /MSWin/  ? 'start'
+        :                   '';
 
     croak "Don't know how to open browser for the system $^O" if not $browser;
 
     # Open browser have user login to Facebook app
-    system qq($browser $url);
+    system qq($browser "$url");
 
-    # Give the user time to log in 
-    sleep ($args{'sleep'} || 10); 
+    # Give the user time to log in
+    $args{'sleep'} ||= 15;
+    sleep $args{'sleep'};
+
+    print STDERR "Return $token token\n";
 
     return $token;
 }
 
 sub logout {
     my $self = shift;
-    $self->base->mech->post( 'http://www.facebook.com/logout.php',
+    $self->base->ua->post( 'http://www.facebook.com/logout.php',
         { confirm => 1 } );
+    return;
 }
 
 1;
@@ -168,9 +171,9 @@ then opens the user's default browser and have them sign in to the Facebook
 application. If C<browser> is passed in, the module will use that string as
 the command to execute, e.g.:
 
-    system qq($browser_cmd $login_url);
+    system qq($browser_cmd "$login_url");
 
-After the browser is called, it will pause for C<$sleep> seconds (or 10
+After the browser is called, it will pause for C<$sleep> seconds (or 15
 seconds if C<$sleep> is not defined), to give the user time to log in. The
 method returns the session token created by C<create_token>.
 

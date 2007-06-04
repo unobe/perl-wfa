@@ -15,7 +15,7 @@ WriteMakefile(
         'Digest::MD5'       => 0,
         'JSON::Any'         => 0,
         'Time::HiRes'       => 0,
-        'WWW::Mechanize'    => 0,
+        'LWP::UserAgent'    => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'WWW-Facebook-API-*' },

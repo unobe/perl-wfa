@@ -5,6 +5,7 @@ HEAD   Sun Jun  3 19:55:08 PDT 2007
 	  Change auth->login method to comply with Facebook TOS A.9.iv
 	  Changed examples accordingly (removed web examples, kept canvas)
 	Added TODO section in API.pm
+	Removed dependency on WWW::Mechanize, and just use LWP::UserAgent
 
 0.3.1  Sun Jun  3 13:46:03 PDT 2007
 	Fixed POD formatting and synopsis example

@@ -12,7 +12,7 @@ use Carp;
 
 use version; our $VERSION = qv('0.3.1');
 
-use WWW::Mechanize;
+use LWP::UserAgent;
 use Time::HiRes qw(time);
 use Digest::MD5 qw(md5_hex);
 use CGI::Util qw(escape);
@@ -58,7 +58,7 @@ our %attributes = (
             secret      last_call_success   last_error
             skipcookie  popup               next
             session_key session_expires     session_uid
-            callback    app_path            mech
+            callback    app_path            ua
             )
     ),
 );
@@ -86,8 +86,8 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    $self->{'mech'}
-        ||= WWW::Mechanize->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
+    $self->{'ua'}
+        ||= LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
     my $is_attribute = join '|', keys %attributes;
     delete $self->{$_} for grep !/^($is_attribute)$/, keys %$self;
 
@@ -257,9 +257,7 @@ sub _post_request {
     $post_params = [ map { $_, $params->{$_} } sort keys %$params ];
     push @$post_params, 'sig', $sig;
 
-    $self->mech->post( $self->server_uri, $post_params );
-
-    return $self->mech->content;
+    return $self->ua->post( $self->server_uri, $post_params )->content;
 }
 
 sub _format_params {
@@ -573,11 +571,6 @@ A boolean. True if the last call was a success, false otherwise.
 
 A string holding the error message of the last failed call to the REST server.
 
-=item mech
-
-The L<WWW::Mechanize> agent used to communicate with the REST server.
-The agent_alias is set initially set to "Perl-WWW-Facebook-API/0.3.1".
-
 =item next
 
 See the Facebook API documentation. Just a convenient place holder for the
@@ -629,6 +622,11 @@ value.
 
 A boolean set to either true of false, signifying whether or not log_error
 should confess when an error is returned from the REST server.
+
+=item ua
+
+The L<LWP::UserAgent> agent used to communicate with the REST server.
+The agent_alias is set initially set to "Perl-WWW-Facebook-API/0.3.1".
 
 =back
 
@@ -757,7 +755,7 @@ L<Crypt::SSLeay>
 L<Digest::MD5>
 L<JSON::Any>
 L<Time::HiRes>
-L<WWW::Mechanize>
+L<LWP::UserAgent>
 
 =head1 INCOMPATIBILITIES
 
