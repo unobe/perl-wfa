@@ -12,24 +12,25 @@ BEGIN {
     }
     plan tests => 6;
 }
-use WWW::Mechanize;
+
 use WWW::Facebook::API;
 use strict;
 use warnings;
 
 BEGIN { use_ok('WWW::Facebook::API::Auth'); }
 
-my $api = WWW::Facebook::API->new(
-    api_key => 1,
-    secret  => 1,
-    mech    => Test::MockObject::Extends->new(WWW::Mechanize->new()),
-    parse_response => 1,
-    desktop => 1,
+my $api = Test::MockObject::Extends->new(
+    WWW::Facebook::API->new(
+        api_key => 1,
+        secret  => 1,
+        parse_response => 1,
+        desktop => 1,
+    ),
 );
 
 {
     local $/ = "\n\n";
-    $api->mech->set_series('content', <DATA>);
+    $api->set_series('_post_request', <DATA>);
 }
 
 my $auth = WWW::Facebook::API::Auth->new( base => $api );

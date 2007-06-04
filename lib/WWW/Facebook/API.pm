@@ -127,7 +127,7 @@ sub call {
     if ( $self->debug ) {
         carp $self->log_string( $params, $response );
     }
-    if ( $response =~ m!<error_code>(\d+)|{"error_code"\D(\d+)!mx ) {
+    if ( $response =~ m!<error_code>(\d+)|\{"error_code"\D(\d+)!mx ) {
         $self->last_call_success(0);
         $self->last_error($1);
 
