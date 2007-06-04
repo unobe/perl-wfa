@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Sun Jun  3 21:21:00 PDT 2007
+0.3.2  Sun Jun  3 21:38:20 PDT 2007
 	*** API CHANGE ***
 	  Change auth->login method to comply with Facebook TOS A.9.iv
 	  Changed examples accordingly (removed web examples, kept canvas)

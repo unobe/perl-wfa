@@ -2,7 +2,7 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.3.1
+    This document describes WWW::Facebook::API version 0.3.2
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -264,11 +264,6 @@ ATTRIBUTE METHODS
         A string holding the error message of the last failed call to the
         REST server.
 
-    mech
-        The WWW::Mechanize agent used to communicate with the REST server.
-        The agent_alias is set initially set to
-        "Perl-WWW-Facebook-API/0.3.1".
-
     next
         See the Facebook API documentation. Just a convenient place holder
         for the value.
@@ -314,6 +309,10 @@ ATTRIBUTE METHODS
         A boolean set to either true of false, signifying whether or not
         log_error should confess when an error is returned from the REST
         server.
+
+    ua  The LWP::UserAgent agent used to communicate with the REST server.
+        The agent_alias is set initially set to
+        "Perl-WWW-Facebook-API/0.3.2".
 
 PUBLIC METHODS
     call( $method, %args )
@@ -407,7 +406,7 @@ CONFIGURATION AND ENVIRONMENT
     variables.
 
 DEPENDENCIES
-    version Crypt::SSLeay Digest::MD5 JSON::Any Time::HiRes WWW::Mechanize
+    version Crypt::SSLeay Digest::MD5 JSON::Any Time::HiRes LWP::UserAgent
 
 INCOMPATIBILITIES
     None.
@@ -418,6 +417,9 @@ BUGS AND LIMITATIONS
     Please report any bugs or feature requests to
     "bug-www-facebook-api@rt.cpan.org", or through the web interface at
     <http://rt.cpan.org>.
+
+TODO
+    Code coverage and add tests accordingly.
 
 AUTHOR
     David Romano "<unobe@cpan.org>"

@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.1');
+use version; our $VERSION = qv('0.3.2');
 
 sub base { return shift->{'base'}; }
 
@@ -32,7 +32,7 @@ WWW::Facebook::API::FBML - FBML methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FBML version 0.3.1
+This document describes WWW::Facebook::API::FBML version 0.3.2
 
 =head1 SYNOPSIS
 
