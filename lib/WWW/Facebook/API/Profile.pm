@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 sub base { return shift->{'base'}; }
 
@@ -19,18 +19,18 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    delete $self->{$_} for grep !/base/, keys %$self;
-    $self->$_ for keys %$self;
+    delete $self->{$_} for grep { !/base/xms } keys %{$self};
+    $self->$_ for keys %{$self};
 
     return $self;
 }
 
-sub set_fbml { shift->base->call( 'profile.setFBML', @_ ) }
-sub get_fbml { shift->base->call( 'profile.getFBML', @_ ) }
+sub set_fbml { return shift->base->call( 'profile.setFBML', @_ ) }
+sub get_fbml { return shift->base->call( 'profile.getFBML', @_ ) }
 
 # Just in case ...
-sub set_FBML { shift->base->call( 'profile.setFBML', @_ ) }
-sub get_FBML { shift->base->call( 'profile.getFBML', @_ ) }
+sub set_FBML { return shift->base->call( 'profile.setFBML', @_ ) }
+sub get_FBML { return shift->base->call( 'profile.getFBML', @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
@@ -41,7 +41,7 @@ WWW::Facebook::API::Profile - Profile methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Profile version 0.3.2
+This document describes WWW::Facebook::API::Profile version 0.3.3
 
 =head1 SYNOPSIS
 

@@ -1,5 +1,9 @@
 Revision history for WWW-Facebook-API
 
+HEAD   Mon Jun  4 22:19:21 PDT 2007
+	Ran through Perl::Critic and added tests (not included in MANIFEST)
+	Added method call_success in API.pm to simplify error tracking
+	
 0.3.2  Sun Jun  3 21:38:20 PDT 2007
 	*** API CHANGE ***
 	  Change auth->login method to comply with Facebook TOS A.9.iv

@@ -12,5 +12,5 @@ if (!require Test::Perl::Critic) {
     );
 }
 
-use Test::Perl::Critic ( -severity => 1, ); #-profile => 't/perlcriticrc');
+use Test::Perl::Critic ( -severity => 1, -profile => 't/perlcriticrc');
 Test::Perl::Critic::all_critic_ok();

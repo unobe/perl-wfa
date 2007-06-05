@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -25,7 +25,7 @@ our @namespaces = qw(
     Users
 );
 
-my $create_subclass_code = sub {
+my $create_subclass_code = sub {    ## no critic
     local $_ = shift;
     my $subclass = shift;
     eval qq(
@@ -44,16 +44,16 @@ for (@namespaces) {
 }
 
 our %attributes = (
-    parse  => 1,
-    format => 'JSON',
-    debug => 0,
+    parse        => 1,
+    format       => 'JSON',
+    debug        => 0,
     throw_errors => 1,
-    api_key      => '',
+    api_key      => q{},
     api_version  => '1.0',
-    desktop      => '',
+    desktop      => q{},
     apps_uri     => 'http://apps.facebook.com/',
     server_uri   => 'http://api.facebook.com/restserver.php',
-    (   map { $_ => '' }
+    (   map { $_ => q{} }
             qw(
             secret      last_call_success   last_error
             skipcookie  popup               next
@@ -63,7 +63,7 @@ our %attributes = (
     ),
 );
 
-my $create_attribute_code = sub {
+my $create_attribute_code = sub {    ## no critic
     my $attribute = shift;
     my $default   = shift;
     eval qq(
@@ -86,10 +86,10 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    $self->{'ua'}
-        ||= LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
-    my $is_attribute = join '|', keys %attributes;
-    delete $self->{$_} for grep !/^($is_attribute)$/, keys %$self;
+    $self->{'ua'} ||=
+        LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
+    my $is_attribute = join q{|}, keys %attributes;
+    delete $self->{$_} for grep { !/^($is_attribute)$/xms } keys %{$self};
 
     $self->$_($self) for map {"\L$_"} @namespaces;
     $self->$_ for keys %attributes;
@@ -107,10 +107,16 @@ sub log_string {
     return $string;
 }
 
+sub call_success {
+    my $self = shift;
+    $self->last_call_success(shift) if @_;
+    $self->last_error(shift)        if @_;
+    return [ $self->last_call_success, $self->last_error ];
+}
+
 sub call {
     my ( $self, $method, %args, $params, $secret, $response ) = @_;
-    $self->last_call_success(1);
-    $self->last_error(undef);
+    $self->call_success(1);
 
     $params = delete $args{'params'} || {};
     $params->{$_} = $args{$_} for keys %args;
@@ -124,22 +130,17 @@ sub call {
 
     $params->{'sig'}    = $sig;
     $params->{'secret'} = $secret;
-    if ( $self->debug ) {
-        carp $self->log_string( $params, $response );
-    }
-    if ( $response =~ m!<error_code>(\d+)|\{"error_code"\D(\d+)!mx ) {
-        $self->last_call_success(0);
-        $self->last_error($1);
+    carp $self->log_string( $params, $response ) if $self->debug;
+    if ( $response =~ m/<error_code>(\d+)|\{"error_code"\D(\d+)/xms ) {
+        $self->call_success( 0, $1 );
 
-        if ( $self->throw_errors ) {
-            confess "Error during REST $method call:",
-                $self->log_string( $params, $response );
-        }
+        confess "Error during REST $method call:",
+            $self->log_string( $params, $response )
+            if $self->throw_errors;
     }
 
-    if ( $params->{'callback'} ) {
-        $response =~ s/^$params->{'callback'} [^\(]* \((.+) \);$/$1/xms;
-    }
+    $response =~ s/^$params->{'callback'} [^\(]* \((.+) \);$/$1/xms
+        if $params->{'callback'};
     $response = $self->unescape_string($response) unless $self->desktop;
 
     undef $params;
@@ -154,7 +155,8 @@ sub generate_sig {
     my (%args) = @_;
     my %params = %{ $args{'params'} };
 
-    return md5_hex( (map {"$_=$params{$_}"} sort keys %params), $args{'secret'} );
+    return md5_hex( ( map {"$_=$params{$_}"} sort keys %params ),
+        $args{'secret'} );
 }
 
 sub verify_sig {
@@ -176,13 +178,13 @@ sub session {
 sub unescape_string {
     my $self   = shift;
     my $string = shift;
-    $string =~ s/(?<!\\)(\\.)/qq("$1")/gee;
+    $string =~ s/(?<!\\)(\\.)/qq("$1")/xmsgee;
     return $string;
 }
 
 sub get_facebook_url {
     my $self = shift;
-    my $site = shift || "www";
+    my $site = shift || q{www};
 
     return "http://$site.facebook.com";
 }
@@ -190,22 +192,24 @@ sub get_facebook_url {
 sub get_add_url {
     my $self = shift;
 
-    return $self->get_facebook_url . '/add.php' . $self->_add_url_params( @_ );
+    return $self->get_facebook_url . q{/add.php} . $self->_add_url_params(@_);
 }
 
 sub get_login_url {
     my $self = shift;
 
-    return $self->get_facebook_url . '/login.php' . $self->_add_url_params( @_ );
+    return $self->get_facebook_url
+        . q{/login.php}
+        . $self->_add_url_params(@_);
 }
 
 sub _add_url_params {
-    my $self = shift;
-    my $params = '?api_key='.$self->api_key . '&v=1.0';
+    my $self   = shift;
+    my $params = q{?api_key=} . $self->api_key . q{&v=1.0};
     my %params = @_;
     for ( sort keys %params ) {
         next if not defined $params{$_};
-        $params{$_} = escape($params{$_}) if $_ eq 'next';
+        $params{$_} = escape( $params{$_} ) if $_ eq 'next';
         $params .= "&$_=$params{$_}";
     }
     return $params;
@@ -215,13 +219,14 @@ sub _add_url_params {
 sub get_app_url {
     my $self = shift;
 
-    return $self->apps_uri . $self->app_path . "/";
+    return $self->apps_uri . $self->app_path . q{/};
 }
 
 sub _parse {
     my ( $self, $response ) = @_;
 
-    eval 'use JSON::Any';
+    ## no critic
+    eval q{use JSON::Any};
     croak "Unable to load JSON module for parsing:$@\n" if $@;
     return JSON::Any->new->decode($response);
 }
@@ -233,7 +238,7 @@ sub _check_values_of {
         $params->{'call_id'} = time if $self->desktop;
     }
 
-    if ( $params->{'method'} !~ m/^auth/mx ) {
+    if ( $params->{'method'} !~ m/^auth/xms ) {
         $params->{'session_key'} = $self->session_key;
         if ( $self->callback ) {
             $params->{'callback'} ||= $self->callback;
@@ -243,7 +248,7 @@ sub _check_values_of {
     $params->{'method'} = "facebook.$params->{'method'}";
     $params->{'v'} ||= $self->api_version;
 
-    for (qw/api_key format popup next skipcookie/) {
+    for (qw(api_key format popup next skipcookie)) {
         $params->{$_} ||= $self->$_ if $self->$_;
     }
     return;
@@ -254,8 +259,8 @@ sub _post_request {
 
     $self->_format_params($params);
     $sig = $self->generate_sig( params => $params, secret => $self->secret );
-    $post_params = [ map { $_, $params->{$_} } sort keys %$params ];
-    push @$post_params, 'sig', $sig;
+    $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
+    push @{$post_params}, q{sig}, $sig;
 
     return $self->ua->post( $self->server_uri, $post_params )->content;
 }
@@ -265,10 +270,11 @@ sub _format_params {
     my $params = shift;
 
     # reformat arrays and add each param to digest
-    for ( keys %$params ) {
+    for ( keys %{$params} ) {
         next unless ref $params->{$_} eq 'ARRAY';
         $params->{$_} = join q{,}, @{ $params->{$_} };
     }
+    return;
 }
 
 1;    # Magic true value required at end of module
@@ -280,7 +286,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.3.2
+This document describes WWW::Facebook::API version 0.3.3
 
 =head1 SYNOPSIS
 
@@ -548,6 +554,13 @@ The apps uri for Facebook apps. The default is http://apps.facebook.com/.
 The callback URL for your application. See the Facebook API documentation.
 Just a convenient place holder for the value.
 
+=item call_success
+
+Takes in two values, the first setting the object's last_call_success
+attribute, and the second setting the object's last_error attribute. Returns
+an array reference containing the last_call_success and last_error values, in
+that order.
+
 =item debug
 
 A boolean set to either true or false, determining if debugging messages
@@ -626,7 +639,7 @@ should confess when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is set initially set to "Perl-WWW-Facebook-API/0.3.2".
+The agent_alias is set initially set to "Perl-WWW-Facebook-API/0.3.3".
 
 =back
 

@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 sub base { return shift->{'base'}; }
 
@@ -18,8 +18,8 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    delete $self->{$_} for grep !/base/, keys %$self;
-    $self->$_ for keys %$self;
+    delete $self->{$_} for grep { !/base/xms } keys %{$self};
+    $self->$_ for keys %{$self};
 
     return $self;
 }
@@ -27,8 +27,8 @@ sub new {
 sub get_fb_params {
     my ( $self, $q ) = @_;
     return {
-        map { (/^fb_sig_(.*)/)[0] => $q->param($_) }
-            sort grep {/^fb_sig_/} $q->param
+        map { (/^fb_sig_ (.*) $/xms)[0] => $q->param($_) }
+            sort grep {/^fb_sig_/xms} $q->param
     };
 }
 
@@ -36,8 +36,10 @@ sub validate_sig {
     my ( $self, $q ) = @_;
     my $fb_params = $self->get_fb_params($q);
     return $fb_params
-        if $self->base->verify_sig( params => $fb_params,
-          sig => $q->param('fb_sig') );
+        if $self->base->verify_sig(
+        params => $fb_params,
+        sig    => $q->param('fb_sig')
+        );
     return;
 }
 
@@ -46,7 +48,7 @@ sub get_user {
     my $fb_params = $self->validate_sig($q);
 
     return $fb_params->{'user'} if $fb_params;
-    return "";
+    return q{};
 }
 
 sub in_fb_canvas {
@@ -70,7 +72,7 @@ WWW::Facebook::API::Canvas - Facebook canvas related methods
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Canvas version 0.3.2
+This document describes WWW::Facebook::API::Canvas version 0.3.3
 
 =head1 SYNOPSIS
 

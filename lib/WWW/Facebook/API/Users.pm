@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 sub base { return shift->{'base'}; }
 
@@ -19,15 +19,18 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    delete $self->{$_} for grep !/base/, keys %$self;
-    for ( keys %$self ) { $self->$_ }
+    delete $self->{$_} for grep { !/base/xms } keys %{$self};
+    for ( keys %{$self} ) { $self->$_ }
 
     return $self;
 }
 
-sub get_info           { shift->base->call( 'users.getInfo',         @_ ); }
-sub get_logged_in_user { shift->base->call( 'users.getLoggedInUser', @_ ); }
-sub is_app_added       { shift->base->call( 'users.isAppAdded',      @_ ); }
+sub get_info { return shift->base->call( 'users.getInfo', @_ ); }
+
+sub get_logged_in_user {
+    return shift->base->call( 'users.getLoggedInUser', @_ );
+}
+sub is_app_added { return shift->base->call( 'users.isAppAdded', @_ ); }
 
 1;    # Magic true value required at end of module
 __END__
@@ -38,7 +41,7 @@ WWW::Facebook::API::Users - Users methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.3.2
+This document describes WWW::Facebook::API::Users version 0.3.3
 
 =head1 SYNOPSIS
 

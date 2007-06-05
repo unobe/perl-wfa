@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 sub base { return shift->{'base'}; }
 
@@ -19,18 +19,18 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    delete $self->{$_} for grep !/base/, keys %$self;
-    $self->$_ for keys %$self;
+    delete $self->{$_} for grep { !/base/xms } keys %{$self};
+    $self->$_ for keys %{$self};
 
     return $self;
 }
 
-sub add_tag      { shift->base->call( 'photos.addTag',      @_ ) }
-sub create_album { shift->base->call( 'photos.createAlbum', @_ ) }
-sub get          { shift->base->call( 'photos.get',         @_ ) }
-sub get_albums   { shift->base->call( 'photos.getAlbums',   @_ ) }
-sub get_tags     { shift->base->call( 'photos.getTags',     @_ ) }
-sub upload       { shift->base->call( 'photos.upload',      @_ ) }
+sub add_tag      { return shift->base->call( 'photos.addTag',      @_ ) }
+sub create_album { return shift->base->call( 'photos.createAlbum', @_ ) }
+sub get          { return shift->base->call( 'photos.get',         @_ ) }
+sub get_albums   { return shift->base->call( 'photos.getAlbums',   @_ ) }
+sub get_tags     { return shift->base->call( 'photos.getTags',     @_ ) }
+sub upload       { return shift->base->call( 'photos.upload',      @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
@@ -41,7 +41,7 @@ WWW::Facebook::API::Photos - Photos methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.3.2
+This document describes WWW::Facebook::API::Photos version 0.3.3
 
 =head1 SYNOPSIS
 

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 sub base { return shift->{'base'}; }
 
@@ -19,8 +19,8 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    delete $self->{$_} for grep !/base/, keys %$self;
-    $self->$_ for keys %$self;
+    delete $self->{$_} for grep { !/base/xms } keys %{$self};
+    $self->$_ for keys %{$self};
 
     return $self;
 }
@@ -34,7 +34,7 @@ sub create_token {
     $self->base->parse(0);
 
     $token = $self->base->call( 'auth.createToken', @_ );
-    $token =~ s/\W//g;
+    $token =~ s/\W//xmsg;
 
     $self->base->format($format);
     $self->base->parse($parse);
@@ -47,8 +47,9 @@ sub get_session {
 
     my $token = shift;
     if ( $self->base->desktop ) {
-        croak "Token needed for call to get_session" if not defined $token;
-        ( my $uri_https = $self->base->server_uri ) =~ s{http://}{https://}mx;
+        croak q{Token needed for call to get_session} if not defined $token;
+        ( my $uri_https = $self->base->server_uri )
+            =~ s{http://}{https://}xms;
         $self->base->server_uri($uri_https);
     }
     $token ||= $self->base->secret;
@@ -72,14 +73,14 @@ sub get_session {
 
     if ( $self->base->desktop ) {
         $field{'secret'} = 'secret';
-        ( my $uri_http = $self->base->server_uri ) =~ s{https://}{http://}mx;
+        ( my $uri_http = $self->base->server_uri ) =~ s{https://}{http://}xms;
         $self->base->server_uri($uri_http);
     }
 
     while ( my ( $key, $val ) = each %field ) {
-        $response =~ /$key"\W+([\w-]+)/;
+        $response =~ /$key"\W+([\w-]+)/xms;
         carp "Setting $key to $1" if $self->base->debug;
-        $self->base->$val($1);
+        $self->base->$val($1);    ## no critic
     }
 
     return;
@@ -88,15 +89,16 @@ sub get_session {
 sub login {
     my ( $self, %args ) = @_;
 
-    croak "Cannot use login method with web app" unless $self->base->desktop;
+    croak q{Cannot use login method with web app} unless $self->base->desktop;
 
     my $token = $self->create_token;
     my $url = $self->base->get_login_url( auth_token => $token );
     my $browser =
-          $args{'browser'} ? $args{'browser'}
-        : $^O =~ /darwin/ ? 'open'
-        : $^O =~ /MSWin/  ? 'start'
-        :                   '';
+          $args{'browser'}
+        ? $args{'browser'}
+        : $^O =~ m/darwin/xms ? 'open'     ## no critic
+        : $^O =~ m/MSWin/xms  ? 'start'    ## no critic
+        :                       q{};
 
     croak "Don't know how to open browser for the system $^O" if not $browser;
 
@@ -106,8 +108,6 @@ sub login {
     # Give the user time to log in
     $args{'sleep'} ||= 15;
     sleep $args{'sleep'};
-
-    print STDERR "Return $token token\n";
 
     return $token;
 }
@@ -128,7 +128,7 @@ WWW::Facebook::API::Auth - Authentication utilities for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.3.2
+This document describes WWW::Facebook::API::Auth version 0.3.3
 
 =head1 SYNOPSIS
 
@@ -138,13 +138,19 @@ This document describes WWW::Facebook::API::Auth version 0.3.2
 
 Methods for accessing auth with L<WWW::Facebook::API>
 
-=head1 METHODS 
+=head1 SUBROUTINES/METHODS 
 
 =over
 
 =item new()
 
 Returns a new instance of this class.
+
+=back
+
+=head1 METHODS
+
+=over
 
 =item base()
 

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 sub base { return shift->{'base'}; }
 
@@ -19,14 +19,14 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    delete $self->{$_} for grep !/base/, keys %$self;
-    $self->$_ for keys %$self;
+    delete $self->{$_} for grep { !/base/xms } keys %{$self};
+    $self->$_ for keys %{$self};
 
     return $self;
 }
 
-sub get         { shift->base->call( 'events.get',        @_ ) }
-sub get_members { shift->base->call( 'events.getMembers', @_ ) }
+sub get         { return shift->base->call( 'events.get',        @_ ) }
+sub get_members { return shift->base->call( 'events.getMembers', @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
@@ -37,7 +37,7 @@ WWW::Facebook::API::Events - Events for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Events version 0.3.2
+This document describes WWW::Facebook::API::Events version 0.3.3
 
 =head1 SYNOPSIS
 

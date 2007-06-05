@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.2');
+use version; our $VERSION = qv('0.3.3');
 
 sub base { return shift->{'base'}; }
 
@@ -19,13 +19,13 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    delete $self->{$_} for grep !/base/, keys %$self;
-    $self->$_ for keys %$self;
+    delete $self->{$_} for grep { !/base/xms } keys %{$self};
+    $self->$_ for keys %{$self};
 
     return $self;
 }
 
-sub decode_ids { $_[0]->base->call( 'update.decodeIDs', @_ ) }
+sub decode_ids { return shift->base->call( 'update.decodeIDs', @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
@@ -36,7 +36,7 @@ WWW::Facebook::API::Update - Update methods for Client
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Update version 0.3.2
+This document describes WWW::Facebook::API::Update version 0.3.3
 
 =head1 SYNOPSIS
 

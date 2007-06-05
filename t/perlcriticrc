@@ -1,0 +1,4 @@
+[-ControlStructures::ProhibitPostfixControls]
+[-ControlStructures::ProhibitUnlessBlocks]
+[-Variables::ProhibitPackageVars]
+[-Miscellanea::RequireRcsKeywords]
