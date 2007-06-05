@@ -195,6 +195,12 @@ sub get_add_url {
     return $self->get_facebook_url . q{/add.php} . $self->_add_url_params(@_);
 }
 
+sub get_infinite_session_url {
+    my $self = shift;
+
+    return $self->get_facebook_url . q{/codegen.php} . $self->_add_url_params;
+}
+
 sub get_login_url {
     my $self = shift;
 
@@ -669,6 +675,11 @@ Returns the URL to add your application with the parameters (that are defined)
 included. If the C<next> parameter is passed in, it's escaped. Used for
 platform applications. 
 
+=item get_infinite_session_url()
+
+Returns the URL for the user to generate an infinite session for your
+application.
+
 =item get_login_url( %params )
 
 Returns the URL to login to your application with the parameters (that are
@@ -784,7 +795,27 @@ L<http://rt.cpan.org>.
 
 =head1 TODO
 
-Code coverage and add tests accordingly.
+Add tests to get better coverage.
+
+---------------------------- ------ ------ ------ ------ ------ ------ ------
+File                           stmt   bran   cond    sub    pod   time  total
+---------------------------- ------ ------ ------ ------ ------ ------ ------
+blib/lib/WWW/Facebook/API.pm   86.7   72.0   34.4   93.2  100.0   85.3   79.8
+.../WWW/Facebook/API/Auth.pm   81.4   22.2   25.0   80.0  100.0    1.4   68.8
+...WW/Facebook/API/Canvas.pm   57.1    0.0   16.7   54.5  100.0    0.7   52.8
+...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
+.../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.7   81.8
+...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.6   89.5
+.../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.6   85.4
+...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
+...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    6.1   85.4
+...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.7   81.8
+...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.6   73.6
+...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    0.7   78.7
+...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.6   89.5
+...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    0.7   81.8
+Total                          85.7   62.7   32.4   77.9  100.0  100.0   78.4
+---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
 
