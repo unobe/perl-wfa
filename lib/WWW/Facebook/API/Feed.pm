@@ -50,7 +50,7 @@ This document describes WWW::Facebook::API::Feed version 0.3.3
 
 =head1 DESCRIPTION
 
-Methods for accessing photos with L<WWW::Facebook::API>
+Methods for accessing feeds with L<WWW::Facebook::API>
 
 =head1 SUBROUTINES/METHODS 
 

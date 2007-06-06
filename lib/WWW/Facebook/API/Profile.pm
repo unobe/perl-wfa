@@ -49,7 +49,7 @@ This document describes WWW::Facebook::API::Profile version 0.3.3
 
 =head1 DESCRIPTION
 
-Methods for accessing photos with L<WWW::Facebook::API>
+Methods for accessing profiles with L<WWW::Facebook::API>
 
 =head1 SUBROUTINES/METHODS 
 
@@ -64,11 +64,11 @@ Returns a new instance of this class.
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item set_fbml
+=item set_fbml( markup => '', uid => '' )
 
 The profile.setFBML method of the Facebook API.
 
-=item get_fbml
+=item get_fbml( uid => '' )
 
 The profile.getFBML method of the Facebook API.
 

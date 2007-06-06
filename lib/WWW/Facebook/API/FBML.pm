@@ -55,15 +55,16 @@ Returns a new instance of this class.
 The L<WWW::Facebook::API::Base> object to use to make calls to
 the REST server.
 
-=item set_ref_handle
+=item set_ref_handle( handle => 'handleName', fbml => 'fbml' )
 
-The fbml.setRefHandle method of the Facebook API.
+The fbml.setRefHandle method of the Facebook API. See this page on the wiki:
+http://wiki.f8.facebook.com/index.php/Fb:ref
 
-=item refresh_img_src
+=item refresh_img_src( url => '' )
 
 The fbml.refreshImgSrc method of the Facebook API.
 
-=item refresh_ref_url
+=item refresh_ref_url( url => '' )
 
 The fbml.refreshRefUrl method of the Facebook API.
 
