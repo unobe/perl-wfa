@@ -32,7 +32,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Update - Update methods for Client
+WWW::Facebook::API::Update - Facebok Update
 
 =head1 VERSION
 

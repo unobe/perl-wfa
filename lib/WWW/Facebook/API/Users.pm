@@ -37,7 +37,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Users - Users methods for Client
+WWW::Facebook::API::Users - Facebook Users
 
 =head1 VERSION
 

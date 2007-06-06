@@ -28,7 +28,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::FBML - FBML methods for Client
+WWW::Facebook::API::FBML - Facebook Markup Language
 
 =head1 VERSION
 

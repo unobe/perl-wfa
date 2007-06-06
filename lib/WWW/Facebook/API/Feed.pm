@@ -38,7 +38,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Feed - Feed methods for Client
+WWW::Facebook::API::Feed - Facebook Feeds
 
 =head1 VERSION
 

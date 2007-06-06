@@ -37,7 +37,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Notifications - Notifications methods for Client
+WWW::Facebook::API::Notifications - Facebook Notifications
 
 =head1 VERSION
 

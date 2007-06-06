@@ -33,7 +33,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Events - Events for Client
+WWW::Facebook::API::Events - Facebook Events
 
 =head1 VERSION
 

@@ -124,7 +124,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Auth - Authentication utilities for Client
+WWW::Facebook::API::Auth - Facebook Authentication
 
 =head1 VERSION
 

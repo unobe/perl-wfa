@@ -68,7 +68,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Canvas - Facebook canvas related methods
+WWW::Facebook::API::Canvas - Facebook Canvas
 
 =head1 VERSION
 

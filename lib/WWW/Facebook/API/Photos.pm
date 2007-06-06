@@ -37,7 +37,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Photos - Photos methods for Client
+WWW::Facebook::API::Photos - Facebook Photos
 
 =head1 VERSION
 

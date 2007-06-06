@@ -34,7 +34,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Friends - Friend methods for Client
+WWW::Facebook::API::Friends - Facebook Friends
 
 =head1 VERSION
 

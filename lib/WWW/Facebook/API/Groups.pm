@@ -33,7 +33,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Groups - Groups methods for Client
+WWW::Facebook::API::Groups - Facebook Groups
 
 =head1 VERSION
 

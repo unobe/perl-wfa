@@ -37,7 +37,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Profile - Profile methods for Client
+WWW::Facebook::API::Profile - Facebook Profile
 
 =head1 VERSION
 

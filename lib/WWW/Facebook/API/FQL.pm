@@ -31,7 +31,7 @@ __END__
 
 =head1 NAME
 
-WWW::Facebook::API::FQL - Message methods for Client
+WWW::Facebook::API::FQL - Facebook Query Language
 
 =head1 VERSION
 
