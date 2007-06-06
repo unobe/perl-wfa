@@ -408,9 +408,9 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 fbml namespace of the API (See L<WWW::Facebook::API::FBML>):
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
-    $response = $client->fbml->set_ref_handle;
-    $response = $client->fbml->refresh_img_src;
-    $response = $client->fbml->refresh_ref_url;
+    $response = $client->fbml->set_ref_handle( handle => '', fbml => '');
+    $response = $client->fbml->refresh_img_src( url => '');
+    $response = $client->fbml->refresh_ref_url( url => '');
 
 =item fql
 
@@ -455,7 +455,7 @@ groups namespace of the API (See L<WWW::Facebook::API::Groups>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
     $response = $client->groups->get_members( gid => 32 );
-    $response    = $client->groups->get( uid => 234324, gids => [2423,334] );
+    $response = $client->groups->get( uid => 234324, gids => [2423,334] );
 
 =item notifications
 
@@ -645,7 +645,7 @@ should confess when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is set initially set to "Perl-WWW-Facebook-API/0.3.3".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.3".
 
 =back
 

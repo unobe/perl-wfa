@@ -2,7 +2,7 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.3.2
+    This document describes WWW::Facebook::API version 0.3.3
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -104,9 +104,9 @@ NAMESPACE METHODS
         fbml namespace of the API (See WWW::Facebook::API::FBML): All method
         names from the Facebook API are lower_cased instead of CamelCase:
 
-            $response = $client->fbml->set_ref_handle;
-            $response = $client->fbml->refresh_img_src;
-            $response = $client->fbml->refresh_ref_url;
+            $response = $client->fbml->set_ref_handle( handle => '', fbml => '');
+            $response = $client->fbml->refresh_img_src( url => '');
+            $response = $client->fbml->refresh_ref_url( url => '');
 
     fql fql namespace of the API (See WWW::Facebook::API::FQL):
 
@@ -147,7 +147,7 @@ NAMESPACE METHODS
         CamelCase:
 
             $response = $client->groups->get_members( gid => 32 );
-            $response    = $client->groups->get( uid => 234324, gids => [2423,334] );
+            $response = $client->groups->get( uid => 234324, gids => [2423,334] );
 
     notifications
         notifications namespace of the API (See
@@ -244,6 +244,12 @@ ATTRIBUTE METHODS
         The callback URL for your application. See the Facebook API
         documentation. Just a convenient place holder for the value.
 
+    call_success
+        Takes in two values, the first setting the object's
+        last_call_success attribute, and the second setting the object's
+        last_error attribute. Returns an array reference containing the
+        last_call_success and last_error values, in that order.
+
     debug
         A boolean set to either true or false, determining if debugging
         messages should be carped for REST calls.
@@ -311,8 +317,7 @@ ATTRIBUTE METHODS
         server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is set initially set to
-        "Perl-WWW-Facebook-API/0.3.2".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.3".
 
 PUBLIC METHODS
     call( $method, %args )
@@ -334,6 +339,10 @@ PUBLIC METHODS
         Returns the URL to add your application with the parameters (that
         are defined) included. If the "next" parameter is passed in, it's
         escaped. Used for platform applications.
+
+    get_infinite_session_url()
+        Returns the URL for the user to generate an infinite session for
+        your application.
 
     get_login_url( %params )
         Returns the URL to login to your application with the parameters
@@ -419,7 +428,27 @@ BUGS AND LIMITATIONS
     <http://rt.cpan.org>.
 
 TODO
-    Code coverage and add tests accordingly.
+    Add tests to get better coverage.
+
+    ---------------------------- ------ ------ ------ ------ ------ ------
+    ------ File stmt bran cond sub pod time total
+    ---------------------------- ------ ------ ------ ------ ------ ------
+    ------ blib/lib/WWW/Facebook/API.pm 86.7 72.0 34.4 93.2 100.0 85.3 79.8
+    .../WWW/Facebook/API/Auth.pm 81.4 22.2 25.0 80.0 100.0 1.4 68.8
+    ...WW/Facebook/API/Canvas.pm 57.1 0.0 16.7 54.5 100.0 0.7 52.8
+    ...WW/Facebook/API/Events.pm 92.3 n/a 33.3 75.0 100.0 0.7 85.4
+    .../WWW/Facebook/API/FBML.pm 88.9 n/a 33.3 66.7 100.0 0.7 81.8
+    ...b/WWW/Facebook/API/FQL.pm 96.0 n/a 33.3 85.7 100.0 0.6 89.5
+    .../WWW/Facebook/API/Feed.pm 92.3 n/a 33.3 75.0 100.0 0.6 85.4
+    ...W/Facebook/API/Friends.pm 88.9 n/a 33.3 66.7 100.0 0.6 81.8
+    ...WW/Facebook/API/Groups.pm 92.3 n/a 33.3 75.0 100.0 6.1 85.4
+    ...book/API/Notifications.pm 88.9 n/a 33.3 66.7 100.0 0.7 81.8
+    ...WW/Facebook/API/Photos.pm 80.0 n/a 33.3 50.0 100.0 0.6 73.6
+    ...W/Facebook/API/Profile.pm 85.7 n/a 33.3 60.0 100.0 0.7 78.7
+    ...WW/Facebook/API/Update.pm 96.0 n/a 33.3 85.7 100.0 0.6 89.5
+    ...WWW/Facebook/API/Users.pm 88.9 n/a 33.3 66.7 100.0 0.7 81.8 Total
+    85.7 62.7 32.4 77.9 100.0 100.0 78.4 ---------------------------- ------
+    ------ ------ ------ ------ ------ ------
 
 AUTHOR
     David Romano "<unobe@cpan.org>"
