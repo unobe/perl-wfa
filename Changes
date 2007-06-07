@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Tue Jun  5 23:35:48 PDT 2007
+HEAD   Wed Jun  6 21:22:31 PDT 2007
 	Ran through Perl::Critic and added tests (not included in MANIFEST)
 	Added method call_success in API.pm to simplify error tracking
 	Added method get_infinite_session_url to API.pm

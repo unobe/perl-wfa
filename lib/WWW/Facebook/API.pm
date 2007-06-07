@@ -793,6 +793,10 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
+=head1 SOURCE REPOSITORY
+
+http://code.google.com/p/perl-www-facebook-api/
+
 =head1 TODO
 
 Add tests to get better coverage.
