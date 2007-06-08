@@ -10,7 +10,7 @@ SYNOPSIS
         my $client = WWW::Facebook::API->new(
             desktop        => 1,
             throw_errors   => 1,
-            parse           => 1,
+            parse          => 1,
         );
     
         print "Enter your public API key: ";
@@ -44,7 +44,7 @@ SYNOPSIS
         print Dumper $quotes_perl;
     
         $client->auth->logout;
-    
+
 DESCRIPTION
     A Perl implementation of the Facebook API, working off of the canonical
     Java and PHP implementations. By default it uses JSON::Any to parse the
@@ -52,7 +52,8 @@ DESCRIPTION
     raw response in either XML or JSON (See the "parse" method below).
 
 SUBROUTINES/METHODS
-    new Returns a new instance of this class. You are able to pass in any of
+    new( %params )
+        Returns a new instance of this class. You are able to pass in any of
         the attribute method names in WWW::Facebook::API to set its value:
 
             my $client = WWW::Facebook::API->new(
@@ -77,20 +78,40 @@ NAMESPACE METHODS
     CamelCase.
 
     auth
-            my $token = $client->auth->create_token;
-            $client->auth->get_session( $token );
-
-        You only really need to call $client->auth->get_session. See
+        For a web app, you only really need to call
+        "$client-"auth->get_session> without parameters. See
         WWW::Facebook::API::Auth. If you have the desktop attribute set to
         true and $token isn't passed in, the return value from
-        $client->auth->create_token will be used. If the desktop attribute
+        "$client-"auth->create_token> will be used. If the desktop attribute
         is set to false and $token isn't passed in, the return value from
-        $client->secret will be used:
+        "$client-"secret> will be used. So for web apps, these are
+        synonymous:
 
+            $client->auth->get_session( $client->secret );
             $client->auth->get_session;
 
+        For desktop apps, these are synonymous:
+
+            $client->auth->get_session( $client->auth->create_token );
+            $client->auth->get_session;
+
+        "get_session" automatically sets "session_uid", "session_key", and
+        "session_expires", and returns nothing. The other methods are
+        "login()" and "logout()":
+
+            $client->auth->login( sleep => $sleep_seconds, browser => $browser_cmd );
+            $client->auth->logout;
+
+        See WWW::Facebook::API::Auth for details.
+
     canvas
-        See WWW::Facebook::API::Canvas.
+        Work with the canvas. See WWW::Facebook::API::Canvas.
+
+            $response = $client->canvas->get_user( $q )
+            $response = $client->canvas->get_fb_params( $q )
+            $response = $client->canvas->validate_sig( $q )
+            $response = $client->canvas->in_fb_canvas( $q )
+            $response = $client->canvas->in_frame( $q )
 
     events
         events namespace of the API (See WWW::Facebook::API::Events). All
@@ -119,14 +140,14 @@ NAMESPACE METHODS
             $response 
                 = $client->feed->publish_story_to_user(
                     title   => 'title',
-                    body    => 'body',
+                    body    => 'markup',
                     priority => 5,
                     ...
             );
             $response 
                 = $client->feed->publish_action_of_user(
                     title   => 'title',
-                    body    => 'body',
+                    body    => 'markup',
                     priority => 7,
                     ...
             );
@@ -139,15 +160,15 @@ NAMESPACE METHODS
             $response = $client->friends->get;
             $response = $client->friends->get_app_users;
             $response
-                = $client->friends->are_friends( uids => [1,5,7,8], uids2 => [2,3,4]);
+                = $client->friends->are_friends( uids1 => [1,5,8], uids2 => [2,3,4] );
 
     groups
         groups namespace of the API (See WWW::Facebook::API::Groups). All
         method names from the Facebook API are lower_cased instead of
         CamelCase:
 
-            $response = $client->groups->get_members( gid => 32 );
             $response = $client->groups->get( uid => 234324, gids => [2423,334] );
+            $response = $client->groups->get_members( gid => 32 );
 
     notifications
         notifications namespace of the API (See
@@ -156,16 +177,16 @@ NAMESPACE METHODS
 
             $response = $client->notifications->get;
             $response = $client->notifications->send(
-                to_ids => [1],
+                to_ids => [ 1, 3 ],
                 markup => 'markup',
                 no_email => 1,
             );
             $response = $client->notifications->send_request(
-                to_ids => [1],
+                to_ids => [ 1, 2 ],
                 type => 'event',
                 content => 'markup',
-                image   => 'string',
-                invite  => 0,
+                image   => 'image url',
+                invite  => 0|1,
             );
 
     photos
@@ -173,8 +194,7 @@ NAMESPACE METHODS
         method names from the Facebook API are lower_cased instead of
         CamelCase:
 
-            $response
-                = $client->photos->add_tag(
+            $response = $client->photos->add_tag(
                     pid => 2,
                     tag_uid => 3,
                     tag_text => "me",
@@ -223,56 +243,79 @@ NAMESPACE METHODS
 ATTRIBUTE METHODS
     These are methods to get/set the object's attributes.
 
-    api_key
+    api_key( $new_api_key )
         The developer's API key. See the Facebook API documentation.
 
-    api_version
+    api_version( $new_version )
         Which version to use (default is "1.0", which is the only one
         supported currently. Corresponds to the argument "v" that is passed
         in to methods as a parameter.
 
-    app_path
+    app_path()
         If using the Facebook canvas, the path to your application. For
         example if your application is at http://apps.facebook.com/example/
         this should be "example".
 
-    apps_uri
+    apps_uri()
         The apps uri for Facebook apps. The default is
         http://apps.facebook.com/.
 
-    callback
+    callback( $new_default_callback )
         The callback URL for your application. See the Facebook API
         documentation. Just a convenient place holder for the value.
 
-    call_success
+    call_success( $is_success, $error_message )
         Takes in two values, the first setting the object's
         last_call_success attribute, and the second setting the object's
         last_error attribute. Returns an array reference containing the
-        last_call_success and last_error values, in that order.
+        last_call_success and last_error values, in that order:
 
-    debug
+            my $response = $client->call_success( 1, undef );
+            if ( $response->[0] == 1 ) {
+                print 'Last call successful';
+            }
+            if ( not defined $response->[1] ) {
+                print 'Error message is undefined';
+            }
+
+            $client->call_success( 0,'2: The service is not available at this time.');
+
+            $response = $client->call_success;
+            if ( not $response->[0] ) {
+                print 'Last call unsuccessful';
+            }
+            if ( not defined $response->[1] ) {
+                print "Error $response->[1]";
+            }
+
+        The "call" method calls this method, and shouldn't need to be called
+        to set anything, just to get the value later if "throw_errors" is
+        false.
+
+    debug(0|1)
         A boolean set to either true or false, determining if debugging
-        messages should be carped for REST calls.
+        messages should be carped for REST calls. Defaults to 0.
 
-    desktop
+    desktop(0|1)
         A boolean signifying if the client is being used for a desktop
-        application. See the Facebook API documentation.
+        application. Defaults to 0. See the Facebook API documentation.
 
     format('JSON'|'XML')
         The default format to use if none is supplied with an API method
         call. Currently available options are XML and JSON. Defaults to
         JSON.
 
-    last_call_success
-        A boolean. True if the last call was a success, false otherwise.
+    last_call_success(1|0)
+        A boolean set to true or false, to show whether the last call was
+        succesful or not. Called by "call_success". Defaults to 1.
 
-    last_error
+    last_error( $error_message )
         A string holding the error message of the last failed call to the
-        REST server.
+        REST server. Called by "call_success". Defaults to undef.
 
-    next
-        See the Facebook API documentation. Just a convenient place holder
-        for the value.
+    next( $new_default_next_url )
+        See the Facebook API documentation's Authentication Guide. Just a
+        convenient place holder for the value.
 
     parse(1|0)
         Defaults to 1. If set to true, the response returned by each method
@@ -281,40 +324,43 @@ ATTRIBUTE METHODS
         will be returned. (The response string is unescaped if the 'desktop'
         attribute is false).
 
-    popup
-        See the Facebook API documentation. Just a convenient place holder
-        for the value.
+    popup( $popup )
+        See the Facebook API documentation's Authentication Guide. Just a
+        convenient place holder for the value.
 
-    secret
+    secret( $new_secret_key )
         For a desktop application, this is the secret that is used for
         calling "auth-"create_token> and "auth-"get_session>. See the
         Facebook API documentation under Authentication.
 
-    server_uri
+    server_uri( $new_server_uri )
         The server uri to access the Facebook REST server. Default is
-        'http://api.facebook.com/restserver.php'. See the Facebook API
+        'http://api.facebook.com/restserver.php'. Used to make calls to the
+        Facebook server, and useful for testing. See the Facebook API
         documentation.
 
-    session_expires
-        The session expire timestamp for the client's user. See the Facebook
+    session_expires( $new_expires )
+        The session expire timestamp for the client's user. Automatically
+        set when "$client-"auth->get_session> is called. See the Facebook
         API documentation.
 
-    session_key
-        The session key for the client's user. See the Facebook API
+    session_key( $new_key )
+        The session key for the client's user. Automatically set when
+        "$client-"auth->get_session> is called. See the Facebook API
         documentation.
 
-    session_uid
-        The session's uid for the client's user. See the Facebook API
+    session_uid( $new_uid )
+        The session's uid for the client's user. Automatically set when
+        "$client-"auth->get_session> is called. See the Facebook API
         documentation.
 
-    skipcookie
-        See the Facebook API documentation. Just a convenient place holder
-        for the value.
+    skipcookie(0|1)
+        See the Facebook API documentation's Authentication Guide. Just a
+        convenient place holder for the value.
 
-    throw_errors
-        A boolean set to either true of false, signifying whether or not
-        log_error should confess when an error is returned from the REST
-        server.
+    throw_errors(0|1)
+        A boolean set to either true of false, signifying whether or not to
+        "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
         The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.3".
@@ -331,26 +377,49 @@ PUBLIC METHODS
         Generates a sig when given a parameters hash reference and a secret
         key.
 
-    get_facebook_url
+    get_facebook_url( $subdomain )
         Returns the URL to Facebook. You can specifiy a specific network as
-        a parameter.
+        a parameter:
+
+            $response = $client->get_facebook_url( 'apps' );
+            print $response;    # prints http://apps.facebook.com
 
     get_add_url( %params)
         Returns the URL to add your application with the parameters (that
-        are defined) included. If the "next" parameter is passed in, it's
-        escaped. Used for platform applications.
+        are given) included. Note that the API key and the API version
+        parameters are also included automatically. If the "next" parameter
+        is passed in, it's string-escaped. Used for platform applications:
+
+            $response = $client->get_add_url( next => 'http://my.website.com' );
+
+            # prints http://www.facebook.com/app.php?api_key=key&v=1.0
+            #        &next=http%3A%2F%2Fmy.website.com
+            print $response;
 
     get_infinite_session_url()
         Returns the URL for the user to generate an infinite session for
-        your application.
+        your application:
+
+            $response = $client->get_infinite_session_url;
+
+            # prints http://www.facebook.com/codegen.php?api_key=key&v=1.0
+            print $response;
 
     get_login_url( %params )
         Returns the URL to login to your application with the parameters
         (that are defined) included. If the "next" parameter is passed in,
-        it's escaped.
+        it's string-escaped:
+
+            $response = $client->get_login_url( next => 'http://my.website.com' );
+
+            # prints http://www.facebook.com/login.php?api_key=key&v=1.0
+            #        &next=http%3A%2F%2Fmy.website.com
+            print $response;
 
     get_app_url
         Returns the URL to your application, if using the Facebook canvas.
+        Uses <$client->app_path>, which you have to set yourself (See
+        <app_path> below).
 
     log_string($params_hashref, $response)
         Pass in the params and the response from a call, and it will make a
@@ -364,7 +433,7 @@ PUBLIC METHODS
         Returns its parameter with all the escape sequences unescaped. If
         you're using a web app, this is done automatically to the response.
 
-    verify_sig( params => $params_hashref, sig => expected_sig )
+    verify_sig( params => $params_hashref, sig => $expected_sig )
         Checks the signature for a given set of parameters against an
         expected value.
 
@@ -380,7 +449,7 @@ PRIVATE METHODS
         supplied.
 
     _format_params($params_hashref)
-        Format parameters according to Facebook API spec.
+        Format parameters according to Facebook API specification.
 
     _post_request( $params_hashref, $secret )
         Used by "call" to post the request to the REST server and return the
@@ -426,6 +495,9 @@ BUGS AND LIMITATIONS
     Please report any bugs or feature requests to
     "bug-www-facebook-api@rt.cpan.org", or through the web interface at
     <http://rt.cpan.org>.
+
+SOURCE REPOSITORY
+    http://code.google.com/p/perl-www-facebook-api/
 
 TODO
     Add tests to get better coverage.
