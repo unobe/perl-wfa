@@ -46,25 +46,30 @@ Methods for updating FBML references with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=back
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+=head1 METHODS
+
+=over
+
+=item base()
+
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
 =item set_ref_handle( handle => 'handleName', fbml => 'fbml' )
 
 The fbml.setRefHandle method of the Facebook API. See this page on the wiki:
 http://wiki.f8.facebook.com/index.php/Fb:ref
 
-=item refresh_img_src( url => '' )
+=item refresh_img_src( url => $url )
 
 The fbml.refreshImgSrc method of the Facebook API.
 
-=item refresh_ref_url( url => '' )
+=item refresh_ref_url( url => $url )
 
 The fbml.refreshRefUrl method of the Facebook API.
 
@@ -77,9 +82,8 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::FBML requires no configuration files or
-environment variables.
-
+WWW::Facebook::API::FBML requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 

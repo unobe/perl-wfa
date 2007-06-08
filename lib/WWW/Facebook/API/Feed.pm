@@ -56,22 +56,57 @@ Methods for accessing feeds with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=back
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+=head1 METHODS
 
-=item publish_story_to_user
+=over
 
-The feed.publishStoryToUser method of the Facebook API.
+=item base()
 
-=item publish_action_of_user
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-The feed.publishActionOfUser method of the Facebook API.
+=item publish_story_to_user( %params )
+
+The feed.publishStoryToUser method of the Facebook API. C<title> is the only
+parameter required.
+
+    $client->feed->publish_action_of_user(
+        title           => 'title',
+        body            => 'markup',
+        priority        => int rand(100),
+        image_1         => 'image url',
+        image_1_link    => 'destination url',
+        image_2         => 'image url',
+        image_2_link    => 'destination url',
+        image_3         => 'image url',
+        image_3_link    => 'destination url',
+        image_4         => 'image url',
+        image_4_link    => 'destination url',
+    );
+
+=item publish_action_of_user( %params )
+
+The feed.publishActionOfUser method of the Facebook API. C<title> is the only
+parameter required.
+
+    $client->feed->publish_action_of_user(
+        title           => 'title',
+        body            => 'markup',
+        priority        => int rand(100),
+        image_1         => 'image url',
+        image_1_link    => 'destination url',
+        image_2         => 'image url',
+        image_2_link    => 'destination url',
+        image_3         => 'image url',
+        image_3_link    => 'destination url',
+        image_4         => 'image url',
+        image_4_link    => 'destination url',
+    );
 
 =back
 
@@ -81,8 +116,8 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Feed requires no configuration files or
-environment variables.
+WWW::Facebook::API::Feed requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 

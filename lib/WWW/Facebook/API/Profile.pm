@@ -55,20 +55,19 @@ Methods for accessing profiles with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=item base()
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-=item set_fbml( markup => '', uid => '' )
+=item set_fbml( markup => $fbml_markup, uid => $single_uid )
 
 The profile.setFBML method of the Facebook API.
 
-=item get_fbml( uid => '' )
+=item get_fbml( uid => $single_uid )
 
 The profile.getFBML method of the Facebook API.
 
@@ -88,8 +87,8 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Profile requires no configuration files or
-environment variables.
+WWW::Facebook::API::Profile requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 

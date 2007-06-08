@@ -82,53 +82,70 @@ This document describes WWW::Facebook::API::Canvas version 0.3.3
 
 Methods for using the canvas with L<WWW::Facebook::API>
 
-The C<$q> parameter should implement the param method (for example
-a L<CGI> or L<Apache::Request> object).
+The C<$q> parameter should implement the param method (for example a L<CGI> or
+L<Apache::Request> object).
 
 =head1 SUBROUTINES/METHODS 
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=back
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+=head1 METHODS
 
-=item get_user($q)
+=over
 
-Return the UID of the canvas user or "" if it does not exist.
+=item base()
 
-=item get_fb_params($q)
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-Return a hash reference to the signed parameters sent via Facebook.
+=item get_user( $q )
 
-=item validate_sig($q)
+Return the UID of the canvas user or "" if it does not exist (See
+L<DESCRIPTION>):
 
-Return true if the signature on the $q object is valid for this application.
+    $response = $client->canvas->get_user( $q )
 
-=item in_fb_canvas($q)
+=item get_fb_params( $q )
 
-Return true if inside a canvas.
+Return a hash reference to the signed parameters sent via Facebook (See
+L<DESCRIPTION>):
 
-=item in_frame($q)
+    $response = $client->canvas->get_fb_params( $q )
 
-Return true if inside a frame or canvas.
+=item in_fb_canvas( $q )
+
+Return true if inside a canvas (See L<DESCRIPTION>):
+
+    $response = $client->canvas->in_fb_canvas( $q )
+
+=item in_frame( $q )
+
+Return true if inside a frame or canvas (See L<DESCRIPTION>):
+
+    $response = $client->canvas->in_fb_canvas( $q )
+
+=item validate_sig( $q )
+
+Return true if the signature on the $q object is valid for this application
+(See L<DESCRIPTION>):
+
+    $response = $client->canvas->validate_sig( $q )
 
 =back
 
 =head1 DIAGNOSTICS
 
-This module is used by L<WWW::Facebook::API> and right now does
-not have any unique error messages.
+None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Canvas requires no configuration files or
-environment variables.
+WWW::Facebook::API::Canvas requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 
@@ -148,12 +165,14 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
+David Leadbeater  C<< http://dgl.cx >>
 David Romano  C<< <unobe@cpan.org> >>
 
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007, David Leadbeater C<< http://dgl.cx >>.
+David Romano C<< <unobe@cpan.org> >>. All rights reserved. 
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

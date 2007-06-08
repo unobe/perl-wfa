@@ -52,27 +52,41 @@ Methods for accessing friends with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=back
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+=head1 METHODS
 
-=item get
+=over
 
-The friends.get method of the Facebook API.
+=item base()
 
-=item get_app_users
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-The friends.getAppUsers method of the Facebook API.
+=item get()
 
-=item are_friends
+The friends.get method of the Facebook API:
+
+    $response = $client->friends->get;
+
+=item get_app_users()
+
+The friends.getAppUsers method of the Facebook API:
+
+    $response = $client->friends->get_app_users;
+
+=item are_friends( uids1 => [ ... ], uids2 => [ ... ] )
 
 The friends.areFriends method of the Facebook API. The two arguments are array
-refs that make up an associative array. See the API for further details.
+refs that make up an associative array:
+
+    $response
+        = $client->friends->are_friends( uids1 => [1,7,8], uids2 => [2,3,4] );
+
+See the Facebook API Documentation for more information.
 
 =back
 
@@ -82,8 +96,8 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Friends requires no configuration files or
-environment variables.
+WWW::Facebook::API::Friends requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 

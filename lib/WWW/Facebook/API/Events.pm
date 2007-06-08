@@ -52,34 +52,42 @@ Methods for accessing events with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=back
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+=head1 METHODS
 
-=item get
+=over
 
-The events.get method of the Facebook API.
+=item base()
 
-=item get_members
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-The events.getMembers method of the Facebook API.
+=item get( uid => $uid, eids => [ ... ] )
+
+The events.get method of the Facebook API:
+
+    $response = $client->events->get( uid => 234233, eids => [23,2343,54545] );
+
+=item get_members( eid => $event_id )
+
+The events.getMembers method of the Facebook API:
+
+    $response = $client->events->get_members( eid => 233 );
 
 =back
 
 =head1 DIAGNOSTICS
 
-This module is used by L<WWW::Facebook::API> and right now does
-not have any unique error messages.
+None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Events requires no configuration files or
-environment variables.
+WWW::Facebook::API::Events requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 

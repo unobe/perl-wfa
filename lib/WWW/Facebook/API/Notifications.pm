@@ -55,33 +55,47 @@ Methods for accessing notification information with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=item base()
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-=item get
+=item get()
 
-The notifications.get method of the Facebook API.
+The notifications.get method of the Facebook API:
 
-=item send
+    $response = $client->notifications->get;
 
-The notifications.send method of the Facebook API.
+=item send( to_ids => [ @uids ], markup => $fbml_markup, no_email => 0|1 )
 
-=item send_request
+The notifications.send method of the Facebook API:
 
-The notifications.sendRequest method of the Facebook API.
+    $response = $client->notifications->send(
+        to_ids => [1],
+        markup => 'markup',
+        no_email => 1,
+    );
+
+=item send_request( %params )
+
+The notifications.sendRequest method of the Facebook API:
+
+    $response = $client->notifications->send_request(
+        to_ids => [1],
+        type => 'event',
+        content => 'markup',
+        image   => 'image url',
+        invite  => 0|1,
+    );
 
 =back
 
 =head1 DIAGNOSTICS
 
-This module is used by L<WWW::Facebook::API> and right now does
-not have any unique error messages.
+None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

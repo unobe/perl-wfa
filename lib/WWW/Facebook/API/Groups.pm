@@ -51,34 +51,36 @@ Methods for accessing groups with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=item base()
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-=item get
+=item get( uids => [ @uids ], gids => [ @gids ] )
 
-The groups.get method of the Facebook API.
+The groups.get method of the Facebook API:
 
-=item get_members
+    $response = $client->groups->get( uid => 234324, gids => [2423,334] );
 
-The groups.get_members method of the Facebook API.
+=item get_members( gid => $gid )
+
+The groups.get_members method of the Facebook API:
+
+    $response = $client->groups->get_members( gid => 32 );
 
 =back
 
 =head1 DIAGNOSTICS
 
-This module is used by L<WWW::Facebook::API> and right now does
-not have any unique error messages.
+None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Groups requires no configuration files or
-environment variables.
+WWW::Facebook::API::Groups requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 

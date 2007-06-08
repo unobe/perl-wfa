@@ -154,21 +154,28 @@ Returns a new instance of this class.
 
 =item base()
 
-The L<WWW::Facebook::API> object that the current object is attached to. (Used
-to access settings.)
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
 =item create_token()
 
 auth.createToken of the Facebook API. Will always return the token string,
-regardles of the C<parse> setting in L<WWW::Facebook::API>.
+regardles of the C<parse> setting in L<WWW::Facebook::API>:
+
+    $token = $client->auth->create_token;
 
 =item get_session( $auth_token )
 
-auth.getSession of the Facebook API. If you have a desktop app,
-C<create_token> will be called if C<$auth_token> isn't passed in. If you have
-a web app, the C<secret> in L<WWW::Facebook::API> will be used if
-C<$auth_token> isn't passed in. Either way, it automatically sets
-C<session_uid> C<session_key> and C<session_expires>. Nothing is returned.
+auth.getSession of the Facebook API. If you have the desktop attribute set to
+true and C<$token> isn't passed in, the return value from
+C<$client->auth->create_token> will be used. If the desktop attribute is set
+to false and C<$token> isn't passed in, the return value from
+C<$client->secret> will be used (making the these calls exactly the same):
+
+    $client->auth->get_session( $client->secret );
+    $client->auth->get_session;
+
+C<get_session> automatically sets C<session_uid>, C<session_key>, and
+C<session_expires>, and returns nothing.
 
 =item login( sleep => $sleep , browser => $browser_cmd )
 
@@ -215,8 +222,8 @@ the Facebook TOS A.9.iv.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Auth requires no configuration files or
-environment variables.
+WWW::Facebook::API::Auth requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 

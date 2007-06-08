@@ -55,40 +55,50 @@ Methods for accessing users with L<WWW::Facebook::API>
 
 =over
 
-=item new
+=item new()
 
 Returns a new instance of this class.
 
-=item base
+=item base()
 
-The L<WWW::Facebook::API::Base> object to use to make calls to
-the REST server.
+The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
-=item get_info
+=item get_info( uids => $uids, fields => $fields )
 
-The users.getInfo method of the Facebook API.
+The users.getInfo method of the Facebook API:
+
+    $response = $client->users->get_info(
+        uids => [ 2343, 3435 ],
+        fields => 'about_me'
+    );
+    $response = $client->users->get_info(
+        uids => 2343,
+        fields => [ qw/about_me quotes/ ]
+    );
 
 =item get_logged_in_user
 
-The users.getLoggedInUser method of the Facebook API.
+The users.getLoggedInUser method of the Facebook API:
+
+    $uid = $client->users->get_logged_in_user;
 
 =item is_app_added
 
-The users.getIsAppAdded method of the Facebook API. (Currently not documented,
-but is present in the PHP client.) Example:
+The users.getIsAppAdded method of the Facebook API (currently not documented,
+but is present in the PHP client):
+
     $user_has_app = $client->users->is_app_added;
 
 =back
 
 =head1 DIAGNOSTICS
 
-This module is used by L<WWW::Facebook::API> and right now does
-not have any unique error messages.
+None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Users requires no configuration files or
-environment variables.
+WWW::Facebook::API::Users requires no configuration files or environment
+variables.
 
 =head1 DEPENDENCIES
 
