@@ -120,8 +120,10 @@ sub call {
     $params->{'sig'}    = $sig;
     $params->{'secret'} = $secret;
     carp $self->log_string( $params, $response ) if $self->debug;
-    if ( $response =~ m/ <error_code> (\d+) .* <error_msg> ([^<]+)
-        |   \{ "error_code" \D (\d+) .* "error_msg"[^"]+ "([^"]+)" /xms ) {
+    if ($response =~ m/ <error_code> (\d+) .* <error_msg> ([^<]+)
+        |   \{ "error_code" \D (\d+) .* "error_msg"[^"]+ "([^"]+)" /xms
+        )
+    {
         $self->call_success( 0, "$1: $2" );
 
         confess "Error during REST $method call:",
@@ -214,6 +216,12 @@ sub _parse {
     ## no critic
     eval q{use JSON::Any};
     croak "Unable to load JSON module for parsing:$@\n" if $@;
+
+    if ( $self->debug ) {
+        carp 'JSON::Any is using '
+            . JSON::Any->handler
+            . " to parse\n$response\n\n";
+    }
     return JSON::Any->new->decode($response);
 }
 

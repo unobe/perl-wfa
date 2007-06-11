@@ -1,5 +1,8 @@
 Revision history for WWW-Facebook-API
 
+HEAD   Sun Jun 10 23:10:45 PDT 2007
+	Added debug message in _parse
+
 0.3.3  Thu Jun  7 22:26:17 PDT 2007
 	Ran through Perl::Critic and added tests (not included in MANIFEST)
 	Added method call_success in API.pm to simplify error tracking
