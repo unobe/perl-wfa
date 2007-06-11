@@ -27,6 +27,7 @@ our @namespaces = qw(
 
 for (@namespaces) {
     my $subclass = "\L$_";
+    ## no critic
     eval qq(
         use WWW::Facebook::API::$_;
         sub $subclass {
@@ -58,7 +59,8 @@ our %attributes = (
 );
 
 for ( keys %attributes ) {
-    eval qq(
+    ## no critic
+    eval qq( 
         sub $_ {
             my \$self = shift;
             return \$self->{$_} = shift if \@_;
