@@ -59,14 +59,14 @@ our %attributes = (
 
 for ( keys %attributes ) {
     eval qq(
-        sub $attribute {
+        sub $_ {
             my \$self = shift;
             return \$self->{$_} = shift if \@_;
             return \$self->{$_} if defined \$self->{$_};
             return \$self->{$_} = '$attributes{$_}';
         }
     );
-    croak "Cannot create attribute $attribute: $@\n" if $@;
+    croak "Cannot create attribute $_: $@\n" if $@;
 }
 
 sub new {
@@ -142,7 +142,7 @@ sub call {
 
 sub generate_sig {
     my ( $self, $params, $secret) = @_;
-    return md5_hex( ( map {"$_=$params->{$_}"} sort keys %$params ), $secret );
+    return md5_hex( ( map {"$_=".$params->{$_}} sort keys %$params ), $secret );
 }
 
 sub verify_sig {

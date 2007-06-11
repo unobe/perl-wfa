@@ -25,14 +25,11 @@ my $secret = 'garden';
 $params{'markup'} = join '', <DATA>;
 my $api = WWW::Facebook::API->new;
 
-is $api->generate_sig(
-    params => \%params,
-    secret => $secret
-    ),
+is $api->generate_sig(\%params,$secret),
     $sig, 'signature generation okay';
 
 $api->secret($secret);
-is $api->verify_sig( params => \%params, sig => $sig ), 1, 'verify_sig ok';
+is $api->verify_sig( $sig, \%params ), 1, 'verify_sig ok';
 
 __DATA__
 <h3>Friends With Shared Interests</h3>
