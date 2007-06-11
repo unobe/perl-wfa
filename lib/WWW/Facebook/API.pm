@@ -114,7 +114,7 @@ sub call {
     $params->{'method'} ||= $method;
     $self->_check_values_of($params);
     my $sig =
-        $self->generate_sig( $params, $self->secret );
+        $self->generate_sig( params => $params, secret => $self->secret );
     $response = $self->_post_request( $params, $secret );
 
     $params->{'sig'}    = $sig;
@@ -143,13 +143,17 @@ sub call {
 }
 
 sub generate_sig {
-    my ( $self, $params, $secret) = @_;
-    return md5_hex( ( map {"$_=".$params->{$_}} sort keys %$params ), $secret );
+    my ($self, %args) = @_;
+    my %params = %{ $args{'params'} };
+    return md5_hex( ( map {"$_=$params{$_}"} sort keys %params ), $args{'secret'} );
 }
 
 sub verify_sig {
-    my ( $self, $sig, $params ) = @_;
-    return $sig eq $self->generate_sig( $params, $self->secret );
+    my ($self, %args) = @_;
+    return $args{'sig'} eq $self->generate_sig(
+        params => $args{'params'},
+        secret => $self->secret
+    );
 }
 
 sub session {
@@ -252,7 +256,7 @@ sub _post_request {
     my ( $self, $params, $secret, $sig, $post_params ) = @_;
 
     $self->_format_params($params);
-    $sig = $self->generate_sig( $params, $self->secret );
+    $sig = $self->generate_sig( params => $params, secret => $self->secret );
     $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
     push @{$post_params}, q{sig}, $sig;
 
@@ -691,7 +695,7 @@ to be called (e.g., 'auth.getSession'), and key/value pairs for the parameters
 to use:
     $client->call( 'auth.getSession', auth_token => 'b3324235e' );
 
-=item generate_sig( $params_hashref, $secret )
+=item generate_sig( params => $params_hashref, secret => $secret )
 
 Generates a sig when given a parameters hash reference and a secret key.
 
@@ -756,7 +760,7 @@ Sets the C<user>, C<session_key>, and C<session_expires> all at once.
 Returns its parameter with all the escape sequences unescaped. If you're using
 a web app, this is done automatically to the response.
 
-=item verify_sig( $expected_sig, $params_hashref )
+=item verify_sig( secret => $expected_sig, params => $params_hashref )
 
 Checks the signature for a given set of parameters against an expected value.
 
