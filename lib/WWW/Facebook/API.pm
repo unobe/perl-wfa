@@ -25,9 +25,8 @@ our @namespaces = qw(
     Users
 );
 
-my $create_subclass_code = sub {    ## no critic
-    local $_ = shift;
-    my $subclass = shift;
+for (@namespaces) {
+    my $subclass = "\L$_";
     eval qq(
         use WWW::Facebook::API::$_;
         sub $subclass {
@@ -36,11 +35,6 @@ my $create_subclass_code = sub {    ## no critic
         }
     );
     croak "Cannot create subclass $subclass: $@\n" if $@;
-};
-
-for (@namespaces) {
-    my $subclass = "\L$_";
-    $create_subclass_code->( $_, $subclass );
 }
 
 our %attributes = (
@@ -63,22 +57,16 @@ our %attributes = (
     ),
 );
 
-my $create_attribute_code = sub {    ## no critic
-    my $attribute = shift;
-    my $default   = shift;
+for ( keys %attributes ) {
     eval qq(
         sub $attribute {
             my \$self = shift;
-            return \$self->{$attribute} = shift if \@_;
-            return \$self->{$attribute} if defined \$self->{$attribute};
-            return \$self->{$attribute} = '$default';
+            return \$self->{$_} = shift if \@_;
+            return \$self->{$_} if defined \$self->{$_};
+            return \$self->{$_} = '$attributes{$_}';
         }
     );
     croak "Cannot create attribute $attribute: $@\n" if $@;
-};
-
-for ( keys %attributes ) {
-    $create_attribute_code->( $_, $attributes{$_} );
 }
 
 sub new {
@@ -86,12 +74,13 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    $self->{'ua'} ||=
-        LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
+    $self->{'ua'} ||= LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
     my $is_attribute = join q{|}, keys %attributes;
     delete $self->{$_} for grep { !/^($is_attribute)$/xms } keys %{$self};
 
+    # set up default subclassers
     $self->$_($self) for map {"\L$_"} @namespaces;
+    # set up default attributes
     $self->$_ for keys %attributes;
 
     return $self;
@@ -125,7 +114,7 @@ sub call {
     $params->{'method'} ||= $method;
     $self->_check_values_of($params);
     my $sig =
-        $self->generate_sig( params => $params, secret => $self->secret );
+        $self->generate_sig( $params, $self->secret );
     $response = $self->_post_request( $params, $secret );
 
     $params->{'sig'}    = $sig;
@@ -152,26 +141,17 @@ sub call {
 }
 
 sub generate_sig {
-    my $self   = shift;
-    my (%args) = @_;
-    my %params = %{ $args{'params'} };
-
-    return md5_hex( ( map {"$_=$params{$_}"} sort keys %params ),
-        $args{'secret'} );
+    my ( $self, $params, $secret) = @_;
+    return md5_hex( ( map {"$_=$params->{$_}"} sort keys %$params ), $secret );
 }
 
 sub verify_sig {
-    my $self = shift;
-    my (%args) = @_;
-    return $args{'sig'} eq $self->generate_sig(
-        params => $args{'params'},
-        secret => $self->secret
-    );
+    my ( $self, $sig, $params ) = @_;
+    return $sig eq $self->generate_sig( $params, $self->secret );
 }
 
 sub session {
-    my $self = shift;
-    my %args = @_;
+    my ( $self, %args) = @_;
     $self->{"session_$_"} = $args{$_} for keys %args;
     return;
 }
@@ -220,7 +200,6 @@ sub _add_url_params {
         $params .= "&$_=$params{$_}";
     }
     return $params;
-
 }
 
 sub get_app_url {
@@ -265,7 +244,7 @@ sub _post_request {
     my ( $self, $params, $secret, $sig, $post_params ) = @_;
 
     $self->_format_params($params);
-    $sig = $self->generate_sig( params => $params, secret => $self->secret );
+    $sig = $self->generate_sig( $params, $self->secret );
     $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
     push @{$post_params}, q{sig}, $sig;
 
@@ -704,7 +683,7 @@ to be called (e.g., 'auth.getSession'), and key/value pairs for the parameters
 to use:
     $client->call( 'auth.getSession', auth_token => 'b3324235e' );
 
-=item generate_sig( params => $params_hashref, secret => $secret )
+=item generate_sig( $params_hashref, $secret )
 
 Generates a sig when given a parameters hash reference and a secret key.
 
@@ -769,7 +748,7 @@ Sets the C<user>, C<session_key>, and C<session_expires> all at once.
 Returns its parameter with all the escape sequences unescaped. If you're using
 a web app, this is done automatically to the response.
 
-=item verify_sig( params => $params_hashref, sig => $expected_sig )
+=item verify_sig( $expected_sig, $params_hashref )
 
 Checks the signature for a given set of parameters against an expected value.
 
