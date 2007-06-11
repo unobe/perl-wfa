@@ -76,12 +76,14 @@ sub new {
     my $class = ref $self || $self;
     $self = bless \%args, $class;
 
-    $self->{'ua'} ||= LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
+    $self->{'ua'} ||=
+        LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
     my $is_attribute = join q{|}, keys %attributes;
     delete $self->{$_} for grep { !/^($is_attribute)$/xms } keys %{$self};
 
     # set up default subclassers
     $self->$_($self) for map {"\L$_"} @namespaces;
+
     # set up default attributes
     $self->$_ for keys %attributes;
 
@@ -145,13 +147,14 @@ sub call {
 }
 
 sub generate_sig {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
     my %params = %{ $args{'params'} };
-    return md5_hex( ( map {"$_=$params{$_}"} sort keys %params ), $args{'secret'} );
+    return md5_hex( ( map {"$_=$params{$_}"} sort keys %params ),
+        $args{'secret'} );
 }
 
 sub verify_sig {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
     return $args{'sig'} eq $self->generate_sig(
         params => $args{'params'},
         secret => $self->secret
@@ -159,7 +162,7 @@ sub verify_sig {
 }
 
 sub session {
-    my ( $self, %args) = @_;
+    my ( $self, %args ) = @_;
     $self->{"session_$_"} = $args{$_} for keys %args;
     return;
 }
