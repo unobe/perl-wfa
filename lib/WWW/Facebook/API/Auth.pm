@@ -46,13 +46,12 @@ sub get_session {
     my $self = shift;
 
     my $token = shift;
+    croak q{Token needed for call to get_session} if not defined $token;
     if ( $self->base->desktop ) {
-        croak q{Token needed for call to get_session} if not defined $token;
         ( my $uri_https = $self->base->server_uri )
             =~ s{http://}{https://}xms;
         $self->base->server_uri($uri_https);
     }
-    $token ||= $self->base->secret;
 
     my ( $format, $parse ) = ( $self->base->format, $self->base->parse );
 
@@ -163,19 +162,20 @@ regardles of the C<parse> setting in L<WWW::Facebook::API>:
 
     $token = $client->auth->create_token;
 
-=item get_session( $auth_token )
+=item get_session( $token )
 
 auth.getSession of the Facebook API. If you have the desktop attribute set to
 true and C<$token> isn't passed in, the return value from
 C<$client->auth->create_token> will be used. If the desktop attribute is set
-to false and C<$token> isn't passed in, the return value from
-C<$client->secret> will be used (making the these calls exactly the same):
+to false the C<$token> must be the auth_token returned from Facebook to your
+web app for that user:
 
-    $client->auth->get_session( $client->secret );
-    $client->auth->get_session;
+    if ( $q->param('auth_token')  ) {
+        $client->auth->get_session( $q->param('auth_token') );
+    }
 
 C<get_session> automatically sets C<session_uid>, C<session_key>, and
-C<session_expires>, and returns nothing.
+C<session_expires> for C<$client>. It returns nothing.
 
 =item login( sleep => $sleep , browser => $browser_cmd )
 
@@ -206,6 +206,10 @@ http://developers.facebook.com/documentation.php?v=1.0&doc=auth )
 
 You are running a desktop app and you did not pass a token into get_session.
 You can create a token by calling create_token() or (better) login().
+
+You are running a web app and the user hasn't logged in to Facebook for your
+web app. When the user does so, an auth_token will be returned (as a
+parameter) to your callback url. Use that auth_token for the session.
 
 =item C< Don't know how to open browser for the system %s >
 

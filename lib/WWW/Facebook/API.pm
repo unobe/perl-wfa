@@ -376,27 +376,25 @@ All method names from the Facebook API are lower_cased instead of CamelCase.
 
 =item auth
 
-For a web app, you only really need to call C<$client->auth->get_session>
-without parameters. See L<WWW::Facebook::API::Auth>. If you have the desktop
-attribute set to true and C<$token> isn't passed in, the return value from
-C<$client->auth->create_token> will be used. If the desktop attribute is set
-to false and C<$token> isn't passed in, the return value from
-C<$client->secret> will be used. So for web apps, these are synonymous:
-
-    $client->auth->get_session( $client->secret );
-    $client->auth->get_session;
-
 For desktop apps, these are synonymous:
 
     $client->auth->get_session( $client->auth->create_token );
     $client->auth->get_session;
 
-C<get_session> automatically sets C<session_uid>, C<session_key>, and
-C<session_expires>, and returns nothing. The other methods are C<login()> and
-C<logout()>:
+And that's all you really have to do (but see L<WWW::Facebook::API::Auth> for
+details about opening a browser on *nix for Desktop apps). C<get_session>
+automatically sets C<session_uid>, C<session_key>, and C<session_expires> for
+C<$client>. It returns nothing.
 
-    $client->auth->login( sleep => $sleep_seconds, browser => $browser_cmd );
-    $client->auth->logout;
+If the desktop attribute is set to false the C<$token> must be the auth_token
+returned from Facebook to your web app for that user:
+
+    if ( $q->param('auth_token')  ) {
+        $client->auth->get_session( $q->param('auth_token') );
+    }
+
+C<get_session> automatically sets C<session_uid>, C<session_key>, and
+C<session_expires> for C<$client>. It returns nothing.
 
 See L<WWW::Facebook::API::Auth> for details.
 

@@ -1,9 +1,14 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Sun Jun 10 23:10:45 PDT 2007
+HEAD   Thu Jun 14 00:14:27 PDT 2007
 	Cleaned up attribute creators and namespace method creators
 	Changed verify_sig() and generate_sig() to make them a bit shorter.
 	Added debug message in _parse
+	Require auth_token for get_session() calls (was being set to secret
+	  if no token was passed in for web apps, and that was wrong)
+	Edited docs to clarify what needs to be done for web apps to call
+	  auth->get_session(). (Thanks Olaf Alders)
+	
 
 0.3.3  Thu Jun  7 22:26:17 PDT 2007
 	Ran through Perl::Critic and added tests (not included in MANIFEST)
