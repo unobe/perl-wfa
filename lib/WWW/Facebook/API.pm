@@ -141,7 +141,7 @@ sub call {
 
     undef $params;
 
-    return $response unless $self->parse;
+    return $response unless $self->parse and $self->format eq 'JSON';
 
     return $self->_parse($response);
 }
