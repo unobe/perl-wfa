@@ -157,7 +157,7 @@ sub verify_sig {
     my ( $self, %args ) = @_;
     return $args{'sig'} eq $self->generate_sig(
         params => $args{'params'},
-        secret => $self->secret
+        secret => $args{'secret'} || $self->secret,
     );
 }
 
@@ -763,7 +763,7 @@ Sets the C<user>, C<session_key>, and C<session_expires> all at once.
 Returns its parameter with all the escape sequences unescaped. If you're using
 a web app, this is done automatically to the response.
 
-=item verify_sig( secret => $expected_sig, params => $params_hashref )
+=item verify_sig( sig => $expected_sig, params => $params_hashref )
 
 Checks the signature for a given set of parameters against an expected value.
 
@@ -883,6 +883,26 @@ Total                          85.7   62.7   32.4   77.9  100.0  100.0   78.4
 =head1 AUTHOR
 
 David Romano  C<< <unobe@cpan.org> >>
+
+=head1 CONTRIBUTORS
+
+Clayton Scott C<< http://www.matrix.ca >>
+
+David Leadbeater C<< http://dgl.cx >>
+
+Matt Sickler C<< unknown >>
+
+Nick Gerakines C<< <nick@socklabs.com> >>
+
+Olaf Alders C<< <olaf@wundersolutions.com> >>
+
+Patrick Michael Kane C<< <pmk@wawd.com> >>
+
+Sean O'Rourke C<< <seano@cpan.org> >>
+
+Shawn Van Ittersum C<< none >>
+
+Thomas Sibley C<< <tsibley@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

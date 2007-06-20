@@ -78,29 +78,26 @@ NAMESPACE METHODS
     CamelCase.
 
     auth
-        For a web app, you only really need to call
-        "$client-"auth->get_session> without parameters. See
-        WWW::Facebook::API::Auth. If you have the desktop attribute set to
-        true and $token isn't passed in, the return value from
-        "$client-"auth->create_token> will be used. If the desktop attribute
-        is set to false and $token isn't passed in, the return value from
-        "$client-"secret> will be used. So for web apps, these are
-        synonymous:
-
-            $client->auth->get_session( $client->secret );
-            $client->auth->get_session;
-
         For desktop apps, these are synonymous:
 
             $client->auth->get_session( $client->auth->create_token );
             $client->auth->get_session;
 
-        "get_session" automatically sets "session_uid", "session_key", and
-        "session_expires", and returns nothing. The other methods are
-        "login()" and "logout()":
+        And that's all you really have to do (but see
+        WWW::Facebook::API::Auth for details about opening a browser on *nix
+        for Desktop apps). "get_session" automatically sets "session_uid",
+        "session_key", and "session_expires" for $client. It returns
+        nothing.
 
-            $client->auth->login( sleep => $sleep_seconds, browser => $browser_cmd );
-            $client->auth->logout;
+        If the desktop attribute is set to false the $token must be the
+        auth_token returned from Facebook to your web app for that user:
+
+            if ( $q->param('auth_token')  ) {
+                $client->auth->get_session( $q->param('auth_token') );
+            }
+
+        "get_session" automatically sets "session_uid", "session_key", and
+        "session_expires" for $client. It returns nothing.
 
         See WWW::Facebook::API::Auth for details.
 
@@ -433,7 +430,7 @@ PUBLIC METHODS
         Returns its parameter with all the escape sequences unescaped. If
         you're using a web app, this is done automatically to the response.
 
-    verify_sig( params => $params_hashref, sig => $expected_sig )
+    verify_sig( sig => $expected_sig, params => $params_hashref )
         Checks the signature for a given set of parameters against an
         expected value.
 
@@ -524,6 +521,25 @@ TODO
 
 AUTHOR
     David Romano "<unobe@cpan.org>"
+
+CONTRIBUTORS
+    Clayton Scott "http://www.matrix.ca"
+
+    David Leadbeater "http://dgl.cx"
+
+    Matt Sickler "unknown"
+
+    Nick Gerakines "<nick@socklabs.com>"
+
+    Olaf Alders "<olaf@wundersolutions.com>"
+
+    Patrick Michael Kane "<pmk@wawd.com>"
+
+    Sean O'Rourke "<seano@cpan.org>"
+
+    Shawn Van Ittersum "none"
+
+    Thomas Sibley "<tsibley@cpan.org>"
 
 LICENSE AND COPYRIGHT
     Copyright (c) 2007, David Romano "<unobe@cpan.org>". All rights

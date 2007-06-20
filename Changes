@@ -1,8 +1,8 @@
 Revision history for WWW-Facebook-API
 
 HEAD   Thu Jun 14 09:11:57 PDT 2007
-	Cleaned up attribute creators and namespace method creators
-	Changed verify_sig() and generate_sig() to make them a bit shorter.
+	Cleaned up attribute creators and namespace method creators (Thanks
+	  Matt Sickler)
 	Added debug message in _parse
 	Require auth_token for get_session() calls (was being set to secret
 	  if no token was passed in for web apps, and that was wrong)
@@ -10,6 +10,7 @@ HEAD   Thu Jun 14 09:11:57 PDT 2007
 	  auth->get_session(). (Thanks Olaf Alders)
 	XML is no longer parsed when the parse flag is true. (Thanks Olaf
 	  Alders)
+	Added CONTRIBUTORS section for those who've contributed ideas and code
 
 0.3.3  Thu Jun  7 22:26:17 PDT 2007
 	Ran through Perl::Critic and added tests (not included in MANIFEST)
