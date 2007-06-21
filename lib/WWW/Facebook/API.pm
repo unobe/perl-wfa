@@ -902,6 +902,8 @@ Sean O'Rourke C<< <seano@cpan.org> >>
 
 Shawn Van Ittersum C<< none >>
 
+Simon Cavalletto C<< <simonm@cavalletto.org> >>
+
 Thomas Sibley C<< <tsibley@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT

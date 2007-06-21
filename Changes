@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Thu Jun 14 09:11:57 PDT 2007
+HEAD   Wed Jun 20 17:43:58 PDT 2007
 	Cleaned up attribute creators and namespace method creators (Thanks
 	  Matt Sickler)
 	Added debug message in _parse
@@ -11,6 +11,8 @@ HEAD   Thu Jun 14 09:11:57 PDT 2007
 	XML is no longer parsed when the parse flag is true. (Thanks Olaf
 	  Alders)
 	Added CONTRIBUTORS section for those who've contributed ideas and code
+	canvas->in_frame now checks for 'in_iframe' rather than erroneous
+	  'in_frame'. Fixed doc example call, too. (Thanks Simon Cavalletto)
 
 0.3.3  Thu Jun  7 22:26:17 PDT 2007
 	Ran through Perl::Critic and added tests (not included in MANIFEST)

@@ -59,7 +59,7 @@ sub in_fb_canvas {
 sub in_frame {
     my ( $self, $q ) = @_;
     my $fb_params = $self->get_fb_params($q);
-    return 1 if $fb_params->{'in_canvas'} or $fb_params->{'in_frame'};
+    return 1 if $fb_params->{'in_canvas'} or $fb_params->{'in_iframe'};
     return;
 }
 
@@ -125,9 +125,9 @@ Return true if inside a canvas (See L<DESCRIPTION>):
 
 =item in_frame( $q )
 
-Return true if inside a frame or canvas (See L<DESCRIPTION>):
+Return true if inside an iframe or canvas (See L<DESCRIPTION>):
 
-    $response = $client->canvas->in_fb_canvas( $q )
+    $response = $client->canvas->in_frame( $q )
 
 =item validate_sig( $q )
 
