@@ -28,8 +28,13 @@ sub get_fb_params {
     my ( $self, $q ) = @_;
     return {
         map { (/^fb_sig_ (.*) $/xms)[0] => $q->param($_) }
-            sort grep {/^fb_sig_/xms} $q->param
+            grep {/^fb_sig_/xms} $q->param
     };
+}
+
+sub get_non_fb_params {
+    my ( $self, $q ) = @_;
+    return { map { $_ => $q->param($_) } grep { !/^fb_sig_/xms } $q->param };
 }
 
 sub validate_sig {
@@ -117,6 +122,14 @@ L<DESCRIPTION>):
 
     $response = $client->canvas->get_fb_params( $q )
 
+=item get_non_fb_params( $q )
+
+Return a hash reference to the parameters that are not part of the signed
+facebook parameters. This is useful if your app send a POST request to
+Facebook and you want to use the data you POSTed:
+
+    $non_fb_params = $client->canvas->get_non_fb_params( $q )
+
 =item in_fb_canvas( $q )
 
 Return true if inside a canvas (See L<DESCRIPTION>):
@@ -131,10 +144,12 @@ Return true if inside an iframe or canvas (See L<DESCRIPTION>):
 
 =item validate_sig( $q )
 
-Return true if the signature on the $q object is valid for this application
-(See L<DESCRIPTION>):
+Return a hash reference containing the fb_* params (with C<fb_> stripped) if
+the signature on the $q object is valid for this application (See
+L<DESCRIPTION>):
 
-    $response = $client->canvas->validate_sig( $q )
+    $fb_params = $client->canvas->validate_sig( $q )
+    # $fb_params doesn't contain a sig key
 
 =back
 

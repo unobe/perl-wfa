@@ -900,7 +900,7 @@ David Leadbeater C<< http://dgl.cx >>
 
 J. Shirley C<< <jshirley@gmail.com> >>
 
-Matt Sickler C<< unknown >>
+Matt Sickler C<< <imMute@mail.msk3.ath.cx> >>
 
 Nick Gerakines C<< <nick@socklabs.com> >>
 

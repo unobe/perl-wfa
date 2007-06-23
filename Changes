@@ -1,5 +1,9 @@
 Revision history for WWW-Facebook-API
 
+HEAD   Sat Jun 23 00:47:35 PDT 2007
+	Added canvas->get_non_fb_params() (Thanks Matt Sickler)
+	Clarified Canvas documentation for validate_sig() (Thanks Matt Sickler)
+
 0.3.4  Fri Jun 22 19:16:34 PDT 2007
 	Cleaned up attribute creators and namespace method creators (Thanks
 	  Matt Sickler)
