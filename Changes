@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Wed Jun 20 17:43:58 PDT 2007
+HEAD   Fri Jun 22 19:06:50 PDT 2007
 	Cleaned up attribute creators and namespace method creators (Thanks
 	  Matt Sickler)
 	Added debug message in _parse
@@ -13,6 +13,7 @@ HEAD   Wed Jun 20 17:43:58 PDT 2007
 	Added CONTRIBUTORS section for those who've contributed ideas and code
 	canvas->in_frame now checks for 'in_iframe' rather than erroneous
 	  'in_frame'. Fixed doc example call, too. (Thanks Simon Cavalletto)
+	JSON loading patch (Thanks J. Shirley)
 
 0.3.3  Thu Jun  7 22:26:17 PDT 2007
 	Ran through Perl::Critic and added tests (not included in MANIFEST)
