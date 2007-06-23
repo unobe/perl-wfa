@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Fri Jun 22 19:06:50 PDT 2007
+0.3.4  Fri Jun 22 19:16:34 PDT 2007
 	Cleaned up attribute creators and namespace method creators (Thanks
 	  Matt Sickler)
 	Added debug message in _parse
