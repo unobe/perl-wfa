@@ -54,6 +54,7 @@ our %attributes = (
             skipcookie  popup               next
             session_key session_expires     session_uid
             callback    app_path            ua
+            query
             )
     ),
 );
@@ -167,38 +168,84 @@ sub session {
     return;
 }
 
+sub redirect {
+    my $self = shift;
+    my $url  = shift;
+    $self->query(shift);
+
+    if ( $self->canvas->in_fb_canvas ) {
+        return qq{<fb:redirect url="$url" />};
+    }
+    elsif ( $url =~ m[^https?://([^/]*\.)?facebook\.com(:\d+)?]ixms ) {
+        return join q{},
+            map {"$_\n"}
+            '<script type="text/javascript">'
+            . qq{top.location.href = "$url"}
+            . '</script>';
+    }
+
+    croak 'Cannot redirect!' unless $self->query->can('redirect');
+
+    return $self->query->redirect($url);
+}
+
+sub require_add   { return shift->require( 'add',   @_ ); }
+sub require_frame { return shift->require( 'frame', @_ ); }
+sub require_login { return shift->require( 'login', @_ ); }
+
+sub require {    ## no critic
+    my $self = shift;
+    my $what = shift;
+    $self->query(shift) if @_;
+
+    if ( $what eq 'frame' ) {
+        return if $self->canvas->in_frame;
+        @_ = ( 'canvas' => 1 );
+        $what = 'login';
+    }
+
+    my $user = $self->users->get_logged_in_user();
+    if ( $what eq 'add' ) {
+        undef $user unless $self->canvas->get_fb_params->{'added'};
+    }
+    return $user if $user;
+
+    return $self->redirect( $self->get_url( $what, @_ ) );
+}
+
+sub get_facebook_url { return shift->get_url( 'facebook', @_ ); }
+sub get_add_url      { return shift->get_url( 'add',      @_ ); }
+sub get_infinite_session_url { return shift->get_url('infinite_session'); }
+sub get_login_url            { return shift->get_url( 'login', @_ ); }
+sub get_app_url              { return shift->get_url( 'app', @_ ); }
+
+sub get_url {
+    my $self = shift;
+    my $type = shift;
+
+    if ( $type eq 'facebook' ) {
+        my $site = shift || 'www';
+        return "http://$site.facebook.com";
+    }
+
+    if ( $type eq 'app' ) {
+        return $self->apps_uri . $self->app_path . q{/};
+    }
+
+    return $self->get_url('facebook')
+        . (
+          $type eq 'add'              ? '/add.php'
+        : $type eq 'infinite_session' ? '/codegen.php'
+        : $type eq 'login'            ? '/login.php'
+        : q{}
+        ) . $self->_add_url_params(@_);
+}
+
 sub unescape_string {
     my $self   = shift;
     my $string = shift;
     $string =~ s/(?<!\\)(\\.)/qq("$1")/xmsgee;
     return $string;
-}
-
-sub get_facebook_url {
-    my $self = shift;
-    my $site = shift || q{www};
-
-    return "http://$site.facebook.com";
-}
-
-sub get_add_url {
-    my $self = shift;
-
-    return $self->get_facebook_url . q{/add.php} . $self->_add_url_params(@_);
-}
-
-sub get_infinite_session_url {
-    my $self = shift;
-
-    return $self->get_facebook_url . q{/codegen.php} . $self->_add_url_params;
-}
-
-sub get_login_url {
-    my $self = shift;
-
-    return $self->get_facebook_url
-        . q{/login.php}
-        . $self->_add_url_params(@_);
 }
 
 sub _add_url_params {
@@ -211,12 +258,6 @@ sub _add_url_params {
         $params .= "&$_=$params{$_}";
     }
     return $params;
-}
-
-sub get_app_url {
-    my $self = shift;
-
-    return $self->apps_uri . $self->app_path . q{/};
 }
 
 sub _parse {
@@ -650,6 +691,13 @@ response string is unescaped if the 'desktop' attribute is false).
 See the Facebook API documentation's Authentication Guide. Just a convenient
 place holder for the value.
 
+=item query( $query )
+
+Stores the current query object to use (either L<CGI> or L<Apache::Request>)
+but really anything that implements the C<param()> method can be used. B<N.B.
+When using C<require_*> methods below, Apache::Request will croak because it
+does not implement a redirect method.>
+
 =item secret( $new_secret_key )
 
 For a desktop application, this is the secret that is used for calling
@@ -670,12 +718,12 @@ C<$client->auth->get_session> is called. See the Facebook API documentation.
 =item session_key( $new_key )
 
 The session key for the client's user. Automatically set when
-C<$client->auth->get_session> is called. See the Facebook API documentation.
+C<<$client->auth->get_session>> is called. See the Facebook API documentation.
 
 =item session_uid( $new_uid )
 
 The session's uid for the client's user. Automatically set when
-C<$client->auth->get_session> is called. See the Facebook API documentation.
+C<<$client->auth->get_session>> is called. See the Facebook API documentation.
 
 =item skipcookie(0|1)
 
@@ -710,15 +758,7 @@ to use:
 
 Generates a sig when given a parameters hash reference and a secret key.
 
-=item get_facebook_url( $subdomain )
-
-Returns the URL to Facebook. You can specifiy a specific network as a
-parameter:
-
-    $response = $client->get_facebook_url( 'apps' );
-    print $response;    # prints http://apps.facebook.com
-
-=item get_add_url( %params)
+=item get_add_url( %params )
 
 Returns the URL to add your application with the parameters (that are given)
 included. Note that the API key and the API version parameters are also
@@ -730,6 +770,19 @@ string-escaped. Used for platform applications:
     # prints http://www.facebook.com/app.php?api_key=key&v=1.0
     #        &next=http%3A%2F%2Fmy.website.com
     print $response;
+
+=item get_app_url
+
+Returns the URL to your application, if using the Facebook canvas. Uses
+<$client->app_path>, which you have to set yourself (See <app_path> below).
+
+=item get_facebook_url( $subdomain )
+
+Returns the URL to Facebook. You can specifiy a specific network as a
+parameter:
+
+    $response = $client->get_facebook_url( 'apps' );
+    print $response;    # prints http://apps.facebook.com
 
 =item get_infinite_session_url()
 
@@ -752,15 +805,49 @@ defined) included. If the C<next> parameter is passed in, it's string-escaped:
     #        &next=http%3A%2F%2Fmy.website.com
     print $response;
 
-=item get_app_url
+=item get_url( $type, @args )
 
-Returns the URL to your application, if using the Facebook canvas. Uses
-<$client->app_path>, which you have to set yourself (See <app_path> below).
+Called by all the above C<get_*_url> methods above. C<$type> can be C<'login'>,
+C<'app'>, C<'add'>, C<'facebook'>, or C<'infinite_session'>. C<@args> is
+either a scalar (in the case when C<$type> is C<'facebook'>) or a hash. All of
+these C<get_*_url> methods correspond to the ones in the official PHP client.
 
 =item log_string($params_hashref, $response)
 
 Pass in the params and the response from a call, and it will make a formatted
 string out of it showing the parameters used, and the response received.
+
+=item redirect( $url, $query_object )
+
+Called by C<require()> to redirect the user either within the canvas or
+without. This, as with C<require()> is only really useful when having a web
+app. If no <$query_object> is defined, then whatever is in C<$self->query>
+will be used. (See L<WWW::Facebook::API::Canvas>)
+
+=item require_add( $query )
+
+Redirects the user to what C<get_add_url()> returns. See C<require()> below
+for the C<$query> parameter.
+
+=item require_frame( $query )
+
+Redirects the user to what C<get_login_url( canvas => '1' )> returns. See
+C<require()> below for the C<$query> parameter.
+
+
+=item require_login( $query )
+
+Redirects the user to what C<get_login_url()> returns. See C<require()> below
+for the C<$query> parameter.
+
+=item require( $what, $query )
+
+The official PHP client has C<require_*> methods that take no arguments.
+Logically, you better know what you want to require when you call each of
+them, so this API consolidates them into one method. The valid values for
+C<$what> are C<'add'>, C<'frame'>, and C<'login'>. C<$query> is the query
+object to use (most likely L<CGI>). If C<$query> is undefined, the value of
+C<$self->query> is used.
 
 =item session( uid => $uid, key => $session_key, expires => $session_expires )
 
@@ -812,26 +899,32 @@ structure, and returns the result.
 
 =over
 
-=item C< Unable to load JSON module for parsing: %s >
+=item C<< Unable to load JSON module for parsing: %s >>
 
 L<JSON::Any> was not able to load one of the JSON modules it uses to parse
 JSON. Please make sure you have one (of the several) JSON modules it can use
 installed.
 
-=item C< Error during REST call: %s >
+=item C<< Error during REST call: %s >>
 
 This means that there's most likely an error in the server you are using to
 communicate to the Facebook REST server. Look at the traceback to determine
 why an error was thrown. Double-check that C<server_uri> is set to the right
 location.
 
-=item C< Cannot create subclass %s: %s >
+=item C<< Cannot create subclass %s: %s >>
 
 Cannot create the needed subclass method. Contact the developer to report.
 
-=item C< Cannot create attribute %s: %s >
+=item C<< Cannot create attribute %s: %s >>
 
 Cannot create the needed attribute method. Contact the developer to report.
+
+=item C<< Cannot redirect without redirect method! >>
+
+You're not using L<CGI> as a query object when calling C<redirect()> (or one
+of the C<require_*> methods. The query object you're using must implement the
+C<redirect()> method as L<CGI> does.
 
 =back
 
@@ -868,25 +961,25 @@ http://code.google.com/p/perl-www-facebook-api/
 
 Add tests to get better coverage.
 
----------------------------- ------ ------ ------ ------ ------ ------ ------
-File                           stmt   bran   cond    sub    pod   time  total
----------------------------- ------ ------ ------ ------ ------ ------ ------
-blib/lib/WWW/Facebook/API.pm   84.4   69.7   34.3   93.2  100.0   89.5   77.8
-.../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.4   69.4
-...WW/Facebook/API/Canvas.pm   57.1    0.0   16.7   54.5  100.0    0.6   52.8
-...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.6   85.4
-.../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
-...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
-.../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.9   85.4
-...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
-...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
-...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.9   81.8
-...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.6   73.6
-...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    1.5   78.7
-...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.6   89.5
-...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
-Total                          84.7   61.0   32.5   77.9  100.0  100.0   77.5
----------------------------- ------ ------ ------ ------ ------ ------ ------
+  ---------------------------- ------ ------ ------ ------ ------ ------ ------
+  File                           stmt   bran   cond    sub    pod   time  total
+  ---------------------------- ------ ------ ------ ------ ------ ------ ------
+  blib/lib/WWW/Facebook/API.pm   84.4   69.7   34.3   93.2  100.0   89.5   77.8
+  .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.4   69.4
+  ...WW/Facebook/API/Canvas.pm   57.1    0.0   16.7   54.5  100.0    0.6   52.8
+  ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.6   85.4
+  .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
+  ...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
+  .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.9   85.4
+  ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
+  ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
+  ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.9   81.8
+  ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.6   73.6
+  ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    1.5   78.7
+  ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.6   89.5
+  ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
+  Total                          84.7   61.0   32.5   77.9  100.0  100.0   77.5
+  ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
 

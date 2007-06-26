@@ -325,6 +325,13 @@ ATTRIBUTE METHODS
         See the Facebook API documentation's Authentication Guide. Just a
         convenient place holder for the value.
 
+    query( $query )
+        Stores the current query object to use (either CGI or
+        Apache::Request) but really anything that implements the "param()"
+        method can be used. N.B. When using "require_*" methods below,
+        Apache::Request will croak because it does not implement a redirect
+        method.
+
     secret( $new_secret_key )
         For a desktop application, this is the secret that is used for
         calling "auth-"create_token> and "auth-"get_session>. See the
@@ -343,12 +350,12 @@ ATTRIBUTE METHODS
 
     session_key( $new_key )
         The session key for the client's user. Automatically set when
-        "$client-"auth->get_session> is called. See the Facebook API
+        "<$client-"auth->get_session>> is called. See the Facebook API
         documentation.
 
     session_uid( $new_uid )
         The session's uid for the client's user. Automatically set when
-        "$client-"auth->get_session> is called. See the Facebook API
+        "<$client-"auth->get_session>> is called. See the Facebook API
         documentation.
 
     skipcookie(0|1)
@@ -374,14 +381,7 @@ PUBLIC METHODS
         Generates a sig when given a parameters hash reference and a secret
         key.
 
-    get_facebook_url( $subdomain )
-        Returns the URL to Facebook. You can specifiy a specific network as
-        a parameter:
-
-            $response = $client->get_facebook_url( 'apps' );
-            print $response;    # prints http://apps.facebook.com
-
-    get_add_url( %params)
+    get_add_url( %params )
         Returns the URL to add your application with the parameters (that
         are given) included. Note that the API key and the API version
         parameters are also included automatically. If the "next" parameter
@@ -392,6 +392,18 @@ PUBLIC METHODS
             # prints http://www.facebook.com/app.php?api_key=key&v=1.0
             #        &next=http%3A%2F%2Fmy.website.com
             print $response;
+
+    get_app_url
+        Returns the URL to your application, if using the Facebook canvas.
+        Uses <$client->app_path>, which you have to set yourself (See
+        <app_path> below).
+
+    get_facebook_url( $subdomain )
+        Returns the URL to Facebook. You can specifiy a specific network as
+        a parameter:
+
+            $response = $client->get_facebook_url( 'apps' );
+            print $response;    # prints http://apps.facebook.com
 
     get_infinite_session_url()
         Returns the URL for the user to generate an infinite session for
@@ -413,15 +425,43 @@ PUBLIC METHODS
             #        &next=http%3A%2F%2Fmy.website.com
             print $response;
 
-    get_app_url
-        Returns the URL to your application, if using the Facebook canvas.
-        Uses <$client->app_path>, which you have to set yourself (See
-        <app_path> below).
+    get_url( $type, @args )
+        Called by all the above "get_*_url" methods above. $type can be
+        'login', 'app', 'add', 'facebook', or 'infinite_session'. @args is
+        either a scalar (in the case when $type is 'facebook') or a hash.
+        All of these "get_*_url" methods correspond to the ones in the
+        official PHP client.
 
     log_string($params_hashref, $response)
         Pass in the params and the response from a call, and it will make a
         formatted string out of it showing the parameters used, and the
         response received.
+
+    redirect( $url, $query_object )
+        Called by "require()" to redirect the user either within the canvas
+        or without. This, as with "require()" is only really useful when
+        having a web app. If no <$query_object> is defined, then whatever is
+        in "$self-"query> will be used. (See WWW::Facebook::API::Canvas)
+
+    require_add( $query )
+        Redirects the user to what "get_add_url()" returns. See "require()"
+        below for the $query parameter.
+
+    require_frame( $query )
+        Redirects the user to what "get_login_url( canvas =" '1' )> returns.
+        See "require()" below for the $query parameter.
+
+    require_login( $query )
+        Redirects the user to what "get_login_url()" returns. See
+        "require()" below for the $query parameter.
+
+    require( $what, $query )
+        The official PHP client has "require_*" methods that take no
+        arguments. Logically, you better know what you want to require when
+        you call each of them, so this API consolidates them into one
+        method. The valid values for $what are 'add', 'frame', and 'login'.
+        $query is the query object to use (most likely CGI). If $query is
+        undefined, the value of "$self-"query> is used.
 
     session( uid => $uid, key => $session_key, expires => $session_expires )
         Sets the "user", "session_key", and "session_expires" all at once.
@@ -457,24 +497,29 @@ PRIVATE METHODS
         Perl data structure, and returns the result.
 
 DIAGNOSTICS
-    " Unable to load JSON module for parsing: %s "
+    "Unable to load JSON module for parsing: %s"
         JSON::Any was not able to load one of the JSON modules it uses to
         parse JSON. Please make sure you have one (of the several) JSON
         modules it can use installed.
 
-    " Error during REST call: %s "
+    "Error during REST call: %s"
         This means that there's most likely an error in the server you are
         using to communicate to the Facebook REST server. Look at the
         traceback to determine why an error was thrown. Double-check that
         "server_uri" is set to the right location.
 
-    " Cannot create subclass %s: %s "
+    "Cannot create subclass %s: %s"
         Cannot create the needed subclass method. Contact the developer to
         report.
 
-    " Cannot create attribute %s: %s "
+    "Cannot create attribute %s: %s"
         Cannot create the needed attribute method. Contact the developer to
         report.
+
+    "Cannot redirect without redirect method!"
+        You're not using CGI as a query object when calling "redirect()" (or
+        one of the "require_*" methods. The query object you're using must
+        implement the "redirect()" method as CGI does.
 
 CONFIGURATION AND ENVIRONMENT
     WWW::Facebook::API requires no configuration files or environment
@@ -499,25 +544,25 @@ SOURCE REPOSITORY
 TODO
     Add tests to get better coverage.
 
-    ---------------------------- ------ ------ ------ ------ ------ ------
-    ------ File stmt bran cond sub pod time total
-    ---------------------------- ------ ------ ------ ------ ------ ------
-    ------ blib/lib/WWW/Facebook/API.pm 84.4 69.7 34.3 93.2 100.0 89.5 77.8
-    .../WWW/Facebook/API/Auth.pm 81.2 22.2 20.0 80.0 100.0 1.4 69.4
-    ...WW/Facebook/API/Canvas.pm 57.1 0.0 16.7 54.5 100.0 0.6 52.8
-    ...WW/Facebook/API/Events.pm 92.3 n/a 33.3 75.0 100.0 0.6 85.4
-    .../WWW/Facebook/API/FBML.pm 88.9 n/a 33.3 66.7 100.0 0.8 81.8
-    ...b/WWW/Facebook/API/FQL.pm 96.0 n/a 33.3 85.7 100.0 0.7 89.5
-    .../WWW/Facebook/API/Feed.pm 92.3 n/a 33.3 75.0 100.0 0.9 85.4
-    ...W/Facebook/API/Friends.pm 88.9 n/a 33.3 66.7 100.0 0.6 81.8
-    ...WW/Facebook/API/Groups.pm 92.3 n/a 33.3 75.0 100.0 0.7 85.4
-    ...book/API/Notifications.pm 88.9 n/a 33.3 66.7 100.0 0.9 81.8
-    ...WW/Facebook/API/Photos.pm 80.0 n/a 33.3 50.0 100.0 0.6 73.6
-    ...W/Facebook/API/Profile.pm 85.7 n/a 33.3 60.0 100.0 1.5 78.7
-    ...WW/Facebook/API/Update.pm 96.0 n/a 33.3 85.7 100.0 0.6 89.5
-    ...WWW/Facebook/API/Users.pm 88.9 n/a 33.3 66.7 100.0 0.6 81.8 Total
-    84.7 61.0 32.5 77.9 100.0 100.0 77.5 ---------------------------- ------
-    ------ ------ ------ ------ ------ ------
+      ---------------------------- ------ ------ ------ ------ ------ ------ ------
+      File                           stmt   bran   cond    sub    pod   time  total
+      ---------------------------- ------ ------ ------ ------ ------ ------ ------
+      blib/lib/WWW/Facebook/API.pm   84.4   69.7   34.3   93.2  100.0   89.5   77.8
+      .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.4   69.4
+      ...WW/Facebook/API/Canvas.pm   57.1    0.0   16.7   54.5  100.0    0.6   52.8
+      ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.6   85.4
+      .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
+      ...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
+      .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.9   85.4
+      ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
+      ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
+      ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.9   81.8
+      ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.6   73.6
+      ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    1.5   78.7
+      ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.6   89.5
+      ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
+      Total                          84.7   61.0   32.5   77.9  100.0  100.0   77.5
+      ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 AUTHOR
     David Romano "<unobe@cpan.org>"
