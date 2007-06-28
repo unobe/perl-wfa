@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.4');
+use version; our $VERSION = qv('0.3.5');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -264,7 +264,10 @@ sub _parse {
     my ( $self, $response ) = @_;
 
     my $parser;
-    eval { $parser = JSON::Any->new; };
+    eval {
+        $parser = JSON::Any->new;
+        carp 'JSON::Any is parsing with ' . $parser->handler if $self->debug;
+    };
 
     # Only load JSON::Any if we haven't already.  Lets the developers
     # pick their choice of JSON modules (JSON::DWIW, for example)
@@ -273,13 +276,15 @@ sub _parse {
         eval q{use JSON::Any};
         croak "Unable to load JSON module for parsing:$@\n" if $@;
         $parser = JSON::Any->new;
+        carp 'JSON::Any is parsing with ' . $parser->handler if $self->debug;
     }
 
-    if ( $self->debug ) {
-        carp 'JSON::Any is using '
-            . JSON::Any->handler
-            . " to parse\n$response\n\n";
+    # Currently, JSON::XS does not parse some nonrefs returned by Facebook.
+    # This is a (hopefully temporary) workaround:
+    if ( $response =~ /^"?(?:|true|false|1|0)"?$/xms ) {
+        return $response =~ /true|1/xms ? 1 : 0;
     }
+
     return $parser->decode($response);
 }
 
@@ -338,7 +343,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.3.4
+This document describes WWW::Facebook::API version 0.3.5
 
 =head1 SYNOPSIS
 
@@ -738,7 +743,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.4".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.5".
 
 =back
 
@@ -964,21 +969,21 @@ Add tests to get better coverage.
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   84.4   69.7   34.3   93.2  100.0   89.5   77.8
-  .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.4   69.4
-  ...WW/Facebook/API/Canvas.pm   57.1    0.0   16.7   54.5  100.0    0.6   52.8
-  ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.6   85.4
-  .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
+  blib/lib/WWW/Facebook/API.pm   82.0   64.4   34.3   88.9  100.0   88.1   75.2
+  .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.5   69.4
+  ...WW/Facebook/API/Canvas.pm   46.2    0.0   16.7   50.0  100.0    0.9   46.4
+  ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.8   85.4
+  .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.9   81.8
   ...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
-  .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.9   85.4
-  ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
-  ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
-  ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.9   81.8
-  ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.6   73.6
-  ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    1.5   78.7
-  ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.6   89.5
-  ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
-  Total                          84.7   61.0   32.5   77.9  100.0  100.0   77.5
+  .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    1.1   85.4
+  ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
+  ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.8   85.4
+  ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    1.1   81.8
+  ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.7   73.6
+  ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    0.8   78.7
+  ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
+  ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    0.9   81.8
+  Total                          82.5   58.2   32.5   76.4  100.0  100.0   75.6
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
@@ -992,6 +997,8 @@ Clayton Scott C<< http://www.matrix.ca >>
 David Leadbeater C<< http://dgl.cx >>
 
 J. Shirley C<< <jshirley@gmail.com> >>
+
+Jim Spath C<< none >>
 
 Matt Sickler C<< <imMute@mail.msk3.ath.cx> >>
 

@@ -7,11 +7,11 @@
 use Test::More tests => 14;
 
 BEGIN {
-    use_ok( 'WWW::Facebook::API' );
+    use_ok('WWW::Facebook::API');
 
     for (@WWW::Facebook::API::namespaces) {
-        use_ok( "WWW::Facebook::API::$_" );
+        use_ok("WWW::Facebook::API::$_");
     }
 }
 
-diag( "Testing WWW::Facebook::API $WWW::Facebook::API::VERSION" );
+diag("Testing WWW::Facebook::API $WWW::Facebook::API::VERSION");

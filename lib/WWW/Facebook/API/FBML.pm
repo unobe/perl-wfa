@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.4');
+use version; our $VERSION = qv('0.3.5');
 
 sub base { return shift->{'base'}; }
 
@@ -32,7 +32,7 @@ WWW::Facebook::API::FBML - Facebook Markup Language
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FBML version 0.3.4
+This document describes WWW::Facebook::API::FBML version 0.3.5
 
 =head1 SYNOPSIS
 
