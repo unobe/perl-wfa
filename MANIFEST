@@ -24,4 +24,5 @@ t/00.load.t
 t/api.t
 t/auth.t
 t/md5.t
+t/parse.t
 t/pod.t
