@@ -1,5 +1,9 @@
 Revision history for WWW-Facebook-API
 
+0.3.6  Fri Jun 29 11:06:53 PDT 2007
+	Critical bug in 0.3.5 in setting attributes (affects using the canvas)
+	  (Thanks Jim Spath)
+
 0.3.5  Thu Jun 28 12:38:24 PDT 2007
 	Added canvas->get_non_fb_params() (Thanks Matt Sickler)
 	Clarified Canvas documentation for validate_sig() (Thanks Matt Sickler)

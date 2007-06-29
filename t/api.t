@@ -4,7 +4,7 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 22;
+use Test::More tests => 23;
 use strict;
 use warnings;
 
@@ -66,3 +66,7 @@ is $api->app_path, '', 'app_path ok';
 $api->app_path('foo');
 is $api->app_path, 'foo', 'app_path set ok';
 is $api->get_app_url, 'http://apps.facebook.com/foo/', 'get_app_url ok';
+
+# test for passing undef (shouldn't reset value)
+$api->app_path(undef);
+is $api->app_path, 'foo', 'app_path not reset';

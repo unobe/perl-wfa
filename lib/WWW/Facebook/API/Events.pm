@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.5');
+use version; our $VERSION = qv('0.3.6');
 
 sub base { return shift->{'base'}; }
 
@@ -37,7 +37,7 @@ WWW::Facebook::API::Events - Facebook Events
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Events version 0.3.5
+This document describes WWW::Facebook::API::Events version 0.3.6
 
 =head1 SYNOPSIS
 
