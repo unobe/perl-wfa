@@ -14,78 +14,90 @@ use WWW::Facebook::API;
 use Data::Dumper;
 
 my $facebook = WWW::Facebook::API->new(
-  api_key => "change-me",
-  secret  => "change-me",
-  app_path => "change-me",
-  parse_response => 1,
+    api_key  => "change-me",
+    secret   => "change-me",
+    app_path => "change-me",
+    parse    => 1,
 );
 
 our %action_map = (
-  '' => \&index_page,
-  info => \&info_page,
+    ''   => \&index_page,
+    info => \&info_page,
 );
 
 sub main {
-  # Should also work with FastCGI (via CGI::Fast).
-  my $q = new CGI;
-  print $q->header;
 
-  redirect("Must be called in facebook canvas")
-    unless $facebook->canvas->in_fb_canvas($q);
+    # Should also work with FastCGI (via CGI::Fast).
+    my $q = new CGI;
+    print $q->header;
 
-  my $params = $facebook->canvas->validate_sig($q);
-  if($params->{user}) {
-    # Canvas takes care of setting up a session for us, no need to call the
-    # auth methods.
-    $facebook->session_key($params->{session_key});
-  } else {
-    # User hasn't added app (could reject/display info/whatever)
-    # (Or handle later when a user is needed).
-  }
+    redirect("Must be called in facebook canvas")
+        unless $facebook->canvas->in_fb_canvas($q);
 
-  my($action, $param) = ($q->path_info =~ m!^/(\w+)/?(.*)!);
-  if(my $s = $action_map{$action}) {
-    $s->($param, $params);
-  } else {
-    div_error("Action unknown");
-  }
+    my $params = $facebook->canvas->validate_sig($q);
+    if ( $params->{user} ) {
 
-  # Clear session_key (for if running under FastCGI).
-  $facebook->session_key(undef);
+       # Canvas takes care of setting up a session for us, no need to call the
+       # auth methods.
+        $facebook->session_key( $params->{session_key} );
+    }
+    else {
+
+        # User hasn't added app (could reject/display info/whatever)
+        # (Or handle later when a user is needed).
+    }
+
+    my ( $action, $param ) = ( $q->path_info =~ m!^/(\w+)/?(.*)! );
+    if ( my $s = $action_map{$action} ) {
+        $s->( $param, $params );
+    }
+    else {
+        div_error("Action unknown");
+    }
+
+    # Clear session_key (for if running under FastCGI).
+    $facebook->session_key(undef);
 }
 
 sub index_page {
-  my($param, $params) = @_;
+    my ( $param, $params ) = @_;
 
-  print "<fb:header/><div style='padding: 20px'>";
-  # You could do this easier by using <fb:name>, just showing some API stuff here.
-  my $name = "You";
-  if($params) {
-    my $res = $facebook->fql->query(query => "SELECT first_name FROM user WHERE uid=$params->{user}");
-    $name = "Hi $res->[0]->{first_name}, you";
-  }
-  print "$name ", ($params ? "have" : "have't"), " added this application. Some <a href='info'>info</a>.";
-  if(!$params) {
-    print "<a href='", $facebook->get_add_url, "'>Add this application</a>.";
-  }
-  print "</div>";
+    print "<fb:header/><div style='padding: 20px'>";
+
+# You could do this easier by using <fb:name>, just showing some API stuff here.
+    my $name = "You";
+    if ($params) {
+        my $res =
+            $facebook->fql->query( query =>
+                "SELECT first_name FROM user WHERE uid=$params->{user}" );
+        $name = "Hi $res->[0]->{first_name}, you";
+    }
+    print "$name ", ( $params ? "have" : "have't" ),
+        " added this application. Some <a href='info'>info</a>.";
+    if ( !$params ) {
+        print "<a href='", $facebook->get_add_url,
+            "'>Add this application</a>.";
+    }
+    print "</div>";
 }
 
 sub info_page {
-  my($param, $params) = @_;
+    my ( $param, $params ) = @_;
 
-  print "<fb:header/><div style='padding: 20px'><pre>";
-  print Dumper($params);
-  print "</pre></div>";
+    print "<fb:header/><div style='padding: 20px'><pre>";
+    print Dumper($params);
+    print "</pre></div>";
 }
 
 sub redirect {
-  div_error("Please go <a href='" . $facebook->get_app_url . "'>to facebook</a>");
-  exit;
+    div_error("Please go <a href='"
+            . $facebook->get_app_url
+            . "'>to facebook</a>" );
+    exit;
 }
 
 sub div_error {
-  print "<div style='padding: 20px'>", join("", @_), "</div>";
+    print "<div style='padding: 20px'>", join( "", @_ ), "</div>";
 }
 
 main();

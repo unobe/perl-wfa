@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.6');
+use version; our $VERSION = qv('0.3.7');
 
 sub base { return shift->{'base'}; }
 
@@ -41,7 +41,7 @@ WWW::Facebook::API::Photos - Facebook Photos
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.3.6
+This document describes WWW::Facebook::API::Photos version 0.3.7
 
 =head1 SYNOPSIS
 

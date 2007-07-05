@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.6');
+use version; our $VERSION = qv('0.3.7');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -136,13 +136,18 @@ sub call {
             if $self->throw_errors;
     }
 
-    $response =~ s/^$params->{'callback'} [^\(]* \((.+) \);$/$1/xms
-        if $params->{'callback'};
-    $response = $self->unescape_string($response) unless $self->desktop;
-
+    # get actual response when web app
+    if ( $params->{'callback'} ) {
+        $response =~ s/^$params->{'callback'} [^\(]* \((.+) \);$/$1/xms;
+    }
     undef $params;
 
-    return $response unless $self->parse and $self->format eq 'JSON';
+    # ... and unescape it if it's not going to be parsed
+    if ( !$self->desktop && !$self->parse ) {
+        $response = $self->unescape_string($response);
+    }
+
+    return $response if !$self->parse;
 
     return $self->_parse($response);
 }
@@ -263,10 +268,16 @@ sub _add_url_params {
 sub _parse {
     my ( $self, $response ) = @_;
 
+    # Some shortcuts
+    return q{} if $response =~ /\A"?"?\Z/xms;
+    return 1   if $response =~ /\A"?true"?\Z/xms;
+    return 0   if $response =~ /\A"?false"?\Z/xms;
+
     my $parser;
     eval {
         $parser = JSON::Any->new;
         carp 'JSON::Any is parsing with ' . $parser->handler if $self->debug;
+        $parser->handler->allow_nonref();
     };
 
     # Only load JSON::Any if we haven't already.  Lets the developers
@@ -277,12 +288,7 @@ sub _parse {
         croak "Unable to load JSON module for parsing:$@\n" if $@;
         $parser = JSON::Any->new;
         carp 'JSON::Any is parsing with ' . $parser->handler if $self->debug;
-    }
-
-    # Currently, JSON::XS does not parse some nonrefs returned by Facebook.
-    # This is a (hopefully temporary) workaround:
-    if ( $response =~ /^"?(?:|true|false|1|0)"?$/xms ) {
-        return $response =~ /true|1/xms ? 1 : 0;
+        $parser->handler->allow_nonref();
     }
 
     return $parser->decode($response);
@@ -343,7 +349,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.3.6
+This document describes WWW::Facebook::API version 0.3.7
 
 =head1 SYNOPSIS
 
@@ -458,6 +464,7 @@ Work with the canvas. See L<WWW::Facebook::API::Canvas>.
 
     $response = $client->canvas->get_user( $q )
     $response = $client->canvas->get_fb_params( $q )
+    $response = $client->canvas->get_non_fb_params( $q )
     $response = $client->canvas->validate_sig( $q )
     $response = $client->canvas->in_fb_canvas( $q )
     $response = $client->canvas->in_frame( $q )
@@ -743,7 +750,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.6".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.7".
 
 =back
 
@@ -969,21 +976,21 @@ Add tests to get better coverage.
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   82.0   64.4   34.3   88.9  100.0   91.4   75.2
-  .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.1   69.4
-  ...WW/Facebook/API/Canvas.pm   46.2    0.0   16.7   50.0  100.0    0.7   46.4
-  ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.6   85.4
-  .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.7   81.8
-  ...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.6   89.5
-  .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.8   85.4
-  ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.5   81.8
-  ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.6   85.4
-  ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
-  ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.5   73.6
-  ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    0.6   78.7
-  ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.5   89.5
-  ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    0.6   81.8
-  Total                          82.5   58.2   32.5   76.4  100.0  100.0   75.6
+  blib/lib/WWW/Facebook/API.pm   82.0   65.4   34.3   88.9  100.0   87.2   75.5
+  .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.5   69.4
+  ...WW/Facebook/API/Canvas.pm   46.2    0.0   16.7   50.0  100.0    1.5   46.4
+  ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
+  .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
+  ...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
+  .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.9   85.4
+  ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.7   81.8
+  ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.8   85.4
+  ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    2.1   81.8
+  ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.7   73.6
+  ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    0.7   78.7
+  ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
+  ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    1.0   81.8
+  Total                          82.5   59.1   32.5   76.4  100.0  100.0   75.7
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
@@ -1015,6 +1022,8 @@ Sean O'Rourke C<< <seano@cpan.org> >>
 Shawn Van Ittersum C<< none >>
 
 Simon Cavalletto C<< <simonm@cavalletto.org> >>
+
+Skyler Clark C<< none >>
 
 Thomas Sibley C<< <tsibley@cpan.org> >>
 

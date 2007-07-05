@@ -4,20 +4,20 @@ use warnings;
 use WWW::Facebook::API;
 
 my $client = WWW::Facebook::API->new(
-    desktop        => 1,
-    throw_errors   => 1,
-    parse           => 1,
+    desktop      => 1,
+    throw_errors => 1,
+    parse        => 1,
 );
 
 print "Enter your public API key: ";
 chomp( my $val = <STDIN> );
 $client->api_key($val);
 print "Enter your API secret: ";
-chomp($val = <STDIN> );
+chomp( $val = <STDIN> );
 $client->secret($val);
 
 my $token = $client->auth->login( sleep => 20 );
-$client->auth->get_session( $token );
+$client->auth->get_session($token);
 
 use Data::Dumper;
 my $friends_perl = $client->friends->get;
