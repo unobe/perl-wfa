@@ -1,8 +1,13 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Thu Jul  5 07:20:14 PDT 2007
+HEAD   Thu Jul  5 14:40:05 PDT 2007
+	FQL->query() now always returns an array reference when using JSON and
+	  'parse' is set to true. (Thanks Jim Spath)
+	Added query() call in examples/facebook-desktop-json for now.
+
+0.3.7  Thu Jul  5 07:20:14 PDT 2007
 	Simpler fix for JSON problem, which fixed some other bugs that cropped
-	  up with previous method.
+	  up with previous method. (Thanks Skyler Clark)
 
 0.3.6  Fri Jun 29 11:06:53 PDT 2007
 	Critical bug in 0.3.5 in setting attributes (affects using the canvas)

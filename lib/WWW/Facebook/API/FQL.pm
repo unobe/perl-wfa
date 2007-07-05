@@ -24,7 +24,15 @@ sub new {
     return $self;
 }
 
-sub query { return shift->base->call( 'fql.query', @_ ) }
+# always return an array reference. The value returned by Facebook is a hash
+# reference when the are no results, so this shouldn't be a problem.
+sub query {
+    my $self = shift;
+    my $response = $self->base->call( 'fql.query', @_ );
+
+    return $response if !$self->base->parse and !$self->format eq 'JSON';
+    return ref $response eq 'HASH' ? [] : $response;
+}
 
 1;    # Magic true value required at end of module
 __END__
@@ -68,6 +76,11 @@ The L<WWW::Facebook::API> object to use to make calls to the REST server.
 The fql.query method of the Facebook API:
 
     $response = $client->fql->query( query => 'FQL query' );
+
+When C<$self->base->parse> returns true, and when the format is JSON, the
+response will always be an array reference. (Facebook actually returns an
+empty hash reference when empty, but an array reference otherwise. This is
+meant to make developer more consistent.)
 
 =back
 
