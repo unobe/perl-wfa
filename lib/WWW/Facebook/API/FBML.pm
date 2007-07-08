@@ -6,19 +6,6 @@ use Carp;
 
 use version; our $VERSION = qv('0.3.8');
 
-sub base { return shift->{'base'}; }
-
-sub new {
-    my ( $self, %args ) = @_;
-    my $class = ref $self || $self;
-    $self = bless \%args, $class;
-
-    delete $self->{$_} for grep { !/base/xms } keys %{$self};
-    $self->$_ for keys %{$self};
-
-    return $self;
-}
-
 sub refresh_img_src { return shift->base->call( 'fbml.refreshImgSrc', @_ ) }
 sub refresh_ref_url { return shift->base->call( 'fbml.refreshRefUrl', @_ ) }
 sub set_ref_handle  { return shift->base->call( 'fbml.setRefHandle',  @_ ) }
@@ -45,20 +32,6 @@ Methods for updating FBML references with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
-
-=item new()
-
-Returns a new instance of this class.
-
-=back
-
-=head1 METHODS
-
-=over
-
-=item base()
-
-The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
 =item set_ref_handle( handle => 'handleName', fbml => 'fbml' )
 

@@ -1,5 +1,11 @@
 Revision history for WWW-Facebook-API
 
+HEAD   Sun Jul  8 12:01:13 PDT 2007
+	Fixed skipped test construct
+	Moved new and base subs for different namespaces into API.pm generator
+	Added tests for canvas methods
+	Added tests for auth methods
+
 0.3.8  Sun Jul  8 02:45:58 PDT 2007
 	FQL->query() now always returns an array reference when using JSON and
 	  'parse' is set to true. (Thanks Jim Spath)

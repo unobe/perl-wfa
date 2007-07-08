@@ -100,10 +100,9 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
     is  $secret, $args->{'params'}->{'secret'}, 'secret is param\'s';
     is $args->{'params'}->{'method'}, 'facebook.hello', 'call method changed';
     eval q{use IO::String};
-    if  ($@) {
-        skip 'Need IO::String to test debug output' => 1;
-    }
-    else {
+    SKIP: {
+        skip 'Need IO::String to test debug output' => 1 if $@;
+
         my $debug;
         open my $stderr, '>&STDERR' or diag "Cannot copy STDERR";
         {
@@ -127,8 +126,8 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
        v:1.0\s*
  response\s=\s*
  "foo"\s*
-(?-x: at t/api.t line 113
-JSON::Any is parsing with [^\ ]+ at t/api.t line 113)/xms
+(?-x: at t/api.t line \d+
+JSON::Any is parsing with [^\ ]+ at t/api.t line \d+)/xms
 END_DEBUG
 
     }

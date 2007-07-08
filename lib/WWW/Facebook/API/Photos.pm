@@ -12,19 +12,6 @@ use Carp;
 
 use version; our $VERSION = qv('0.3.8');
 
-sub base { return shift->{'base'}; }
-
-sub new {
-    my ( $self, %args ) = @_;
-    my $class = ref $self || $self;
-    $self = bless \%args, $class;
-
-    delete $self->{$_} for grep { !/base/xms } keys %{$self};
-    $self->$_ for keys %{$self};
-
-    return $self;
-}
-
 sub add_tag      { return shift->base->call( 'photos.addTag',      @_ ) }
 sub create_album { return shift->base->call( 'photos.createAlbum', @_ ) }
 sub get          { return shift->base->call( 'photos.get',         @_ ) }
@@ -54,14 +41,6 @@ Methods for accessing photos with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
-
-=item new()
-
-Returns a new instance of this class.
-
-=item base()
-
-The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
 =item add_tag( %params )
 

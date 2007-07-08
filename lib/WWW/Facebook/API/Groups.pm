@@ -12,19 +12,6 @@ use Carp;
 
 use version; our $VERSION = qv('0.3.8');
 
-sub base { return shift->{'base'}; }
-
-sub new {
-    my ( $self, %args ) = @_;
-    my $class = ref $self || $self;
-    $self = bless \%args, $class;
-
-    delete $self->{$_} for grep { !/base/xms } keys %{$self};
-    $self->$_ for keys %{$self};
-
-    return $self;
-}
-
 sub get         { return shift->base->call( 'groups.get',        @_ ) }
 sub get_members { return shift->base->call( 'groups.getMembers', @_ ) }
 
@@ -50,14 +37,6 @@ Methods for accessing groups with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
-
-=item new()
-
-Returns a new instance of this class.
-
-=item base()
-
-The L<WWW::Facebook::API> object to use to make calls to the REST server.
 
 =item get( uids => [ @uids ], gids => [ @gids ] )
 
