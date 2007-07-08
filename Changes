@@ -1,9 +1,15 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Thu Jul  5 14:40:05 PDT 2007
+0.3.8  Sun Jul  8 02:45:58 PDT 2007
 	FQL->query() now always returns an array reference when using JSON and
 	  'parse' is set to true. (Thanks Jim Spath)
 	Added query() call in examples/facebook-desktop-json for now.
+	Don't call allow_nonref() if JSON::Any isn't using JSON::XS
+	Fixed fql bug when not using JSON and not having $self->parse set.
+	Fixed which secret to be used in call() method.
+	Added quite a few tests
+	Using environment variables for defaults if defined (see docs)
+	Added _parser() for repeated code
 
 0.3.7  Thu Jul  5 07:20:14 PDT 2007
 	Simpler fix for JSON problem, which fixed some other bugs that cropped

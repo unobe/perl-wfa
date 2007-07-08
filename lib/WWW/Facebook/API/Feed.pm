@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.7');
+use version; our $VERSION = qv('0.3.8');
 
 sub base { return shift->{'base'}; }
 
@@ -42,7 +42,7 @@ WWW::Facebook::API::Feed - Facebook Feeds
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Feed version 0.3.7
+This document describes WWW::Facebook::API::Feed version 0.3.8
 
 =head1 SYNOPSIS
 

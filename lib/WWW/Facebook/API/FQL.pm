@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.7');
+use version; our $VERSION = qv('0.3.8');
 
 sub base { return shift->{'base'}; }
 
@@ -30,7 +30,7 @@ sub query {
     my $self = shift;
     my $response = $self->base->call( 'fql.query', @_ );
 
-    return $response if !$self->base->parse and !$self->format eq 'JSON';
+    return $response if !$self->base->parse && !$self->base->format eq 'JSON';
     return ref $response eq 'HASH' ? [] : $response;
 }
 
@@ -43,7 +43,7 @@ WWW::Facebook::API::FQL - Facebook Query Language
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FQL version 0.3.7
+This document describes WWW::Facebook::API::FQL version 0.3.8
 
 =head1 SYNOPSIS
 

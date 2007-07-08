@@ -21,8 +21,11 @@ lib/WWW/Facebook/API/Profile.pm
 lib/WWW/Facebook/API/Update.pm
 lib/WWW/Facebook/API/Users.pm
 t/00.load.t
+t/internal.t
+t/md5.t
 t/api.t
 t/auth.t
-t/md5.t
+t/fql.t
 t/parse.t
+t/profile.t
 t/pod.t

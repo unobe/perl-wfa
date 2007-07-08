@@ -2,17 +2,21 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.3.7
+    This document describes WWW::Facebook::API version 0.3.8
 
 SYNOPSIS
         use WWW::Facebook::API;
 
+        # @ENV{qw/WFA_API_KEY WFA_SECRET_KEY WFA_DESKTOP/} are the initial values,
+        # so use those if you only have one app and don't want to pass in values
+        # to constructor
         my $client = WWW::Facebook::API->new(
-            desktop        => 1,
-            throw_errors   => 1,
-            parse          => 1,
+            desktop => 0,
+            api_key => 'your api key',
+            secret => 'your secret key',
         );
     
+        # Change API key and secret
         print "Enter your public API key: ";
         chomp( my $val = <STDIN> );
         $client->api_key($val);
@@ -20,13 +24,7 @@ SYNOPSIS
         chomp($val = <STDIN> );
         $client->secret($val);
     
-        print "Enter your e-mail address: ";
-        chomp(my $email = <STDIN> );
-        $client->secret($val);
-        print "Enter your password: ";
-        chomp(my $pass = <STDIN> );
-    
-        my $token = $client->auth->login( email => $email,  pass => $pass );
+        # not needed if web app (see $client->canvas->get_fb_params)
         $client->auth->get_session( $token );
     
         use Data::Dumper;
@@ -49,7 +47,24 @@ DESCRIPTION
     A Perl implementation of the Facebook API, working off of the canonical
     Java and PHP implementations. By default it uses JSON::Any to parse the
     response returned by Facebook's server. There is an option to return the
-    raw response in either XML or JSON (See the "parse" method below).
+    raw response in either XML or JSON (See the "parse" method below). As
+    the synopsis states, the following environment variables are used to set
+    the defaults for new instances:
+
+        WFA_API_KEY
+        WFA_SESSION_KEY
+        WFA_DESKTOP
+
+    Additionally, for each instance that is created, the following
+    environment variables are used if no values are set:
+
+        WFA_API_KEY_APP_PATH
+        WFA_SESSION_KEY_APP_PATH
+        WFA_DESKTOP_APP_PATH
+
+    Where "APP_PATH" is replaced by whatever $client->app_path returns, with
+    all non-alphanumeric characters replaced with an underscore and all
+    characters upcased (e.g., foo-bar-baz becomes FOO_BAR_BAZ).
 
 SUBROUTINES/METHODS
     new( %params )
@@ -242,7 +257,9 @@ ATTRIBUTE METHODS
     These are methods to get/set the object's attributes.
 
     api_key( $new_api_key )
-        The developer's API key. See the Facebook API documentation.
+        The developer's API key. If $ENV{'WFA_API_KEY'} is set, all
+        instances will be initialized with its value. See the Facebook API
+        documentation for more information.
 
     api_version( $new_version )
         Which version to use (default is "1.0", which is the only one
@@ -296,7 +313,9 @@ ATTRIBUTE METHODS
 
     desktop(0|1)
         A boolean signifying if the client is being used for a desktop
-        application. Defaults to 0. See the Facebook API documentation.
+        application. If $ENV{'WFA_DESKTOP'} is set, all instances will be
+        initialized with its value. Defaults to 0 otherwise. See the
+        Facebook API documentation for more information.
 
     format('JSON'|'XML')
         The default format to use if none is supplied with an API method
@@ -335,8 +354,11 @@ ATTRIBUTE METHODS
 
     secret( $new_secret_key )
         For a desktop application, this is the secret that is used for
-        calling "auth-"create_token> and "auth-"get_session>. See the
-        Facebook API documentation under Authentication.
+        calling "auth-"create_token> and "auth-"get_session>. For a web
+        application, secret is used for all calls to the API. If
+        $ENV{'WFA_SECRET_KEY'} is set, all instances will be initialized
+        with its value. See the Facebook API documentation under
+        Authentication for more information.
 
     server_uri( $new_server_uri )
         The server uri to access the Facebook REST server. Default is
@@ -368,7 +390,7 @@ ATTRIBUTE METHODS
         "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.7".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.8".
 
 PUBLIC METHODS
     call( $method, %args )
@@ -414,6 +436,10 @@ PUBLIC METHODS
 
             # prints http://www.facebook.com/codegen.php?api_key=key&v=1.0
             print $response;
+
+        From what I've seen, the session keys that Facebook returns don't
+        expire automatically, so as long as you don't call
+        $client->auth->logout, you shouldn't even need to worry about this.
 
     get_login_url( %params )
         Returns the URL to login to your application with the parameters
@@ -497,6 +523,9 @@ PRIVATE METHODS
         Parses the response from a call to the Facebook server to make it a
         Perl data structure, and returns the result.
 
+    _parser()
+        Returns a new instance of JSON::Any.
+
 DIAGNOSTICS
     "Unable to load JSON module for parsing: %s"
         JSON::Any was not able to load one of the JSON modules it uses to
@@ -509,7 +538,7 @@ DIAGNOSTICS
         traceback to determine why an error was thrown. Double-check that
         "server_uri" is set to the right location.
 
-    "Cannot create subclass %s: %s"
+    "Cannot create namespace %s: %s"
         Cannot create the needed subclass method. Contact the developer to
         report.
 
@@ -542,27 +571,34 @@ BUGS AND LIMITATIONS
 SOURCE REPOSITORY
     http://code.google.com/p/perl-www-facebook-api/
 
-TODO
-    Add tests to get better coverage.
+TESTING
+    There are some live tests included, but they are only run if the
+    following environment variables are set: WFA_API_KEY_TEST
+    WFA_SECRET_KEY_TEST WFA_SESSION_KEY_TEST
+
+    Additionally, if your app is a desktop one, you must set "WFA_DESKTOP".
+    Also, the session key must be valid for the API key being used.
+
+    With live tests enabled, here is the current test coverage:
 
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
-      File                           stmt   bran   cond    sub    pod   time  total
+      File                           stmt   bran   cond    sub    pod   time total
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
-      blib/lib/WWW/Facebook/API.pm   82.0   65.4   34.3   88.9  100.0   87.2   75.5
-      .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.5   69.4
-      ...WW/Facebook/API/Canvas.pm   46.2    0.0   16.7   50.0  100.0    1.5   46.4
-      ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
-      .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
-      ...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
-      .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.9   85.4
-      ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.7   81.8
-      ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.8   85.4
-      ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    2.1   81.8
-      ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.7   73.6
-      ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    0.7   78.7
-      ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
-      ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    1.0   81.8
-      Total                          82.5   59.1   32.5   76.4  100.0  100.0   75.7
+      blib/lib/WWW/Facebook/API.pm   91.6   70.2   67.6   92.7  100.0   91.5 85.6
+      .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    0.9 69.4
+      ...WW/Facebook/API/Canvas.pm   46.2    0.0   16.7   50.0  100.0    0.6 46.4
+      ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.6 85.4
+      .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.4 81.8
+      ...b/WWW/Facebook/API/FQL.pm  100.0   75.0   50.0  100.0  100.0    0.5 91.7
+      .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.5 85.4
+      ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.5 81.8
+      ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    1.6 85.4
+      ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.7 81.8
+      ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.4 73.6
+      ...W/Facebook/API/Profile.pm   92.9    n/a   33.3   80.0  100.0    0.7 87.2
+      ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.6 89.5
+      ...WWW/Facebook/API/Users.pm   92.6    n/a   33.3   77.8  100.0    0.5 86.4
+      Total                          87.5   64.4   47.6   80.0  100.0  100.0 81.6
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 AUTHOR

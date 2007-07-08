@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.7');
+use version; our $VERSION = qv('0.3.8');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -26,35 +26,39 @@ our @namespaces = qw(
 );
 
 for (@namespaces) {
-    my $subclass = "\L$_";
+    my $package = __PACKAGE__ . "::$_";
+    my $name    = "\L$_";
     ## no critic
     eval qq(
-        use WWW::Facebook::API::$_;
-        sub $subclass {
-            return shift->{'_$subclass'}
-                ||= WWW::Facebook::API::$_->new( base => shift )
+        use $package;
+        sub $name {
+            my \$self = shift;
+            unless ( \$self->{'_$name'} ) {
+                \$self->{'_$name'} = $package->new( base => \$self );
+            }
+            return \$self->{'_$name'};
         }
     );
-    croak "Cannot create subclass $subclass: $@\n" if $@;
+    croak "Cannot create namespace $name: $@\n" if $@;
 }
 
 our %attributes = (
-    parse        => 1,
-    format       => 'JSON',
-    debug        => 0,
+    api_key => ( exists $ENV{'WFA_API_KEY'}    && $ENV{'WFA_API_KEY'} ),
+    secret  => ( exists $ENV{'WFA_SECRET_KEY'} && $ENV{'WFA_SECRET_KEY'} ),
+    desktop => ( exists $ENV{'WFA_DESKTOP'}    && $ENV{'WFA_DESKTOP'} ),
+    parse   => 1,
+    format  => 'JSON',
+    debug   => 0,
     throw_errors => 1,
-    api_key      => q{},
     api_version  => '1.0',
-    desktop      => q{},
     apps_uri     => 'http://apps.facebook.com/',
     server_uri   => 'http://api.facebook.com/restserver.php',
     (   map { $_ => q{} }
             qw(
-            secret      last_call_success   last_error
-            skipcookie  popup               next
-            session_key session_expires     session_uid
-            callback    app_path            ua
-            query
+            last_call_success   last_error  skipcookie
+            popup               next        session_key
+            session_expires     session_uid callback
+            app_path            ua          query
             )
     ),
 );
@@ -72,17 +76,40 @@ for ( keys %attributes ) {
     croak "Cannot create attribute $_: $@\n" if $@;
 }
 
+sub _set_from_env {
+    my $self = shift;
+
+    my $app_path = '_' . ( $self->{'app_path'} || $self->app_path );
+    $app_path =~ tr/a-z/A-Z/;
+    $app_path =~ tr/A-Za-z0-9_/_/c;
+
+    my %ENV_VARS = qw(
+        WFA_API_KEY     api_key
+        WFA_SECRET_KEY  secret
+        WFA_DESKTOP     desktop
+        WFA_SESSION_KEY session_key
+    );
+
+    for ( keys %ENV_VARS ) {
+        if ( exists $ENV{ $_ . $app_path } ) {
+            $self->{ $ENV_VARS{$_} } ||= $ENV{ $_ . $app_path };
+        }
+    }
+    return;
+}
+
 sub new {
     my ( $self, %args ) = @_;
     my $class = ref $self || $self;
     $self = bless \%args, $class;
+    $self->_set_from_env();    # set api_key etc. if needed
 
     $self->{'ua'} ||=
         LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
     my $is_attribute = join q{|}, keys %attributes;
     delete $self->{$_} for grep { !/^($is_attribute)$/xms } keys %{$self};
 
-    # set up default subclassers
+    # set up default namespaces
     $self->$_($self) for map {"\L$_"} @namespaces;
 
     # set up default attributes
@@ -115,15 +142,13 @@ sub call {
     $params = delete $args{'params'} || {};
     $params->{$_} = $args{$_} for keys %args;
 
-    $secret = $args{'secret'} || $self->secret;
+    $secret = $params->{'secret'} || $self->secret;
     $params->{'method'} ||= $method;
     $self->_check_values_of($params);
-    my $sig =
-        $self->generate_sig( params => $params, secret => $self->secret );
+    my $sig = $self->generate_sig( params => $params, secret => $secret );
     $response = $self->_post_request( $params, $secret );
 
-    $params->{'sig'}    = $sig;
-    $params->{'secret'} = $secret;
+    $params->{'sig'} = $sig;
     carp $self->log_string( $params, $response ) if $self->debug;
     if ($response =~ m/ <error_code> (\d+) .* <error_msg> ([^<]+)
         |   \{ "error_code" \D (\d+) .* "error_msg"[^"]+ "([^"]+)" /xms
@@ -265,6 +290,14 @@ sub _add_url_params {
     return $params;
 }
 
+sub _parser {
+    my $parser = JSON::Any->new;
+
+    # JSON::Any needs to get fixed
+    $parser->handler->allow_nonref() if $parser->handlerType eq 'JSON::XS';
+    return $parser;
+}
+
 sub _parse {
     my ( $self, $response ) = @_;
 
@@ -274,11 +307,7 @@ sub _parse {
     return 0   if $response =~ /\A"?false"?\Z/xms;
 
     my $parser;
-    eval {
-        $parser = JSON::Any->new;
-        carp 'JSON::Any is parsing with ' . $parser->handler if $self->debug;
-        $parser->handler->allow_nonref();
-    };
+    eval { $parser = _parser() };
 
     # Only load JSON::Any if we haven't already.  Lets the developers
     # pick their choice of JSON modules (JSON::DWIW, for example)
@@ -286,10 +315,9 @@ sub _parse {
         ## no critic
         eval q{use JSON::Any};
         croak "Unable to load JSON module for parsing:$@\n" if $@;
-        $parser = JSON::Any->new;
-        carp 'JSON::Any is parsing with ' . $parser->handler if $self->debug;
-        $parser->handler->allow_nonref();
+        $parser = _parser();
     }
+    carp 'JSON::Any is parsing with ' . $parser->handlerType if $self->debug;
 
     return $parser->decode($response);
 }
@@ -303,17 +331,15 @@ sub _check_values_of {
 
     if ( $params->{'method'} !~ m/^auth/xms ) {
         $params->{'session_key'} = $self->session_key;
-        if ( $self->callback ) {
-            $params->{'callback'} ||= $self->callback;
+        if ( !$params->{'callback'} && $self->callback ) {
+            $params->{'callback'} = $self->callback;
         }
     }
 
     $params->{'method'} = "facebook.$params->{'method'}";
     $params->{'v'} ||= $self->api_version;
 
-    for (qw(api_key format popup next skipcookie)) {
-        $params->{$_} ||= $self->$_ if $self->$_;
-    }
+    $params->{$_} ||= $self->$_ for qw(api_key format);
     return;
 }
 
@@ -321,7 +347,7 @@ sub _post_request {
     my ( $self, $params, $secret, $sig, $post_params ) = @_;
 
     $self->_format_params($params);
-    $sig = $self->generate_sig( params => $params, secret => $self->secret );
+    $sig = $self->generate_sig( params => $params, secret => $secret );
     $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
     push @{$post_params}, q{sig}, $sig;
 
@@ -349,18 +375,22 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.3.7
+This document describes WWW::Facebook::API version 0.3.8
 
 =head1 SYNOPSIS
 
     use WWW::Facebook::API;
 
+    # @ENV{qw/WFA_API_KEY WFA_SECRET_KEY WFA_DESKTOP/} are the initial values,
+    # so use those if you only have one app and don't want to pass in values
+    # to constructor
     my $client = WWW::Facebook::API->new(
-        desktop        => 1,
-        throw_errors   => 1,
-        parse          => 1,
+        desktop => 0,
+        api_key => 'your api key',
+        secret => 'your secret key',
     );
     
+    # Change API key and secret
     print "Enter your public API key: ";
     chomp( my $val = <STDIN> );
     $client->api_key($val);
@@ -368,13 +398,7 @@ This document describes WWW::Facebook::API version 0.3.7
     chomp($val = <STDIN> );
     $client->secret($val);
     
-    print "Enter your e-mail address: ";
-    chomp(my $email = <STDIN> );
-    $client->secret($val);
-    print "Enter your password: ";
-    chomp(my $pass = <STDIN> );
-    
-    my $token = $client->auth->login( email => $email,  pass => $pass );
+    # not needed if web app (see $client->canvas->get_fb_params)
     $client->auth->get_session( $token );
     
     use Data::Dumper;
@@ -398,7 +422,24 @@ This document describes WWW::Facebook::API version 0.3.7
 A Perl implementation of the Facebook API, working off of the canonical Java
 and PHP implementations. By default it uses L<JSON::Any> to parse the response
 returned by Facebook's server. There is an option to return the raw response
-in either XML or JSON (See the C<parse> method below). 
+in either XML or JSON (See the C<parse> method below). As the synopsis states,
+the following environment variables are used to set the defaults for new
+instances:
+
+    WFA_API_KEY
+    WFA_SESSION_KEY
+    WFA_DESKTOP
+
+Additionally, for each instance that is created, the following environment
+variables are used if no values are set:
+
+    WFA_API_KEY_APP_PATH
+    WFA_SESSION_KEY_APP_PATH
+    WFA_DESKTOP_APP_PATH
+
+Where C<APP_PATH> is replaced by whatever $client->app_path returns, with all
+non-alphanumeric characters replaced with an underscore and all characters
+upcased (e.g., foo-bar-baz becomes FOO_BAR_BAZ).
 
 =head1 SUBROUTINES/METHODS 
 
@@ -611,7 +652,9 @@ These are methods to get/set the object's attributes.
 
 =item api_key( $new_api_key )
 
-The developer's API key. See the Facebook API documentation.
+The developer's API key. If C<$ENV{'WFA_API_KEY'}> is set, all instances will
+be initialized with its value. See the Facebook API documentation for more
+information.
 
 =item api_version( $new_version )
 
@@ -669,7 +712,9 @@ should be carped for REST calls. Defaults to 0.
 =item desktop(0|1)
 
 A boolean signifying if the client is being used for a desktop application.
-Defaults to 0. See the Facebook API documentation.
+If C<$ENV{'WFA_DESKTOP'}> is set, all instances will be initialized with its
+value. Defaults to 0 otherwise. See the Facebook API documentation for more
+information.
 
 =item format('JSON'|'XML')
 
@@ -713,8 +758,10 @@ does not implement a redirect method.>
 =item secret( $new_secret_key )
 
 For a desktop application, this is the secret that is used for calling
-C<auth->create_token> and C<auth->get_session>. See the Facebook API
-documentation under Authentication.
+C<auth->create_token> and C<auth->get_session>. For a web application, secret
+is used for all calls to the API. If C<$ENV{'WFA_SECRET_KEY'}> is set, all
+instances will be initialized with its value. See the Facebook API
+documentation under Authentication for more information.
 
 =item server_uri( $new_server_uri )
 
@@ -750,7 +797,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.7".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.8".
 
 =back
 
@@ -805,6 +852,10 @@ application:
 
     # prints http://www.facebook.com/codegen.php?api_key=key&v=1.0
     print $response;
+
+From what I've seen, the session keys that Facebook returns don't expire
+automatically, so as long as you don't call $client->auth->logout, you
+shouldn't even need to worry about this.
 
 =item get_login_url( %params )
 
@@ -905,6 +956,10 @@ response.
 Parses the response from a call to the Facebook server to make it a Perl data
 structure, and returns the result.
 
+=item _parser()
+
+Returns a new instance of JSON::Any.
+
 =back
 
 =head1 DIAGNOSTICS
@@ -924,7 +979,7 @@ communicate to the Facebook REST server. Look at the traceback to determine
 why an error was thrown. Double-check that C<server_uri> is set to the right
 location.
 
-=item C<< Cannot create subclass %s: %s >>
+=item C<< Cannot create namespace %s: %s >>
 
 Cannot create the needed subclass method. Contact the developer to report.
 
@@ -969,28 +1024,37 @@ L<http://rt.cpan.org>.
 
 http://code.google.com/p/perl-www-facebook-api/
 
-=head1 TODO
+=head1 TESTING
 
-Add tests to get better coverage.
+There are some live tests included, but they are only run if the following
+environment variables are set:
+    WFA_API_KEY_TEST
+    WFA_SECRET_KEY_TEST
+    WFA_SESSION_KEY_TEST
+
+Additionally, if your app is a desktop one, you must set C<WFA_DESKTOP>. Also,
+the session key must be valid for the API key being used.
+
+With live tests enabled, here is the current test coverage:
 
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  File                           stmt   bran   cond    sub    pod   time  total
+  File                           stmt   bran   cond    sub    pod   time total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   82.0   65.4   34.3   88.9  100.0   87.2   75.5
-  .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    1.5   69.4
-  ...WW/Facebook/API/Canvas.pm   46.2    0.0   16.7   50.0  100.0    1.5   46.4
-  ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.7   85.4
-  .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.8   81.8
-  ...b/WWW/Facebook/API/FQL.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
-  .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.9   85.4
-  ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.7   81.8
-  ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    0.8   85.4
-  ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    2.1   81.8
-  ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.7   73.6
-  ...W/Facebook/API/Profile.pm   85.7    n/a   33.3   60.0  100.0    0.7   78.7
-  ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.7   89.5
-  ...WWW/Facebook/API/Users.pm   88.9    n/a   33.3   66.7  100.0    1.0   81.8
-  Total                          82.5   59.1   32.5   76.4  100.0  100.0   75.7
+  blib/lib/WWW/Facebook/API.pm   91.6   70.2   67.6   92.7  100.0   91.5 85.6
+  .../WWW/Facebook/API/Auth.pm   81.2   22.2   20.0   80.0  100.0    0.9 69.4
+  ...WW/Facebook/API/Canvas.pm   46.2    0.0   16.7   50.0  100.0    0.6 46.4
+  ...WW/Facebook/API/Events.pm   92.3    n/a   33.3   75.0  100.0    0.6 85.4
+  .../WWW/Facebook/API/FBML.pm   88.9    n/a   33.3   66.7  100.0    0.4 81.8
+  ...b/WWW/Facebook/API/FQL.pm  100.0   75.0   50.0  100.0  100.0    0.5 91.7
+  .../WWW/Facebook/API/Feed.pm   92.3    n/a   33.3   75.0  100.0    0.5 85.4
+  ...W/Facebook/API/Friends.pm   88.9    n/a   33.3   66.7  100.0    0.5 81.8
+  ...WW/Facebook/API/Groups.pm   92.3    n/a   33.3   75.0  100.0    1.6 85.4
+  ...book/API/Notifications.pm   88.9    n/a   33.3   66.7  100.0    0.7 81.8
+  ...WW/Facebook/API/Photos.pm   80.0    n/a   33.3   50.0  100.0    0.4 73.6
+  ...W/Facebook/API/Profile.pm   92.9    n/a   33.3   80.0  100.0    0.7 87.2
+  ...WW/Facebook/API/Update.pm   96.0    n/a   33.3   85.7  100.0    0.6 89.5
+  ...WWW/Facebook/API/Users.pm   92.6    n/a   33.3   77.8  100.0    0.5 86.4
+  Total                          87.5   64.4   47.6   80.0  100.0  100.0 81.6
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
