@@ -86,7 +86,7 @@ sub login {
         : $^O =~ m/MSWin/xms  ? 'start'    ## no critic
         :                       q{};
 
-    croak "Don't know how to open browser for the system $^O" if not $browser;
+    croak "Don't know how to open browser for system '$^O'" if not $browser;
 
     # Open browser have user login to Facebook app
     system qq($browser "$url");

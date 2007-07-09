@@ -63,14 +63,22 @@ is $api->secret,          '23489234289342389', '!desktop secret unchanged';
 
 eval { $auth->login; };
 ok $@, q{can't use login with web app};
-{
-    $api->desktop(1);
+
+$api->desktop(1);
+if ($^O =~ /darwin|MSWin/ ) {
     diag q{Sleeping for a bit (so don't fret)...};
     is $auth->login, '3e4a22bb2f5ed75114b0fc9995ea85f1', 'login default sleep ok';
-    my $start_time = time;
-    is $auth->login( sleep => 1 ), '4358934543983b234c4389ef45489456', 'login set sleep ok';
-    ok time() - $start_time, 'did sleep';
 }
+else {
+    eval { $auth->login; };
+    diag $@;
+    like $@, qr/open browser/, 'login default can\'t open browser';
+}
+
+my $start_time = time;
+is $auth->login( sleep => 1, browser => 'dummy' ), '4358934543983b234c4389ef45489456', 'login set sleep ok';
+ok time() - $start_time, 'did sleep';
+
 
 ok $auth->can('logout'), 'logout works';
 
