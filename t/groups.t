@@ -15,15 +15,16 @@ BEGIN {
     {
         plan skip_all => 'Live tests require API key, secret, and session';
     }
-    plan tests => 5;
+    plan tests => 2;
 }
 
 my $api = WWW::Facebook::API->new( app_path => 'test' );
 
-my $fbml_orig = $api->profile->get_fbml();
-my $time      = time();
-ok $api->profile->set_fbml( markup => $time ), 'set fbml';
-is $api->profile->get_fbml(), $time, 'get fbml';
-ok $api->profile->set_fbml( markup => $fbml_orig ), 'reset fmbl';
-ok $api->profile->can('set_FBML'), 'set_FBML';
-ok $api->profile->can('get_FBML'), 'get_FBML';
+my $groups = $api->groups->get;
+is ref $groups, 'ARRAY', 'get returns array ref';
+
+SKIP: {
+    skip 'No groups to get members from' => 1 unless $groups->[0]->{'gid'};
+    is keys %{$api->groups->get_members(gid => $groups->[0]->{'gid'})}, 4,
+    'four lists, as per API';
+}

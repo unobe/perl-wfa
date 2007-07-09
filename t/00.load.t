@@ -4,7 +4,7 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 14;
+use Test::More tests => 13;
 
 BEGIN {
     use_ok('WWW::Facebook::API');

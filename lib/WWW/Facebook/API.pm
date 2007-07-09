@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.8');
+use version; our $VERSION = qv('0.3.9');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -21,8 +21,7 @@ our @namespaces = qw(
     Auth            Canvas          Events
     FBML            Feed            FQL
     Friends         Groups          Notifications
-    Photos          Profile         Update
-    Users
+    Photos          Profile         Users
 );
 
 for (@namespaces) {
@@ -387,7 +386,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.3.8
+This document describes WWW::Facebook::API version 0.3.9
 
 =head1 SYNOPSIS
 
@@ -809,7 +808,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.8".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.9".
 
 =back
 
@@ -1044,29 +1043,28 @@ environment variables are set:
     WFA_SECRET_KEY_TEST
     WFA_SESSION_KEY_TEST
 
-Additionally, if your app is a desktop one, you must set C<WFA_DESKTOP>. Also,
-the session key must be valid for the API key being used.
+Additionally, if your app is a desktop one, you must set C<WFA_DESKTOP_TEST>.
+Also, the session key must be valid for the API key being used.
 
 With live tests enabled, here is the current test coverage:
 
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   93.9   70.2   67.6   92.8  100.0   92.0   88.0
-  .../WWW/Facebook/API/Auth.pm   77.2   22.2    0.0   75.0  100.0    1.8   65.2
-  ...WW/Facebook/API/Canvas.pm   30.0    0.0    0.0   40.0  100.0    0.5   33.8
-  ...WW/Facebook/API/Events.pm   85.7    n/a    n/a   66.7  100.0    0.5   81.8
-  .../WWW/Facebook/API/FBML.pm   80.0    n/a    n/a   57.1  100.0    0.6   76.0
-  ...b/WWW/Facebook/API/FQL.pm  100.0   75.0   66.7  100.0  100.0    0.7   93.1
-  .../WWW/Facebook/API/Feed.pm   85.7    n/a    n/a   66.7  100.0    0.4   81.8
-  ...W/Facebook/API/Friends.pm   80.0    n/a    n/a   57.1  100.0    0.4   76.0
-  ...WW/Facebook/API/Groups.pm   85.7    n/a    n/a   66.7  100.0    0.6   81.8
-  ...book/API/Notifications.pm   80.0    n/a    n/a   57.1  100.0    0.5   76.0
-  ...WW/Facebook/API/Photos.pm   66.7    n/a    n/a   40.0  100.0    0.7   64.7
-  ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.4   85.7
-  ...WW/Facebook/API/Update.pm   92.3    n/a    n/a   80.0  100.0    0.5   89.5
-  ...WWW/Facebook/API/Users.pm   86.7    n/a    n/a   71.4  100.0    0.4   84.0
-  Total                          87.3   64.4   60.0   77.1  100.0  100.0   82.1
+  blib/lib/WWW/Facebook/API.pm   93.7   75.8   67.6   92.6  100.0    5.5   88.9
+  .../WWW/Facebook/API/Auth.pm   94.7   66.7  100.0   87.5  100.0   94.1   88.8
+  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.0   97.1
+  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.1  100.0
+  .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...b/WWW/Facebook/API/FQL.pm  100.0  100.0  100.0  100.0  100.0    0.0  100.0
+  .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...book/API/Notifications.pm   86.7    n/a    n/a   71.4  100.0    0.0   84.0
+  ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
+  ...WWW/Facebook/API/Users.pm   86.7    n/a    n/a   71.4  100.0    0.0   84.0
+  Total                          94.5   75.9   73.3   92.3  100.0  100.0   90.7
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR

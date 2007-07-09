@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.8');
+use version; our $VERSION = qv('0.3.9');
 
 sub get_fb_params {
     my $self = shift;
@@ -17,7 +17,7 @@ sub get_fb_params {
 
     return {
         map { (/^fb_sig_ (.*) $/xms)[0] => $self->base->query->param($_) }
-            grep {/^fb_sig_/xms} $self->base->query->param
+            grep {m/^fb_sig_/xms} $self->base->query->param
     };
 }
 
@@ -27,7 +27,7 @@ sub get_non_fb_params {
 
     return {
         map { $_ => $self->base->query->param($_) }
-            grep { !/^fb_sig_/xms } $self->base->query->param
+            grep { !/^fb_sig_?/xms } $self->base->query->param
     };
 }
 
@@ -36,10 +36,11 @@ sub validate_sig {
     $self->base->query(shift);
 
     my $fb_params = $self->get_fb_params;
+    return unless $self->base->query->param('fb_sig');
     return $fb_params
         if $self->base->verify_sig(
         params => $fb_params,
-        sig    => $self->base->query->param('fb_sig')
+        sig    => $self->base->query->param('fb_sig'),
         );
 
     return;
@@ -50,7 +51,7 @@ sub get_user {
     $self->base->query(shift);
 
     my $fb_params = $self->validate_sig;
-    return $fb_params->{'user'} if $fb_params;
+    return $fb_params->{'user'} if exists $fb_params->{'user'};
 
     return q{};
 }
@@ -81,7 +82,7 @@ WWW::Facebook::API::Canvas - Facebook Canvas
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Canvas version 0.3.8
+This document describes WWW::Facebook::API::Canvas version 0.3.9
 
 =head1 SYNOPSIS
 

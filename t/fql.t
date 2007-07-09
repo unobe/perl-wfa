@@ -15,7 +15,7 @@ BEGIN {
     {
         plan skip_all => 'Live tests require API key, secret, and session';
     }
-    plan 'no_plan';
+    plan tests => 4;
 }
 
 my $api = WWW::Facebook::API->new( app_path => 'test' );

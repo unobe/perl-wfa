@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.8');
+use version; our $VERSION = qv('0.3.9');
 
 sub get_info { return shift->base->call( 'users.getInfo', @_ ); }
 
@@ -28,7 +28,7 @@ WWW::Facebook::API::Users - Facebook Users
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.3.8
+This document describes WWW::Facebook::API::Users version 0.3.9
 
 =head1 SYNOPSIS
 

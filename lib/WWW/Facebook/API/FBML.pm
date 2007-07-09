@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.8');
+use version; our $VERSION = qv('0.3.9');
 
 sub refresh_img_src { return shift->base->call( 'fbml.refreshImgSrc', @_ ) }
 sub refresh_ref_url { return shift->base->call( 'fbml.refreshRefUrl', @_ ) }
@@ -19,7 +19,7 @@ WWW::Facebook::API::FBML - Facebook Markup Language
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FBML version 0.3.8
+This document describes WWW::Facebook::API::FBML version 0.3.9
 
 =head1 SYNOPSIS
 
@@ -36,15 +36,18 @@ Methods for updating FBML references with L<WWW::Facebook::API>
 =item set_ref_handle( handle => 'handleName', fbml => 'fbml' )
 
 The fbml.setRefHandle method of the Facebook API. See this page on the wiki:
-http://wiki.f8.facebook.com/index.php/Fb:ref
+http://wiki.developers.facebook.com/index.php/Changing_profile_content
 
 =item refresh_img_src( url => $url )
 
-The fbml.refreshImgSrc method of the Facebook API.
+Request an image in Facebook's cache (at the given URL) be refreshed. See this
+page on the wiki:
+http://wiki.developers.facebook.com/index.php/Changing_profile_content 
 
 =item refresh_ref_url( url => $url )
 
-The fbml.refreshRefUrl method of the Facebook API.
+Have Facebook call the given URL to generate the FBML. See this page on the
+wiki: http://wiki.developers.facebook.com/index.php/Changing_profile_content
 
 =back
 
