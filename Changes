@@ -1,9 +1,12 @@
 Revision history for WWW-Facebook-API
 
+HEAD   Tue Jul 10 16:02:11 PDT 2007
+	Fixed doc formatting and removed 'update' namespace doc
+	  (Thanks Tom Hukins)
+
 0.4.0  Tue Jul 10 06:28:44 PDT 2007
 	Fixed failing test in t/auth.t on linux (Thanks Tom Hukins)
 	Fixed parse => 1 and format => XML bug (added tests)
-	Fixed doc formatting (Thanks Tom Hukins)
 
 0.3.9  Sun Jul  8 18:53:57 PDT 2007
 	Fixed skipped test construct
