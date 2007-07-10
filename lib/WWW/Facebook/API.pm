@@ -641,13 +641,6 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
     $response = $client->profile->get_fbml( uid => 3 );
     $response = $client->profile->set_fbml( uid => 5, markup => 'markup' );
 
-=item update
-
-update namespace of the API (See L<WWW::Facebook::API::Update>).
-All method names from the Facebook API are lower_cased instead of CamelCase:
-
-    $response = $client->update->decode_ids( ids => [5,4,3] );
-
 =item users
 
 users namespace of the API (See L<WWW::Facebook::API::Users>).
