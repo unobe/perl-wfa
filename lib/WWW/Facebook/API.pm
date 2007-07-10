@@ -183,6 +183,11 @@ sub call {
         $response = $self->unescape_string($response);
     }
 
+    if ($self->parse and $self->format eq 'XML') {
+        $self->parse(0);
+        carp "format is XML: setting parse to 0" if $self->debug;
+    }
+
     return $response if !$self->parse;
 
     return $self->_parse($response);
@@ -1081,7 +1086,7 @@ Gisle Aas C<< none >>
 
 J. Shirley C<< <jshirley@gmail.com> >>
 
-Jim Spath C<< none >>
+Jim Spath C<< <jspath@gmail.com> >>
 
 Matt Sickler C<< <imMute@mail.msk3.ath.cx> >>
 
