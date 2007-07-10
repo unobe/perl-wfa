@@ -2,7 +2,7 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.3.9
+    This document describes WWW::Facebook::API version 0.4.0
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -390,7 +390,7 @@ ATTRIBUTE METHODS
         "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.3.9".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.0".
 
 PUBLIC METHODS
     call( $method, %args )

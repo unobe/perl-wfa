@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Mon Jul  9 21:46:54 PDT 2007
+0.4.0  Tue Jul 10 06:28:44 PDT 2007
 	Fixed failing test in t/auth.t on linux (Thanks Tom Hukins)
 	Fixed parse => 1 and format => XML bug (added tests)
 

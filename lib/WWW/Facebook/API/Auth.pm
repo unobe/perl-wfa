@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.3.9');
+use version; our $VERSION = qv('0.4.0');
 
 sub create_token {
     my $self = shift;
@@ -114,7 +114,7 @@ WWW::Facebook::API::Auth - Facebook Authentication
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.3.9
+This document describes WWW::Facebook::API::Auth version 0.4.0
 
 =head1 SYNOPSIS
 
