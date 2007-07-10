@@ -37,3 +37,4 @@ t/fql.t
 t/parse.t
 t/profile.t
 t/pod.t
+t/xml.t
