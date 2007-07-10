@@ -54,8 +54,8 @@ The notifications.send method of the Facebook API:
 
     $response = $client->notifications->send(
         to_ids => [1],
-        markup => 'markup',
-        no_email => 1,
+        notifications => 'notifications page FBML',
+        email => 'email FBML',
     );
 
 =item send_request( %params )
