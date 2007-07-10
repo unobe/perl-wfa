@@ -139,7 +139,7 @@ regardles of the C<parse> setting in L<WWW::Facebook::API>:
 
 auth.getSession of the Facebook API. If you have the desktop attribute set to
 true and C<$token> isn't passed in, the return value from
-C<$client->auth->create_token> will be used. If the desktop attribute is set
+C<< $client->auth->create_token >> will be used. If the desktop attribute is set
 to false the C<$token> must be the auth_token returned from Facebook to your
 web app for that user:
 

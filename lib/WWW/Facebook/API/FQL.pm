@@ -50,8 +50,8 @@ The fql.query method of the Facebook API:
 
     $response = $client->fql->query( query => 'FQL query' );
 
-When C<$self->base->parse> returns true, and when the format is JSON, the
-response will always be an array reference. (Facebook actually returns an
+When C<< $client->base->parse >> returns true, and when the format is JSON,
+the response will always be an array reference. (Facebook actually returns an
 empty hash reference when empty, but an array reference otherwise. This is
 meant to make developer more consistent.)
 

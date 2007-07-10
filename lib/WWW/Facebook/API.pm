@@ -185,7 +185,7 @@ sub call {
 
     if ( $self->parse and $self->format eq 'XML' ) {
         $self->parse(0);
-        carp "format is XML: setting parse to 0" if $self->debug;
+        carp q{format is XML: setting parse to 0} if $self->debug;
     }
 
     return $response if !$self->parse;
@@ -774,9 +774,9 @@ does not implement a redirect method.>
 =item secret( $new_secret_key )
 
 For a desktop application, this is the secret that is used for calling
-C<auth->create_token> and C<auth->get_session>. For a web application, secret
-is used for all calls to the API. If C<$ENV{'WFA_SECRET_KEY'}> is set, all
-instances will be initialized with its value. See the Facebook API
+C<< auth->create_token >> and C<< auth->get_session >>. For a web application,
+secret is used for all calls to the API. If C<$ENV{'WFA_SECRET_KEY'}> is set,
+all instances will be initialized with its value. See the Facebook API
 documentation under Authentication for more information.
 
 =item server_uri( $new_server_uri )
@@ -788,17 +788,18 @@ Facebook server, and useful for testing. See the Facebook API documentation.
 =item session_expires( $new_expires )
 
 The session expire timestamp for the client's user. Automatically set when
-C<$client->auth->get_session> is called. See the Facebook API documentation. 
+C<< $client->auth->get_session >> is called. See the Facebook API
+documentation.
 
 =item session_key( $new_key )
 
 The session key for the client's user. Automatically set when
-C<<$client->auth->get_session>> is called. See the Facebook API documentation.
+C<< $client->auth->get_session >> is called. See the Facebook API documentation.
 
 =item session_uid( $new_uid )
 
 The session's uid for the client's user. Automatically set when
-C<<$client->auth->get_session>> is called. See the Facebook API documentation.
+C<< $client->auth->get_session >> is called. See the Facebook API documentation.
 
 =item skipcookie(0|1)
 
@@ -900,8 +901,8 @@ string out of it showing the parameters used, and the response received.
 
 Called by C<require()> to redirect the user either within the canvas or
 without. This, as with C<require()> is only really useful when having a web
-app. If no <$query_object> is defined, then whatever is in C<$self->query>
-will be used. (See L<WWW::Facebook::API::Canvas>)
+app. If no <$query_object> is defined, then whatever is in
+C<< $client->query >> will be used. (See L<WWW::Facebook::API::Canvas>)
 
 =item require_add( $query )
 
@@ -926,7 +927,7 @@ Logically, you better know what you want to require when you call each of
 them, so this API consolidates them into one method. The valid values for
 C<$what> are C<'add'>, C<'frame'>, and C<'login'>. C<$query> is the query
 object to use (most likely L<CGI>). If C<$query> is undefined, the value of
-C<$self->query> is used.
+C< $client->query >> is used.
 
 =item session( uid => $uid, key => $session_key, expires => $session_expires )
 
