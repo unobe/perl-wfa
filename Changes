@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Wed Jul 11 07:39:25 PDT 2007
+0.4.1  Wed Jul 11 07:39:25 PDT 2007
 	Fixed doc formatting and removed 'update' namespace doc
 	  (Thanks Tom Hukins)
 	Fixed require_* methods and added tests (Thanks Skyler Clark)
