@@ -242,17 +242,21 @@ sub require_login { return shift->require( 'login', @_ ); }
 sub require {    ## no critic
     my $self = shift;
     my $what = shift;
-    $self->query(shift) if @_;
+    $self->query(shift);
+    @_ = ();
 
+    if ( $what eq 'login' ) {
+        @_ = qw( canvas ) if $self->canvas->in_frame;
+    }
     if ( $what eq 'frame' ) {
         return if $self->canvas->in_frame;
-        @_ = ( 'canvas' => 1 );
+        @_    = qw( canvas );
         $what = 'login';
     }
 
-    my $user = $self->users->get_logged_in_user();
+    my $user = $self->session_uid;
     if ( $what eq 'add' ) {
-        undef $user unless $self->canvas->get_fb_params->{'added'};
+        $user = undef unless $self->canvas->get_fb_params->{'added'};
     }
     return $user if $user;
 
@@ -297,11 +301,21 @@ sub unescape_string {
 sub _add_url_params {
     my $self   = shift;
     my $params = q{?api_key=} . $self->api_key . q{&v=1.0};
-    my %params = @_;
-    for ( sort keys %params ) {
-        next if not defined $params{$_};
-        $params{$_} = escape( $params{$_} ) if $_ eq 'next';
-        $params .= "&$_=$params{$_}";
+    if (@_) {
+        if ( @_ % 2 ) {
+
+            # Odd number of elelemts, so didn't pass in canvas => 1
+            $params .= q{&canvas} if grep { $_ eq 'canvas' } @_;
+            @_ = grep { $_ ne 'canvas' } @_;
+        }
+        my %params = @_;
+        $params .= q{&canvas} if delete $params{'canvas'};
+
+        for ( sort keys %params ) {
+            next if not defined $params{$_};
+            $params{$_} = escape( $params{$_} ) if $_ eq 'next';
+            $params .= "&$_=$params{$_}";
+        }
     }
     return $params;
 }
@@ -906,7 +920,6 @@ for the C<$query> parameter.
 
 Redirects the user to what C<get_login_url( canvas => '1' )> returns. See
 C<require()> below for the C<$query> parameter.
-
 
 =item require_login( $query )
 

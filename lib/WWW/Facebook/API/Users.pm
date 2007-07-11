@@ -17,7 +17,6 @@ sub get_info { return shift->base->call( 'users.getInfo', @_ ); }
 sub get_logged_in_user {
     return shift->base->call( 'users.getLoggedInUser', @_ );
 }
-sub is_app_added { return shift->base->call( 'users.isAppAdded', @_ ); }
 
 1;    # Magic true value required at end of module
 __END__
@@ -60,13 +59,6 @@ The users.getInfo method of the Facebook API:
 The users.getLoggedInUser method of the Facebook API:
 
     $uid = $client->users->get_logged_in_user;
-
-=item is_app_added
-
-The users.getIsAppAdded method of the Facebook API (currently not documented,
-but is present in the PHP client):
-
-    $user_has_app = $client->users->is_app_added;
 
 =back
 

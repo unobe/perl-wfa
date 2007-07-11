@@ -4,7 +4,7 @@
 # $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 14;
+use Test::More tests => 16;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -14,19 +14,37 @@ my $api = WWW::Facebook::API->new( api_key => 1, secret => 2 );
 @_ = ();
 is $api->_add_url_params(
     next       => shift @_,
-    canvas     => shift @_,
     auth_token => shift @_
     ),
     '?api_key=1&v=1.0', 'url params test 1';
 
-@_ = ( " hi ", 'test', 12 );
+@_ = ( ' hi ', 12 );
 is $api->_add_url_params(
+    'canvas',
     next       => shift @_,
-    canvas     => shift @_,
     auth_token => shift @_
     ),
-    '?api_key=1&v=1.0&auth_token=12&canvas=test&next=%20hi%20',
+    '?api_key=1&v=1.0&canvas&auth_token=12&next=%20hi%20',
     'url params test 2';
+
+@_ = ( ' hi ', 'test', 12 );
+is $api->_add_url_params(
+    next       => shift @_,
+    canvas      => shift @_,
+    auth_token => shift @_
+    ),
+    '?api_key=1&v=1.0&canvas&auth_token=12&next=%20hi%20',
+    'url params test 3';
+
+@_ = ();
+is $api->_add_url_params(
+    next       => shift @_,
+    canvas      => shift @_,
+    auth_token => shift @_
+    ),
+    '?api_key=1&v=1.0',
+    'url params test 4';
+
 
 my $params;
 $api->desktop(1);
