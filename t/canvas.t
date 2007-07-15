@@ -36,12 +36,12 @@ sub redirect_fh {
 
 sub test_cgi_redirect {
     my ( $io, $expected, $desc ) = @_;
-    seek( $io, 0, 0 );
+    $io->setpos(0);
     if (defined <$io>) {
-        seek( $io, 0, 0 );
+        $io->setpos(0);
         my $redirect = join '', <$io>;
         $redirect =~ s/\s+/ /g;
-        is $redirect, $expected, $desc;
+        like $redirect, $expected, $desc;
     }
     else {
         is undef, $expected, $desc;
@@ -122,18 +122,18 @@ SKIP: {
     $user = delete $q->{'fb_sig_user'};
     is $api->require_frame, 1, 'require frame outside frame';
     $test_stdout->setpos(0);
-    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+    test_cgi_redirect( $test_stdout, qr{Status: 302 (Found|Moved) Location: http://apps.facebook.com/test/ } );
 
     $q->{'fb_sig_in_iframe'} = 1;
     ok !$api->require_frame($q), 'require_frame in frame';
     test_cgi_redirect( $test_stdout, undef );
 
     is $api->require_login, 1, 'require_login in frame';
-    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+    test_cgi_redirect( $test_stdout, qr{Status: 302 (Found|Moved) Location: http://apps.facebook.com/test/ } );
 
     delete $q->{'fb_sig_in_iframe'};
     is $api->require_login($q), 1, 'require_login outside frame';
-    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+    test_cgi_redirect( $test_stdout, qr{Status: 302 (Found|Moved) Location: http://apps.facebook.com/test/ } );
 
     $q->{'fb_sig_in_canvas'} = 1;
     ok !$api->require_frame($q), 'require_frame in canvas';
@@ -145,16 +145,16 @@ SKIP: {
 
     delete $q->{'fb_sig_in_canvas'};
     is $api->require_login($q), 1, 'require_login outside canvas';
-    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+    test_cgi_redirect( $test_stdout, qr{Status: 302 (Found|Moved) Location: http://apps.facebook.com/test/ } );
 
     is $api->require_add, 1, 'require_add';
-    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+    test_cgi_redirect( $test_stdout, qr{Status: 302 (Found|Moved) Location: http://apps.facebook.com/test/ } );
 
     is $api->require_frame, 1, 'require_frame';
-    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+    test_cgi_redirect( $test_stdout, qr{Status: 302 (Found|Moved) Location: http://apps.facebook.com/test/ } );
 
     is $api->require_login, 1, 'require_login';
-    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+    test_cgi_redirect( $test_stdout, qr{Status: 302 (Found|Moved) Location: http://apps.facebook.com/test/ } );
 }
 
 SKIP: {
