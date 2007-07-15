@@ -104,6 +104,7 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
     isnt $secret, $api->secret, 'secret not object\'s';
     is  $secret, $args->{'params'}->{'secret'}, 'secret is param\'s';
     is $args->{'params'}->{'method'}, 'facebook.hello', 'call method changed';
+
     eval q{use IO::String};
     SKIP: {
         skip 'Need IO::String to test debug output' => 1 if $@;
