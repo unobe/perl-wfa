@@ -1148,8 +1148,8 @@ With live tests enabled, here is the current test coverage:
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   98.6   86.5   71.2   98.8  100.0    6.0   94.4
-  .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   93.6   89.9
+  blib/lib/WWW/Facebook/API.pm   98.7   85.2   67.2   98.8  100.0    7.7   93.8
+  .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   91.9   89.9
   ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
   ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -1161,9 +1161,8 @@ With live tests enabled, here is the current test coverage:
   ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
   ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0   90.9
-  Total                          97.9   85.4   73.7   95.8  100.0  100.0   94.5
+  Total                          98.0   84.3   69.8   95.9  100.0  100.0   94.1
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-
 
 =head1 AUTHOR
 
