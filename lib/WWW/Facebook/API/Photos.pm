@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.1');
+use version; our $VERSION = qv('0.4.2');
 
 sub add_tag      { return shift->base->call( 'photos.addTag',      @_ ) }
 sub create_album { return shift->base->call( 'photos.createAlbum', @_ ) }
@@ -28,7 +28,7 @@ WWW::Facebook::API::Photos - Facebook Photos
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.4.1
+This document describes WWW::Facebook::API::Photos version 0.4.2
 
 =head1 SYNOPSIS
 
