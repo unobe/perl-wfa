@@ -11,7 +11,7 @@ use warnings;
 
 BEGIN {
     if ( 3 != grep defined,
-        @ENV{qw/WFA_API_KEY_TEST WFA_SECRET_KEY_TEST WFA_SESSION_KEY_TEST/} )
+        @ENV{qw/WFA_API_KEY_TEST WFA_SECRET_TEST WFA_SESSION_KEY_TEST/} )
     {
         plan skip_all => 'Live tests require API key, secret, and session';
     }
