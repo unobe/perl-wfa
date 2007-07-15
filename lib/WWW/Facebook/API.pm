@@ -15,6 +15,7 @@ use version; our $VERSION = qv('0.4.1');
 use LWP::UserAgent;
 use Time::HiRes qw(time);
 use Digest::MD5 qw(md5_hex);
+use CGI;
 use CGI::Util qw(escape);
 
 our @namespaces = qw(
@@ -190,7 +191,15 @@ sub call {
 
     return $response if !$self->parse;
 
-    return $self->_parse($response);
+    $response = $self->_parse($response);
+
+    # Empty result
+    if (   ( ref $response eq 'HASH' && !keys %{$response} )
+        || ( ref $response eq 'ARRAY' && @{$response} == 0 ) )
+    {
+        return;
+    }
+    return $response;
 }
 
 sub generate_sig {
@@ -222,7 +231,9 @@ sub redirect {
     if ( $self->canvas->in_fb_canvas ) {
         return qq{<fb:redirect url="$url" />};
     }
-    elsif ( $url =~ m[^https?://([^/]*\.)?facebook\.com(:\d+)?]ixms ) {
+    elsif ($url =~ m[^https?://([^/]*\.)?facebook\.com(:\d+)?]ixms
+        && $self->session_uid )
+    {
         return join q{},
             map {"$_\n"}
             '<script type="text/javascript">'
@@ -230,9 +241,9 @@ sub redirect {
             . '</script>';
     }
 
-    croak 'Cannot redirect!' unless $self->query->can('redirect');
-
-    return $self->query->redirect($url);
+    return
+        print CGI->new->redirect(
+        $self->get_app_url( next => $self->get_login_url ) );
 }
 
 sub require_add   { return shift->require( 'add',   @_ ); }
@@ -254,11 +265,13 @@ sub require {    ## no critic
         $what = 'login';
     }
 
-    my $user = $self->session_uid;
+    my $user = $self->canvas->get_fb_params->{'user'};
     if ( $what eq 'add' ) {
-        $user = undef unless $self->canvas->get_fb_params->{'added'};
+        if ( !$self->canvas->get_fb_params->{'added'} ) {
+            $user = undef;
+        }
     }
-    return $user if $user;
+    return if $user;
 
     return $self->redirect( $self->get_url( $what, @_ ) );
 }
@@ -837,6 +850,10 @@ to be called (e.g., 'auth.getSession'), and key/value pairs for the parameters
 to use:
     $client->call( 'auth.getSession', auth_token => 'b3324235e' );
 
+For all calls, if C< parse > is set to true and an empty hash/array reference
+is returned from facebook, nothing will be returned instead of the empty
+hash/array reference.
+
 =item generate_sig( params => $params_hashref, secret => $secret )
 
 Generates a sig when given a parameters hash reference and a secret key.
@@ -907,9 +924,29 @@ string out of it showing the parameters used, and the response received.
 =item redirect( $url, $query_object )
 
 Called by C<require()> to redirect the user either within the canvas or
-without. This, as with C<require()> is only really useful when having a web
-app. If no <$query_object> is defined, then whatever is in
-C<< $client->query >> will be used. (See L<WWW::Facebook::API::Canvas>)
+without. If no <$query_object> is defined, then whatever is in C<<
+$client->query >> will be used. (See L<WWW::Facebook::API::Canvas>) If no
+redirect is required, nothing is returned. That is the only case when there is
+no return value. If a redirect B<is> required, there are two cases that are
+covered:
+
+=over 4
+
+=item user not logged in
+
+If there isn't a user logged in to Facebook's system, then a redirect to the Facebook
+login page is printed to STDOUT with a next parameter to the appropriate page.
+The redirect is called with the the CGI module that comes standard with perl.
+The return value in this case is 1.
+
+=item user logged in
+
+If the user is logged in to Facebook, and a redirect is required, the
+necessary FBML is returned: C<< <fb:redirect url="WHATEVER"> >>.
+So the return value is the FBML, which you can then print to STDOUT.
+
+=back
+
 
 =item require_add( $query )
 
@@ -1010,12 +1047,6 @@ Cannot create the needed subclass method. Contact the developer to report.
 
 Cannot create the needed attribute method. Contact the developer to report.
 
-=item C<< Cannot redirect without redirect method! >>
-
-You're not using L<CGI> as a query object when calling C<redirect()> (or one
-of the C<require_*> methods. The query object you're using must implement the
-C<redirect()> method as L<CGI> does.
-
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -1063,12 +1094,12 @@ With live tests enabled, here is the current test coverage:
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   98.2   85.0   70.0   98.8  100.0    4.8   94.1
-  .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   94.9   89.9
+  blib/lib/WWW/Facebook/API.pm   98.6   86.5   71.2   98.8  100.0    6.0   94.4
+  .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   93.6   89.9
   ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
   ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...b/WWW/Facebook/API/FQL.pm  100.0  100.0  100.0  100.0  100.0    0.0  100.0
+  ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -1076,8 +1107,9 @@ With live tests enabled, here is the current test coverage:
   ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
   ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0   90.9
-  Total                          97.6   84.3   75.0   95.8  100.0  100.0   94.3
+  Total                          97.9   85.4   73.7   95.8  100.0  100.0   94.5
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
+
 
 =head1 AUTHOR
 

@@ -1,5 +1,12 @@
 Revision history for WWW-Facebook-API
 
+HEAD   Sat Jul 14 19:46:39 PDT 2007
+	*** API CHANGE ***
+	Any calls to Facebook that returned empty hash/array references will now
+	  return nothing instead of the empty reference.
+	Reworked require_* and redirect methods to work better. See docs.
+	  redirect() now punts to CGI->new->redirect (was $self->query->redirect)
+
 0.4.1  Wed Jul 11 07:39:25 PDT 2007
 	Fixed doc formatting and removed 'update' namespace doc
 	  (Thanks Tom Hukins)

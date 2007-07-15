@@ -33,7 +33,7 @@ WHERE aid=$time
     AND owner IN (SELECT uid FROM user WHERE uid=$uid)
 
 $empty = $api->fql->query( query => $empty_query );
-is ref $empty, 'ARRAY', 'empty result is array';
+ok !$empty, 'empty result is empty';
 
 $api->parse(0);
 $empty = $api->fql->query( query => $empty_query );

@@ -15,10 +15,7 @@ use version; our $VERSION = qv('0.4.1');
 # reference when the are no results, so this shouldn't be a problem.
 sub query {
     my $self = shift;
-    my $response = $self->base->call( 'fql.query', @_ );
-
-    return $response if !$self->base->parse && $self->base->format ne 'JSON';
-    return ref $response eq 'HASH' ? [] : $response;
+    return $self->base->call( 'fql.query', @_ );
 }
 
 1;    # Magic true value required at end of module
@@ -50,10 +47,7 @@ The fql.query method of the Facebook API:
 
     $response = $client->fql->query( query => 'FQL query' );
 
-When C<< $client->base->parse >> returns true, and when the format is JSON,
-the response will always be an array reference. (Facebook actually returns an
-empty hash reference when empty, but an array reference otherwise. This is
-meant to make developer more consistent.)
+Returns nothing if no result returned from Facebook.
 
 =back
 

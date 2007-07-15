@@ -4,7 +4,7 @@
 # $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More 'no_plan';    # tests => 15;
+use Test::More tests => 58;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -27,6 +27,28 @@ use warnings;
 }
 
 my $q = Mock::CGI->new();
+
+sub redirect_fh {
+    my $old = select;
+    my $new = IO::String->new;
+    return ( $old, $new );
+}
+
+sub test_cgi_redirect {
+    my ( $io, $expected, $desc ) = @_;
+    seek( $io, 0, 0 );
+    if (defined <$io>) {
+        seek( $io, 0, 0 );
+        my $redirect = join '', <$io>;
+        $redirect =~ s/\s+/ /g;
+        is $redirect, $expected, $desc;
+    }
+    else {
+        is undef, $expected, $desc;
+    }
+    $io->open('');
+}
+
 $q->set_param(
     fb_sig_user        => 1,
     fb_sig_session_key => 2,
@@ -37,7 +59,7 @@ $q->set_param(
     custom_2           => 6,
 );
 
-my $api = WWW::Facebook::API->new();
+my $api = WWW::Facebook::API->new( app_path => 'test' );
 
 ok $api->canvas->get_fb_params($q), 'get_fb_params returns';
 is keys %{ $api->canvas->get_fb_params }, 4, 'get_fb_params keys';
@@ -84,41 +106,105 @@ delete $q->{'fb_sig_in_iframe'};
 ok !$api->canvas->in_frame($q), 'not in frame';
 
 $api->api_key(23432);
-is $api->require_frame,
-    qq{<script type="text/javascript">top.location.href = "http://www.facebook.com/login.php?api_key=23432&v=1.0&canvas"</script>\n},
-    'require frame outside frame';
 
-$q->{'fb_sig_in_iframe'} = 1;
-ok !$api->require_frame($q), 'require_frame in frame';
+eval q{use IO::String};
+my $no_io_string = $@;
 
-is $api->require_login,
-    qq{<script type="text/javascript">top.location.href = "http://www.facebook.com/login.php?api_key=23432&v=1.0&canvas"</script>\n},
-    'require_login in frame';
+my $user;
+SKIP: {
+    diag '\'require_*\' tests without a user';
+    skip 'Tests require IO::String' => 19 if $no_io_string;
 
-delete $q->{'fb_sig_in_iframe'};
-is $api->require_login($q),
-    qq{<script type="text/javascript">top.location.href = "http://www.facebook.com/login.php?api_key=23432&v=1.0"</script>\n},
-    'require_login outside frame';
+    # Redirect printing
+    my ( $old_stdout, $test_stdout ) = redirect_fh(select);
+    select $test_stdout;
 
-$q->{'fb_sig_in_canvas'} = 1;
-ok !$api->require_frame($q), 'require_frame in canvas';
+    $user = delete $q->{'fb_sig_user'};
+    is $api->require_frame, 1, 'require frame outside frame';
+    $test_stdout->setpos(0);
+    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
 
-is $api->require_login,
-    qq{<fb:redirect url="http://www.facebook.com/login.php?api_key=23432&v=1.0&canvas" />},
-    'require_login in canvas';
+    $q->{'fb_sig_in_iframe'} = 1;
+    ok !$api->require_frame($q), 'require_frame in frame';
+    test_cgi_redirect( $test_stdout, undef );
 
-delete $q->{'fb_sig_in_canvas'};
-is $api->require_login($q),
-    qq{<script type="text/javascript">top.location.href = "http://www.facebook.com/login.php?api_key=23432&v=1.0"</script>\n},
-    'require_login outside canvas';
+    is $api->require_login, 1, 'require_login in frame';
+    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
 
-is $api->require_add, qq{<script type="text/javascript">top.location.href = "http://www.facebook.com/add.php?api_key=23432&v=1.0"</script>\n}, 
-'require_add w/o fb_sig_added';
+    delete $q->{'fb_sig_in_iframe'};
+    is $api->require_login($q), 1, 'require_login outside frame';
+    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
 
-$api->session_uid(123);
-$q->{'fb_sig_added'} = 1;
-is $api->require_add($q), 123, 'require_add w/uid';
-delete $q->{'fb_sig_added'};
+    $q->{'fb_sig_in_canvas'} = 1;
+    ok !$api->require_frame($q), 'require_frame in canvas';
+    test_cgi_redirect( $test_stdout, undef );
 
-is $api->require_frame, 123, 'require_frame w/uid';
-is $api->require_login, 123, 'require_login w/uid';
+    is $api->require_login,
+        qq{<fb:redirect url="http://www.facebook.com/login.php?api_key=23432&v=1.0&canvas" />},
+        'require_login in canvas';
+
+    delete $q->{'fb_sig_in_canvas'};
+    is $api->require_login($q), 1, 'require_login outside canvas';
+    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+
+    is $api->require_add, 1, 'require_add';
+    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+
+    is $api->require_frame, 1, 'require_frame';
+    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+
+    is $api->require_login, 1, 'require_login';
+    test_cgi_redirect( $test_stdout, 'Status: 302 Moved Location: http://apps.facebook.com/test/ ' );
+}
+
+SKIP: {
+    diag '\'require_*\' tests with a user';
+    skip 'Tests require IO::String' => 24 if $no_io_string;
+
+    # Redirect printing
+    my ( $old_stdout, $test_stdout ) = redirect_fh(select);
+    select $test_stdout;
+
+    $q->{'fb_sig_user'} = $user;
+    $api->session_uid($user);
+    is $api->require_frame, undef, 'require frame outside frame';
+    test_cgi_redirect( $test_stdout, undef );
+
+    $q->{'fb_sig_in_iframe'} = 1;
+    ok !$api->require_frame($q), 'require_frame in frame';
+    test_cgi_redirect( $test_stdout, undef );
+
+    is $api->require_login, undef, 'require_login in frame';
+    test_cgi_redirect( $test_stdout, undef );
+
+    delete $q->{'fb_sig_in_iframe'};
+    is $api->require_login($q), undef, 'require_login outside frame';
+    test_cgi_redirect( $test_stdout, undef );
+
+    $q->{'fb_sig_in_canvas'} = 1;
+    ok !$api->require_frame($q), 'require_frame in canvas';
+    test_cgi_redirect( $test_stdout, undef );
+
+    is $api->require_login, undef, 'require_login in canvas';
+    test_cgi_redirect( $test_stdout, undef );
+
+    is $api->require_add, '<fb:redirect url="http://www.facebook.com/add.php?api_key=23432&v=1.0" />', 'require_add in canvas';
+    test_cgi_redirect( $test_stdout, undef );
+
+    delete $q->{'fb_sig_in_canvas'};
+    is $api->require_login($q), undef, 'require_login outside canvas';
+    test_cgi_redirect( $test_stdout, undef );
+
+    is $api->require_add, qq{<script type="text/javascript">top.location.href = "http://www.facebook.com/add.php?api_key=23432&v=1.0"</script>\n}, 'require_add w/o fb_sig_added';
+    test_cgi_redirect( $test_stdout, undef );
+
+    $q->{'fb_sig_added'} = 1;
+    is $api->require_add($q), undef, 'require_add w/fb_sig_added';
+    test_cgi_redirect( $test_stdout, undef );
+    delete $q->{'fb_sig_added'};
+
+    is $api->require_frame, undef, 'require_frame w/fb_sig_added';
+    test_cgi_redirect( $test_stdout, undef );
+    is $api->require_login, undef, 'require_login w/fb_sig_added';
+    test_cgi_redirect( $test_stdout, undef );
+}
