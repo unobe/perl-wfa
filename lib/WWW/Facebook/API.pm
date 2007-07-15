@@ -117,9 +117,11 @@ sub _set_from_file {
         or croak "Cannot open $self->{'config'}";
 
     while (<$config>) {
+        carp "Config line: $_" if $self->{'debug'};
         chomp;
         my ( $key, $val ) = split m/=/xms, $_, 2;
         next if !$key;
+        carp "Key/Val pair: $key -> $val" if $self->{'debug'};
         for ( $key, $val ) {
             s/\A\s+//xms;
             s/\s+\Z//xms;
