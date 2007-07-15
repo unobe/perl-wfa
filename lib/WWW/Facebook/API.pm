@@ -55,22 +55,21 @@ for (@namespaces) {
 }
 
 our %attributes = (
-    api_key => ( exists $ENV{'WFA_API_KEY'}    && $ENV{'WFA_API_KEY'} ),
-    secret  => ( exists $ENV{'WFA_SECRET_KEY'} && $ENV{'WFA_SECRET_KEY'} ),
-    desktop => ( exists $ENV{'WFA_DESKTOP'}    && $ENV{'WFA_DESKTOP'} ),
-    parse   => 1,
-    format  => 'JSON',
-    debug   => 0,
+    parse        => 1,
+    format       => 'JSON',
+    debug        => 0,
     throw_errors => 1,
     api_version  => '1.0',
     apps_uri     => 'http://apps.facebook.com/',
     server_uri   => 'http://api.facebook.com/restserver.php',
     (   map { $_ => q{} }
             qw(
+            api_key             secret      desktop
             last_call_success   last_error  skipcookie
             popup               next        session_key
             session_expires     session_uid callback
             app_path            ua          query
+            config
             )
     ),
 );
@@ -88,7 +87,7 @@ for ( keys %attributes ) {
     croak "Cannot create attribute $_: $@\n" if $@;
 }
 
-sub _set_from_env {
+sub _set_from_outside {
     my $self = shift;
 
     my $app_path = '_' . ( $self->{'app_path'} || $self->app_path );
@@ -97,16 +96,54 @@ sub _set_from_env {
 
     my %ENV_VARS = qw(
         WFA_API_KEY     api_key
-        WFA_SECRET_KEY  secret
+        WFA_SECRET      secret
         WFA_DESKTOP     desktop
         WFA_SESSION_KEY session_key
     );
+
+    $self->_set_from_file( $app_path, %ENV_VARS ) if $self->{'config'};
+    $self->_set_from_env( $app_path, %ENV_VARS );
+
+    return;
+}
+
+sub _set_from_file {
+    my $self     = shift;
+    my $app_path = shift;
+    my %ENV_VARS = @_;
+
+    # fail silently if file can't be opened
+    open my $config, '<', $self->{'config'}
+        or croak "Cannot open $self->{'config'}";
+
+    while (<$config>) {
+        chomp;
+        my ( $key, $val ) = split m/=/xms, $_, 2;
+        next if !$key;
+        for ( $key, $val ) {
+            s/\A\s+//xms;
+            s/\s+\Z//xms;
+        }
+        $ENV{$key} ||= $val;
+    }
+
+    return;
+}
+
+sub _set_from_env {
+    my $self     = shift;
+    my $app_path = shift;
+    my %ENV_VARS = @_;
 
     for ( keys %ENV_VARS ) {
         if ( exists $ENV{ $_ . $app_path } ) {
             $self->{ $ENV_VARS{$_} } ||= $ENV{ $_ . $app_path };
         }
+        elsif ( exists $ENV{$_} ) {
+            $self->{ $ENV_VARS{$_} } ||= $ENV{$_};
+        }
     }
+
     return;
 }
 
@@ -114,7 +151,7 @@ sub new {
     my ( $self, %args ) = @_;
     my $class = ref $self || $self;
     $self = bless \%args, $class;
-    $self->_set_from_env();    # set api_key etc. if needed
+    $self->_set_from_outside();    # set api_key etc. if needed
 
     $self->{'ua'} ||=
         LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
@@ -424,7 +461,7 @@ This document describes WWW::Facebook::API version 0.4.1
 
     use WWW::Facebook::API;
 
-    # @ENV{qw/WFA_API_KEY WFA_SECRET_KEY WFA_DESKTOP/} are the initial values,
+    # @ENV{qw/WFA_API_KEY WFA_SECRET WFA_DESKTOP/} are the initial values,
     # so use those if you only have one app and don't want to pass in values
     # to constructor
     my $client = WWW::Facebook::API->new(
@@ -470,6 +507,7 @@ the following environment variables are used to set the defaults for new
 instances:
 
     WFA_API_KEY
+    WFA_SECRET
     WFA_SESSION_KEY
     WFA_DESKTOP
 
@@ -477,6 +515,7 @@ Additionally, for each instance that is created, the following environment
 variables are used if no values are set:
 
     WFA_API_KEY_APP_PATH
+    WFA_SECRET_APP_PATH
     WFA_SESSION_KEY_APP_PATH
     WFA_DESKTOP_APP_PATH
 
@@ -740,6 +779,19 @@ that order:
 The C<call> method calls this method, and shouldn't need to be called to set
 anything, just to get the value later if C<throw_errors> is false.
 
+=item config($filename)
+
+Used when instantiating a new object to set the environment variables. The
+file has a simple, BASH-style format:
+
+    WFA_API_KEY_MYAPP=383378efa485934bc
+    WFA_SECRET_MYAPP=234234ac902f340923
+    WFA_SESSION_KEY_MYAPP=34589349abce989d
+    WFA_DESKTOP_MYAPP=1
+
+If the file is found, and the environment variables are already set, then the
+variables will not be changed.
+
 =item debug(0|1)
 
 A boolean set to either true or false, determining if debugging messages
@@ -795,7 +847,7 @@ does not implement a redirect method.>
 
 For a desktop application, this is the secret that is used for calling
 C<< auth->create_token >> and C<< auth->get_session >>. For a web application,
-secret is used for all calls to the API. If C<$ENV{'WFA_SECRET_KEY'}> is set,
+secret is used for all calls to the API. If C<$ENV{'WFA_SECRET'}> is set,
 all instances will be initialized with its value. See the Facebook API
 documentation under Authentication for more information.
 
@@ -1083,7 +1135,7 @@ http://code.google.com/p/perl-www-facebook-api/
 There are some live tests included, but they are only run if the following
 environment variables are set:
     WFA_API_KEY_TEST
-    WFA_SECRET_KEY_TEST
+    WFA_SECRET_TEST
     WFA_SESSION_KEY_TEST
 
 Additionally, if your app is a desktop one, you must set C<WFA_DESKTOP_TEST>.

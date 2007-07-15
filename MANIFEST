@@ -25,6 +25,7 @@ t/md5.t
 t/api.t
 t/auth.t
 t/canvas.t
+t/config.t
 t/feed.t
 t/groups.t
 t/events.t

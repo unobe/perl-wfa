@@ -4,7 +4,7 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More 'no_plan'; # tests => 34;
+use Test::More tests => 36;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -21,26 +21,26 @@ for ( qw/require_frame require_login/ ) {
 # Test global environment settings
 {
     local %ENV = %ENV;
-    @ENV{ map { "WFA_$_" } qw/API_KEY SECRET_KEY DESKTOP/} = qw/3 2 1/;
+    @ENV{ map { "WFA_$_" } qw/API_KEY SECRET DESKTOP/} = qw/3 2 1/;
 
     ## no warnings 'redefine' still warns... :-(
     local %WWW::Facebook::API::;
     delete @INC{ grep { m[^WWW/Facebook/API]xms } keys %INC};
     require WWW::Facebook::API;
     
-    my $api = WWW::Facebook::API->new();
+    my $api = WWW::Facebook::API->new( app_path => 'hey' );
     is $api->api_key, 3, 'WFA_API_KEY ok';
-    is $api->secret, 2, 'WFA_SECRET_KEY ok';
+    is $api->secret, 2, 'WFA_SECRET ok';
     is $api->desktop, 1, 'WFA_DESKTOP ok';
 }
 
 # Test app-specific environment settings
 {
     local %ENV = %ENV;
-    @ENV{ map { "WFA_${_}_TEST_ME" } qw/API_KEY SECRET_KEY DESKTOP/} = qw/3 2 1/;
+    @ENV{ map { "WFA_${_}_TEST_ME" } qw/API_KEY SECRET DESKTOP/} = qw/3 2 1/;
     my $api = WWW::Facebook::API->new( app_path => 'test-me' );
     is $api->api_key, 3, 'WFA_API_KEY_TEST_ME ok';
-    is $api->secret, 2, 'WFA_SECRET_KEY_TEST_ME ok';
+    is $api->secret, 2, 'WFA_SECRET_TEST_ME ok';
     is $api->desktop, 1, 'WFA_DESKTOP_TEST_ME ok';
 }
 
@@ -131,8 +131,8 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
        v:1.0\s*
  response\s=\s*
  "foo"\s*
-(?-x: at t/api.t line \d+
-JSON::Any is parsing with [^\ ]+ at t/api.t line \d+)/xms
+(?-x: at [^\ ]+ line \d+
+JSON::Any is parsing with [^\ ]+ at [^\ ]+ line \d+)/xms
 END_DEBUG
 
     }
