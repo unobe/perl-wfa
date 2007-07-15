@@ -108,18 +108,14 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
     SKIP: {
         skip 'Need IO::String to test debug output' => 1 if $@;
 
-        my $debug;
-        open my $stderr, '>&STDERR' or diag "Cannot copy STDERR";
-        {
-            close STDERR;
-            tie *STDERR, 'IO::String';
-            $api->debug(1);
-            $secret = $api->call( 'hey', %$args );
-            $api->debug(0);
-            seek(STDERR, 0, 0);
-            $debug = join '', <STDERR>;
-            untie *STDERR;
-        }
+        my ($old_stderr, $new_stderr) = redirect_fh(*STDERR);
+        *STDERR = $new_stderr;
+        $api->debug(1);
+        $secret = $api->call( 'hey', %$args );
+        $api->debug(0);
+        seek($new_stderr, 0, 0);
+        my $debug = join '', <$new_stderr>;
+        *STDERR = $old_stderr;
         like $debug, <<'END_DEBUG', 'debug string ok';
 /\s*params\s=\s*
        api_key:1\s*
@@ -136,4 +132,10 @@ JSON::Any is parsing with [^\ ]+ at [^\ ]+ line \d+)/xms
 END_DEBUG
 
     }
+}
+
+sub redirect_fh {
+    my $old = select shift;
+    my $new = IO::String->new;
+    return ( $old, $new );
 }

@@ -29,7 +29,7 @@ use warnings;
 my $q = Mock::CGI->new();
 
 sub redirect_fh {
-    my $old = select;
+    my $old = shift;
     my $new = IO::String->new;
     return ( $old, $new );
 }
