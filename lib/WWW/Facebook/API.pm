@@ -241,9 +241,9 @@ sub redirect {
             . '</script>';
     }
 
-    return
-        print CGI->new->redirect(
+    print CGI->new->redirect(
         $self->get_app_url( next => $self->get_login_url ) );
+    return 1;
 }
 
 sub require_add   { return shift->require( 'add',   @_ ); }
