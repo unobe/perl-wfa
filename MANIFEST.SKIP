@@ -20,3 +20,6 @@
 
 #Avoid bin directory, for now
 \bbin/
+
+# Avoid Subversion files
+\.svn
