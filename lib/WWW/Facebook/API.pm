@@ -293,14 +293,13 @@ sub require {    ## no critic
     my $self = shift;
     my $what = shift;
     $self->query(shift);
-    @_ = ();
 
     if ( $what eq 'login' ) {
-        @_ = qw( canvas ) if $self->canvas->in_frame;
+        unshift qw( canvas ), @_ if $self->canvas->in_frame;
     }
     if ( $what eq 'frame' ) {
         return if $self->canvas->in_frame;
-        @_    = qw( canvas );
+        unshift qw( canvas ), @_;
         $what = 'login';
     }
 
