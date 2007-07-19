@@ -120,7 +120,7 @@ sub _set_from_file {
         carp "Config line: $_" if $self->{'debug'};
         chomp;
         my ( $key, $val ) = split m/=/xms, $_, 2;
-        next if !$key;
+        next                              if !$key;
         carp "Key/Val pair: $key -> $val" if $self->{'debug'};
         for ( $key, $val ) {
             s/\A\s+//xms;
@@ -331,6 +331,10 @@ sub get_url {
 
     if ( $type eq 'app' ) {
         return $self->apps_uri . $self->app_path . q{/};
+    }
+
+    if ( $type eq 'custom' ) {
+        return (shift) . $self->add_url_params(@_);
     }
 
     return $self->get_url('facebook')
@@ -965,9 +969,11 @@ defined) included. If the C<next> parameter is passed in, it's string-escaped:
 =item get_url( $type, @args )
 
 Called by all the above C<get_*_url> methods above. C<$type> can be C<'login'>,
-C<'app'>, C<'add'>, C<'facebook'>, or C<'infinite_session'>. C<@args> is
-either a scalar (in the case when C<$type> is C<'facebook'>) or a hash. All of
-these C<get_*_url> methods correspond to the ones in the official PHP client.
+C<'app'>, C<'add'>, C<'facebook'>, C<'infinite_session'>, or C<'custom'>.
+C<@args> contains the query parameters for the the cases when C<$type> is not
+C<'app'> or C<'facebook'>. In the case of C<'custom'>, the first item in
+C<@args> is the url path relative to the facebook website. All of the
+C<get_*_url> methods correspond to the ones in the official PHP client.
 
 =item log_string($params_hashref, $response)
 
