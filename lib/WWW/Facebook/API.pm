@@ -334,7 +334,7 @@ sub get_url {
     }
 
     if ( $type eq 'custom' ) {
-        return (shift) . $self->add_url_params(@_);
+        return (shift) . $self->_add_url_params(@_);
     }
 
     return $self->get_url('facebook')
