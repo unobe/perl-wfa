@@ -2,12 +2,12 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.4.1
+    This document describes WWW::Facebook::API version 0.4.3
 
 SYNOPSIS
         use WWW::Facebook::API;
 
-        # @ENV{qw/WFA_API_KEY WFA_SECRET_KEY WFA_DESKTOP/} are the initial values,
+        # @ENV{qw/WFA_API_KEY WFA_SECRET WFA_DESKTOP/} are the initial values,
         # so use those if you only have one app and don't want to pass in values
         # to constructor
         my $client = WWW::Facebook::API->new(
@@ -52,6 +52,7 @@ DESCRIPTION
     the defaults for new instances:
 
         WFA_API_KEY
+        WFA_SECRET
         WFA_SESSION_KEY
         WFA_DESKTOP
 
@@ -59,6 +60,7 @@ DESCRIPTION
     environment variables are used if no values are set:
 
         WFA_API_KEY_APP_PATH
+        WFA_SECRET_APP_PATH
         WFA_SESSION_KEY_APP_PATH
         WFA_DESKTOP_APP_PATH
 
@@ -300,6 +302,18 @@ ATTRIBUTE METHODS
         to set anything, just to get the value later if "throw_errors" is
         false.
 
+    config($filename)
+        Used when instantiating a new object to set the environment
+        variables. The file has a simple, BASH-style format:
+
+            WFA_API_KEY_MYAPP=383378efa485934bc
+            WFA_SECRET_MYAPP=234234ac902f340923
+            WFA_SESSION_KEY_MYAPP=34589349abce989d
+            WFA_DESKTOP_MYAPP=1
+
+        If the file is found, and the environment variables are already set,
+        then the variables will not be changed.
+
     debug(0|1)
         A boolean set to either true or false, determining if debugging
         messages should be carped for REST calls. Defaults to 0.
@@ -349,9 +363,9 @@ ATTRIBUTE METHODS
         For a desktop application, this is the secret that is used for
         calling "auth->create_token" and "auth->get_session". For a web
         application, secret is used for all calls to the API. If
-        $ENV{'WFA_SECRET_KEY'} is set, all instances will be initialized
-        with its value. See the Facebook API documentation under
-        Authentication for more information.
+        $ENV{'WFA_SECRET'} is set, all instances will be initialized with
+        its value. See the Facebook API documentation under Authentication
+        for more information.
 
     server_uri( $new_server_uri )
         The server uri to access the Facebook REST server. Default is
@@ -383,7 +397,7 @@ ATTRIBUTE METHODS
         "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.1".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.3".
 
 PUBLIC METHODS
     call( $method, %args )
@@ -392,6 +406,10 @@ PUBLIC METHODS
         the method to be called (e.g., 'auth.getSession'), and key/value
         pairs for the parameters to use: $client->call( 'auth.getSession',
         auth_token => 'b3324235e' );
+
+        For all calls, if " parse " is set to true and an empty hash/array
+        reference is returned from facebook, nothing will be returned
+        instead of the empty hash/array reference.
 
     generate_sig( params => $params_hashref, secret => $secret )
         Generates a sig when given a parameters hash reference and a secret
@@ -447,10 +465,12 @@ PUBLIC METHODS
 
     get_url( $type, @args )
         Called by all the above "get_*_url" methods above. $type can be
-        'login', 'app', 'add', 'facebook', or 'infinite_session'. @args is
-        either a scalar (in the case when $type is 'facebook') or a hash.
-        All of these "get_*_url" methods correspond to the ones in the
-        official PHP client.
+        'login', 'app', 'add', 'facebook', 'infinite_session', or 'custom'.
+        @args contains the query parameters for the the cases when $type is
+        not 'app' or 'facebook'. In the case of 'custom', the first item in
+        @args is the url path relative to the facebook website. All of the
+        "get_*_url" methods correspond to the ones in the official PHP
+        client.
 
     log_string($params_hashref, $response)
         Pass in the params and the response from a call, and it will make a
@@ -459,9 +479,24 @@ PUBLIC METHODS
 
     redirect( $url, $query_object )
         Called by "require()" to redirect the user either within the canvas
-        or without. This, as with "require()" is only really useful when
-        having a web app. If no <$query_object> is defined, then whatever is
-        in "$client->query" will be used. (See WWW::Facebook::API::Canvas)
+        or without. If no <$query_object> is defined, then whatever is in
+        "$client->query" will be used. (See WWW::Facebook::API::Canvas) If
+        no redirect is required, nothing is returned. That is the only case
+        when there is no return value. If a redirect is required, there are
+        two cases that are covered:
+
+        user not logged in
+            If there isn't a user logged in to Facebook's system, then a
+            redirect to the Facebook login page is printed to STDOUT with a
+            next parameter to the appropriate page. The redirect is called
+            with the the CGI module that comes standard with perl. The
+            return value in this case is 1.
+
+        user logged in
+            If the user is logged in to Facebook, and a redirect is
+            required, the necessary FBML is returned: "<fb:redirect
+            url="WHATEVER">". So the return value is the FBML, which you can
+            then print to STDOUT.
 
     require_add( $query )
         Redirects the user to what "get_add_url()" returns. See "require()"
@@ -539,11 +574,6 @@ DIAGNOSTICS
         Cannot create the needed attribute method. Contact the developer to
         report.
 
-    "Cannot redirect without redirect method!"
-        You're not using CGI as a query object when calling "redirect()" (or
-        one of the "require_*" methods. The query object you're using must
-        implement the "redirect()" method as CGI does.
-
 CONFIGURATION AND ENVIRONMENT
     WWW::Facebook::API requires no configuration files or environment
     variables.
@@ -567,7 +597,7 @@ SOURCE REPOSITORY
 TESTING
     There are some live tests included, but they are only run if the
     following environment variables are set: WFA_API_KEY_TEST
-    WFA_SECRET_KEY_TEST WFA_SESSION_KEY_TEST
+    WFA_SECRET_TEST WFA_SESSION_KEY_TEST
 
     Additionally, if your app is a desktop one, you must set
     "WFA_DESKTOP_TEST". Also, the session key must be valid for the API key
@@ -578,12 +608,12 @@ TESTING
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
       File                           stmt   bran   cond    sub    pod   time  total
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
-      blib/lib/WWW/Facebook/API.pm   98.2   85.0   70.0   98.8  100.0    4.8   94.1
-      .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   94.9   89.9
+      blib/lib/WWW/Facebook/API.pm   98.7   85.2   67.2   98.8  100.0    7.7   93.8
+      .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   91.9   89.9
       ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
       ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-      ...b/WWW/Facebook/API/FQL.pm  100.0  100.0  100.0  100.0  100.0    0.0  100.0
+      ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -591,7 +621,7 @@ TESTING
       ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
       ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0   90.9
-      Total                          97.6   84.3   75.0   95.8  100.0  100.0   94.3
+      Total                          98.0   84.3   69.8   95.9  100.0  100.0   94.1
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 AUTHOR

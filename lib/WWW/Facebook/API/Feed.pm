@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.2');
+use version; our $VERSION = qv('0.4.3');
 
 sub publish_story_to_user {
     return shift->base->call( 'feed.publishStoryToUser', @_ );
@@ -29,7 +29,7 @@ WWW::Facebook::API::Feed - Facebook Feeds
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Feed version 0.4.2
+This document describes WWW::Facebook::API::Feed version 0.4.3
 
 =head1 SYNOPSIS
 
