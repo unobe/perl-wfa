@@ -205,7 +205,8 @@ sub call {
         |   \{ "error_code" \D (\d+) .* "error_msg"[^"]+ "([^"]+)" /xms
         )
     {
-        $self->call_success( 0, "$1: $2" );
+        $self->call_success( 0, "$1: $2" ) if defined $1;
+        $self->call_success( 0, "$3: $4" ) if defined $3;
 
         confess "Error during REST $method call:",
             $self->log_string( $params, $response )
@@ -340,7 +341,7 @@ sub get_url {
     return $self->get_url('facebook')
         . (
           $type eq 'add'              ? '/add.php'
-        : $type eq 'infinite_session' ? '/codegen.php'
+        : $type eq 'infinite_session' ? '/code_gen.php'
         : $type eq 'login'            ? '/login.php'
         : q{}
         ) . $self->_add_url_params(@_);
