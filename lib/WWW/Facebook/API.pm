@@ -69,7 +69,7 @@ our %attributes = (
             popup               next        session_key
             session_expires     session_uid callback
             app_path            ua          query
-            config
+            config              app_id
             )
     ),
 );
@@ -742,6 +742,12 @@ information.
 Which version to use (default is "1.0", which is the only one supported
 currently. Corresponds to the argument C<v> that is passed in to methods as a
 parameter.
+
+=item app_id()
+
+The application id where your Facebook app is described, e.g.:
+
+    http://www.facebook.com/apps/application.php?id=THIS_NUMBER
 
 =item app_path()
 

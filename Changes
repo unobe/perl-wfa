@@ -1,8 +1,9 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Wed Jul 25 21:20:58 PDT 2007
+HEAD   Fri Jul 27 20:33:37 PDT 2007
 	Fixed get_infinite_sesion url (codegen => code_gen)
-    Fixed error message carping (only matters in debug mode)
+	Fixed error message carping (only matters in debug mode)
+	Added app_id attribute
 
 0.4.3  Fri Jul 20 14:55:48 PDT 2007
 	Fix failing test for when CGI module is greater than 3.15 (t/canvas.t)
