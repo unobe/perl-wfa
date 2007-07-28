@@ -2,7 +2,7 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.4.3
+    This document describes WWW::Facebook::API version 0.4.4
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -261,6 +261,11 @@ ATTRIBUTE METHODS
         supported currently. Corresponds to the argument "v" that is passed
         in to methods as a parameter.
 
+    app_id()
+        The application id where your Facebook app is described, e.g.:
+
+            http://www.facebook.com/apps/application.php?id=THIS_NUMBER
+
     app_path()
         If using the Facebook canvas, the path to your application. For
         example if your application is at http://apps.facebook.com/example/
@@ -397,7 +402,7 @@ ATTRIBUTE METHODS
         "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.3".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.4".
 
 PUBLIC METHODS
     call( $method, %args )
