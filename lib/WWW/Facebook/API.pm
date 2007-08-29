@@ -196,6 +196,7 @@ sub call {
     $secret = $params->{'secret'} || $self->secret;
     $params->{'method'} ||= $method;
     $self->_check_values_of($params);
+    $self->_format_params($params);
     my $sig = $self->generate_sig( params => $params, secret => $secret );
     $response = $self->_post_request( $params, $secret );
 
@@ -432,7 +433,6 @@ sub _check_values_of {
 sub _post_request {
     my ( $self, $params, $secret, $sig, $post_params ) = @_;
 
-    $self->_format_params($params);
     $sig = $self->generate_sig( params => $params, secret => $secret );
     $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
     push @{$post_params}, q{sig}, $sig;
@@ -748,6 +748,9 @@ parameter.
 The application id where your Facebook app is described, e.g.:
 
     http://www.facebook.com/apps/application.php?id=THIS_NUMBER
+
+Remember, C<WWW::Facebook::API> is not so that clairvoyant: You must first
+set this number (when calling C<new()>) in order to use it.
 
 =item app_path()
 
