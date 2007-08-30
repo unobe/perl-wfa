@@ -23,7 +23,8 @@ my $api = WWW::Facebook::API->new( app_path => 'test' );
 my $fbml_orig = $api->profile->get_fbml();
 my $time      = time();
 ok $api->profile->set_fbml( markup => $time ), 'set fbml';
-is $api->profile->get_fbml(), $time, 'get fbml';
+like $api->profile->get_fbml(), qr{\A <fb:fbml [^>]+ >$time</fb:fbml> \z }xms,
+    'get fbml';
 ok $api->profile->set_fbml( markup => $fbml_orig ), 'reset fmbl';
 ok $api->profile->can('set_FBML'), 'set_FBML';
 ok $api->profile->can('get_FBML'), 'get_FBML';

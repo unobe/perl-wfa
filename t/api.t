@@ -98,7 +98,7 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
 # call method
 {
     no warnings 'redefine';
-    local $WWW::Facebook::API::{_post_request} = sub { return qq{"$_[2]"} };
+    local $WWW::Facebook::API::{_post_request} = sub { qq{"$_[1]->{'secret'}"} };
     my $args = { params => { method => 'hello', secret => 'foo' } };
     my $secret = $api->call( 'hey', %$args );
     isnt $secret, $api->secret, 'secret not object\'s';
@@ -107,7 +107,7 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
 
     $args = { ids => [3,4,5,6] };
     my $ids = q{};
-    $WWW::Facebook::API::{_post_request} = sub { $ids = $_[1]->{'ids'}; return qq{"$_[2]"} };
+    $WWW::Facebook::API::{_post_request} = sub { $ids = $_[1]->{'ids'}; qq{"$_[1]->{'secret'}"} };
     $api->call('method', %$args );
     is $ids, '3,4,5,6', 'Array refs flattened';
 

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.4');
+use version; our $VERSION = qv('0.4.5');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -187,60 +187,28 @@ sub call_success {
 }
 
 sub call {
-    my ( $self, $method, %args, $params, $secret, $response ) = @_;
+    my ( $self, $method, %args ) = @_;
+    my ( $response, $params, $sig, $img_data );
     $self->call_success(1);
 
-    $params = delete $args{'params'} || {};
-    $params->{$_} = $args{$_} for keys %args;
+    ( $params, $img_data ) =
+        $self->_format_and_check_params( $method, %args );
+    $sig = $self->generate_sig(
+        params => $params,
+        secret => $params->{'secret'}
+    );
 
-    $secret = $params->{'secret'} || $self->secret;
-    $params->{'method'} ||= $method;
-    $self->_check_values_of($params);
-    $self->_format_params($params);
-    my $sig = $self->generate_sig( params => $params, secret => $secret );
-    $response = $self->_post_request( $params, $secret );
+    $response = $self->_post_request( $params, $sig, $img_data );
 
-    $params->{'sig'} = $sig;
     carp $self->log_string( $params, $response ) if $self->debug;
-    if ($response =~ m/ <error_code> (\d+) .* <error_msg> ([^<]+)
-        |   \{ "error_code" \D (\d+) .* "error_msg"[^"]+ "([^"]+)" /xms
-        )
-    {
-        $self->call_success( 0, "$1: $2" ) if defined $1;
-        $self->call_success( 0, "$3: $4" ) if defined $3;
-
-        confess "Error during REST $method call:",
-            $self->log_string( $params, $response )
-            if $self->throw_errors;
+    if ( $self->_has_error_response($response) ) {
+        if ( $self->throw_errors ) {
+            confess "Error during REST $method call:",
+                $self->log_string( $params, $response );
+        }
     }
 
-    # get actual response when web app
-    if ( $params->{'callback'} ) {
-        $response =~ s/^$params->{'callback'} [^\(]* \((.+) \);$/$1/xms;
-    }
-    undef $params;
-
-    # ... and unescape it if it's not going to be parsed
-    if ( !$self->desktop && !$self->parse ) {
-        $response = $self->unescape_string($response);
-    }
-
-    if ( $self->parse and $self->format eq 'XML' ) {
-        $self->parse(0);
-        carp q{format is XML: setting parse to 0} if $self->debug;
-    }
-
-    return $response if !$self->parse;
-
-    $response = $self->_parse($response);
-
-    # Empty result
-    if (   ( ref $response eq 'HASH' && !keys %{$response} )
-        || ( ref $response eq 'ARRAY' && @{$response} == 0 ) )
-    {
-        return;
-    }
-    return $response;
+    return $self->_reformat_response( $params, $response );
 }
 
 sub generate_sig {
@@ -430,26 +398,97 @@ sub _check_values_of {
     return;
 }
 
-sub _post_request {
-    my ( $self, $params, $secret, $sig, $post_params ) = @_;
+sub _format_and_check_params {
+    my ( $self, $method, %args ) = @_;
 
-    $sig = $self->generate_sig( params => $params, secret => $secret );
-    $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
-    push @{$post_params}, q{sig}, $sig;
+    my $params = delete $args{'params'} || {};
+    $params->{$_} = $args{$_} for keys %args;
+    $params->{'secret'} ||= $self->secret;
+    $params->{'method'} ||= $method;
 
-    return $self->ua->post( $self->server_uri, $post_params )->content;
-}
-
-sub _format_params {
-    my $self   = shift;
-    my $params = shift;
+    $self->_check_values_of($params);
 
     # reformat arrays and add each param to digest
     for ( keys %{$params} ) {
         next unless ref $params->{$_} eq 'ARRAY';
         $params->{$_} = join q{,}, @{ $params->{$_} };
     }
+
+    croak "_format_and_check_params must be called in list context!"
+        if !wantarray;
+
+    return ( $params, delete $params->{'data'} );
+}
+
+sub _has_error_response {
+    my $self     = shift;
+    my $response = shift;
+
+    # The different type of error responses
+    my $json = q{ \{ "error_code" \D+ (\d+) .* "error_msg" [^"]+ "([^"]+)" };
+    my $xml  = q{ <error_code> (\d+) .* <error_msg> ([^<]+)};
+
+    for ( $json, $xml ) {
+        if ( $response =~ m/$_/xms ) {
+            $self->call_success( 0, "$1: $2" );
+            return 1;
+        }
+    }
+
     return;
+}
+
+sub _reformat_response {
+    my ( $self, $params, $response ) = @_;
+
+    # get actual response when web app
+    if ( $params->{'callback'} ) {
+        $response =~ s/^$params->{'callback'} [^\(]* \((.+) \);$/$1/xms;
+    }
+    undef $params;
+
+    # ... and unescape it if it's not going to be parsed
+    if ( !$self->desktop && !$self->parse ) {
+        $response = $self->unescape_string($response);
+    }
+
+    if ( $self->parse && $self->format eq 'XML' ) {
+        $self->parse(0);
+        carp q{format is XML: setting parse to 0} if $self->debug;
+    }
+    return $response if !$self->parse;
+
+    $response = $self->_parse($response);
+    return if $self->_is_empty_response($response);
+    return $response;
+}
+
+sub _is_empty_response {
+    my ( $self, $response ) = @_;
+
+    return 1 if ref $response eq 'HASH'  && !keys %{$response};
+    return 1 if ref $response eq 'ARRAY' && @{$response} == 0;
+    return;
+}
+
+sub _post_request {
+    my ( $self, $params, $sig, $img_data ) = @_;
+
+    my $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
+    push @{$post_params}, 'sig' => $sig;
+
+    if ($img_data) {
+        push @{$post_params}, data => [
+            undef, 'filename',
+            'Content-Type' => 'image/jpeg',
+            'Content'      => $img_data,
+        ];
+    }
+    return $self->ua->post(
+        $self->server_uri,
+        'Content_type' => 'form-data',
+        'Content'      => $post_params,
+    )->content;
 }
 
 1;    # Magic true value required at end of module
@@ -461,7 +500,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.4.4
+This document describes WWW::Facebook::API version 0.4.5
 
 =head1 SYNOPSIS
 
@@ -739,8 +778,8 @@ information.
 
 =item api_version( $new_version )
 
-Which version to use (default is "1.0", which is the only one supported
-currently. Corresponds to the argument C<v> that is passed in to methods as a
+Which version to use (default is "1.0", which is the latest one supported
+currently). Corresponds to the argument C<v> that is passed in to methods as a
 parameter.
 
 =item app_id()
@@ -901,7 +940,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.4".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.5".
 
 =back
 
@@ -1071,14 +1110,29 @@ returns the parameter string.
 Makes sure all the values of the C<$params_hashref> that need to be set are
 set. Uses the defaults for those values that are needed and not supplied.
 
-=item _format_params($params_hashref)
+=item _format_and_check_params( $method, %args )
 
-Format parameters according to Facebook API specification.
+Format method parameters (given in C<%args>) according to Facebook API
+specification. Returns a list of items: A hash reference of the newly
+formatted params (based on C<%params>) and the image data if the call is an
+photo upload:
 
-=item _post_request( $params_hashref, $secret )
+    ($params, $img_data) = $self->_format_and_check_params( $method, %args ); 
+
+=item _has_error_response( $response )
+
+Determines if the response is an error, and logs it appropriately. Returns
+true if response is an error, false otherwise.
+
+=item is_empty_response( $response )
+
+Determines if the response is an empty hash or array reference. Returns true
+if the response is empty, false otherwise.
+
+=item _post_request( $params_hashref, $sig, $img_data )
 
 Used by C<call> to post the request to the REST server and return the
-response.
+response. C<$img_data> is used when uploading an photo to Facebook.
 
 =item _parse($string)
 
@@ -1088,6 +1142,12 @@ structure, and returns the result.
 =item _parser()
 
 Returns a new instance of JSON::Any.
+
+=item _reformat_response( $params, $response )
+
+Reformats the response according to whether the app is a desktop app, if the
+response should be parsed (i.e., changed to a Perlish structure), if the
+response is empty, etc. Returns the reformatted response.
 
 =back
 
@@ -1115,6 +1175,11 @@ Cannot create the needed subclass method. Contact the developer to report.
 =item C<< Cannot create attribute %s: %s >>
 
 Cannot create the needed attribute method. Contact the developer to report.
+
+=item C<<_format_and_check_params must be called in list context!>>
+
+You're using a privat method call and you're not calling it in list context.
+It returns a list of items, all of which should be interesting to you.
 
 =back
 
@@ -1163,7 +1228,7 @@ With live tests enabled, here is the current test coverage:
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   98.7   85.2   67.2   98.8  100.0    7.7   93.8
+  blib/lib/WWW/Facebook/API.pm   97.0   83.2   63.6   97.8  100.0    6.8   92.1
   .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   91.9   89.9
   ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
   ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -1171,12 +1236,12 @@ With live tests enabled, here is the current test coverage:
   ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.1  100.0
   ...book/API/Notifications.pm   86.7    n/a    n/a   71.4  100.0    0.0   84.0
-  ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.8  100.0
   ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
   ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0   90.9
-  Total                          98.0   84.3   69.8   95.9  100.0  100.0   94.1
+  Total                          96.8   82.6   66.7   95.4  100.0  100.0   92.9
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
