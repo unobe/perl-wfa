@@ -34,40 +34,32 @@ sub get_session {
 
     my $token = shift;
     croak q{Token needed for call to get_session} if not defined $token;
-    if ( $self->base->desktop ) {
-        ( my $uri_https = $self->base->server_uri )
-            =~ s{http://}{https://}xms;
-        $self->base->server_uri($uri_https);
-    }
 
-    my ( $format, $parse ) = ( $self->base->format, $self->base->parse );
-
-    # Parse raw response for those who don't use JSON modules
-    $self->base->format('JSON');
-    $self->base->parse(0);
-
-    my $response =
-        $self->base->call( 'auth.getSession', auth_token => $token );
-
-    $self->base->format($format);
-    $self->base->parse($parse);
-
+    # Mappings between the response fields and the WFA fields
     my %field = qw(
         session_key     session_key
         expires         session_expires
         uid             session_uid
+        secret          secret
     );
 
-    if ( $self->base->desktop ) {
-        $field{'secret'} = 'secret';
-        ( my $uri_http = $self->base->server_uri ) =~ s{https://}{http://}xms;
-        $self->base->server_uri($uri_http);
-    }
+    # Desktop apps need to call the https rather than http endpoint
+    $self->_use_https_uri() if $self->base->desktop;
 
-    while ( my ( $key, $val ) = each %field ) {
-        $response =~ /$key"[^:]*:"?([^",]+)/xms;
-        carp "Setting $key to $1" if $self->base->debug;
-        $self->base->$val($1);    ## no critic
+    # Save format and parse settings, and get parsed response from server
+    my ( $format, $parse ) = ( $self->base->format, $self->base->parse );
+    $self->base->format('JSON');
+    $self->base->parse(1);
+    my $resp = $self->base->call( 'auth.getSession', auth_token => $token );
+    $self->base->format($format);
+    $self->base->parse($parse);
+
+    $self->_use_http_uri() if $self->base->desktop;
+
+    # Copy values from response to object's hash
+    for my $key ( keys %{$resp} ) {
+        carp "Setting $field{$key}: $resp->{$key}" if $self->base->debug;
+        $self->base->{ $field{$key} } = $resp->{$key};
     }
 
     return;
@@ -103,6 +95,20 @@ sub logout {
     my $self = shift;
     $self->base->ua->post( 'http://www.facebook.com/logout.php',
         { confirm => 1 } );
+    return;
+}
+
+sub _use_http_uri  { return shift->_flip_scheme(0); }
+sub _use_https_uri { return shift->_flip_scheme(1); }
+
+sub _flip_scheme {
+    my $self = shift;
+    my $make_https = shift;
+    my $scheme = $make_https ? 'http' : 'https';
+
+    ( my $uri = $self->base->server_uri() ) =~ s{^[^:]+:}{$scheme:}xms;
+    $self->base->server_uri($uri);
+
     return;
 }
 
@@ -169,6 +175,26 @@ method returns the session token created by C<create_token>.
 Sends a POST to http://www.facebook.com/logout.php, with the parameter
 "confirm" set to 1 (Cf.
 http://developers.facebook.com/documentation.php?v=1.0&doc=auth )
+
+=back
+
+=head1 PRIVATE METHODS
+
+=over
+
+=item _use_http_uri()
+
+Makes the WFA object's server URI scheme http. Uses C<_flip_scheme>.
+
+=item _use_https_uri()
+
+Makes the WFA object's server URI scheme https. Uses C<_flip_scheme>.
+
+=item _flip_scheme( $make_https )
+
+If C<$make_https> is true, the scheme becomes https. If false, the scheme
+becomes http. The WFA object's C<server_uri> attribute is then set to use that
+scheme.
 
 =back
 
