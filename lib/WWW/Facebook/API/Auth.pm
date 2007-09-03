@@ -64,7 +64,7 @@ sub get_session {
     }
 
     while ( my ( $key, $val ) = each %field ) {
-        $response =~ /$key"\W+([\w-]+)/xms;
+        $response =~ /$key"[^:]*:"?([^",]+)/xms;
         carp "Setting $key to $1" if $self->base->debug;
         $self->base->$val($1);    ## no critic
     }
