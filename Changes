@@ -2,6 +2,8 @@ Revision history for WWW-Facebook-API
 
 HEAD   Wed Aug 29 17:24:41 PDT 2007
 	Bug fix: $api->photos->upload should now work as documented
+	Bug fix: some session keys weren't being captured,
+	  which made authentication ultimately fail.
 	Updated tests to account for FBML version
 	Some internal refactoring
 

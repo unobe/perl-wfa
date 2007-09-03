@@ -42,6 +42,7 @@ sub get_session {
 
     my ( $format, $parse ) = ( $self->base->format, $self->base->parse );
 
+    # Parse raw response for those who don't use JSON modules
     $self->base->format('JSON');
     $self->base->parse(0);
 
