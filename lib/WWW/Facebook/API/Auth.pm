@@ -100,8 +100,8 @@ sub logout {
     return;
 }
 
-sub _use_http_uri  { return shift->_flip_scheme(0); }
-sub _use_https_uri { return shift->_flip_scheme(1); }
+sub _use_http_uri  { return shift->_flip_scheme(0); } ## no critic
+sub _use_https_uri { return shift->_flip_scheme(1); } ## no critic
 
 sub _flip_scheme {
     my $self = shift;

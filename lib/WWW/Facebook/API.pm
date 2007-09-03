@@ -414,7 +414,7 @@ sub _format_and_check_params {
         $params->{$_} = join q{,}, @{ $params->{$_} };
     }
 
-    croak "_format_and_check_params must be called in list context!"
+    croak '_format_and_check_params must be called in list context!'
         if !wantarray;
 
     return ( $params, delete $params->{'data'} );
@@ -1226,22 +1226,22 @@ Also, the session key must be valid for the API key being used.
 With live tests enabled, here is the current test coverage:
 
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  File                           stmt   bran   cond    sub    pod   time total
+  File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   97.0   82.3   63.6   97.8  100.0    7.0 91.9
-  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   92.6 91.3
-  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.2 97.1
-  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0 100.0
-  .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0 100.0
-  ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0 100.0
-  .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0 100.0
-  ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0 100.0
-  ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0 100.0
-  ...book/API/Notifications.pm   86.7    n/a    n/a   71.4  100.0    0.0 84.0
-  ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0 100.0
-  ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0 85.7
-  ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0 90.9
-  Total                          96.8   82.1   68.3   95.5  100.0  100.0 92.8
+  blib/lib/WWW/Facebook/API.pm   97.3   82.8   63.6   97.8  100.0    7.0   92.2
+  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   92.6   91.3
+  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.2   97.1
+  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...book/API/Notifications.pm   86.7    n/a    n/a   71.4  100.0    0.0   84.0
+  ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
+  ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0   90.9
+  Total                          97.0   82.4   68.3   95.5  100.0  100.0   93.0
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
