@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.4');
+use version; our $VERSION = qv('0.4.5');
 
 sub create_token {
     my $self = shift;
