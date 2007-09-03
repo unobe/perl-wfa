@@ -57,7 +57,9 @@ sub get_session {
     $self->_use_http_uri() if $self->base->desktop;
 
     # Copy values from response to object's hash
+    AUTH_RESPONSE:
     for my $key ( keys %{$resp} ) {
+        next AUTH_RESPONSE if $key eq 'secret' && !$self->base->desktop;
         carp "Setting $field{$key}: $resp->{$key}" if $self->base->debug;
         $self->base->{ $field{$key} } = $resp->{$key};
     }
