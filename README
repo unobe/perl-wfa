@@ -2,7 +2,7 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.4.4
+    This document describes WWW::Facebook::API version 0.4.5
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -257,14 +257,17 @@ ATTRIBUTE METHODS
         documentation for more information.
 
     api_version( $new_version )
-        Which version to use (default is "1.0", which is the only one
-        supported currently. Corresponds to the argument "v" that is passed
+        Which version to use (default is "1.0", which is the latest one
+        supported currently). Corresponds to the argument "v" that is passed
         in to methods as a parameter.
 
     app_id()
         The application id where your Facebook app is described, e.g.:
 
             http://www.facebook.com/apps/application.php?id=THIS_NUMBER
+
+        Remember, "WWW::Facebook::API" is not that clairvoyant: You must
+        first set this number (when calling "new()") in order to use it.
 
     app_path()
         If using the Facebook canvas, the path to your application. For
@@ -402,7 +405,7 @@ ATTRIBUTE METHODS
         "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.4".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.5".
 
 PUBLIC METHODS
     call( $method, %args )
@@ -545,12 +548,25 @@ PRIVATE METHODS
         are set. Uses the defaults for those values that are needed and not
         supplied.
 
-    _format_params($params_hashref)
-        Format parameters according to Facebook API specification.
+    _format_and_check_params( $method, %args )
+        Format method parameters (given in %args) according to Facebook API
+        specification. Returns a list of items: A hash reference of the
+        newly formatted params (based on %params) and the image data if the
+        call is an photo upload:
 
-    _post_request( $params_hashref, $secret )
+            ($params, $img_data) = $self->_format_and_check_params( $method, %args );
+
+    _has_error_response( $response )
+        Determines if the response is an error, and logs it appropriately.
+        Returns true if response is an error, false otherwise.
+
+    is_empty_response( $response )
+        Determines if the response is an empty hash or array reference.
+        Returns true if the response is empty, false otherwise.
+
+    _post_request( $params_hashref, $sig, $img_data )
         Used by "call" to post the request to the REST server and return the
-        response.
+        response. $img_data is used when uploading an photo to Facebook.
 
     _parse($string)
         Parses the response from a call to the Facebook server to make it a
@@ -558,6 +574,12 @@ PRIVATE METHODS
 
     _parser()
         Returns a new instance of JSON::Any.
+
+    _reformat_response( $params, $response )
+        Reformats the response according to whether the app is a desktop
+        app, if the response should be parsed (i.e., changed to a Perlish
+        structure), if the response is empty, etc. Returns the reformatted
+        response.
 
 DIAGNOSTICS
     "Unable to load JSON module for parsing: %s"
@@ -578,6 +600,11 @@ DIAGNOSTICS
     "Cannot create attribute %s: %s"
         Cannot create the needed attribute method. Contact the developer to
         report.
+
+    "<_format_and_check_params must be called in list context!">
+        You're using a privat method call and you're not calling it in list
+        context. It returns a list of items, all of which should be
+        interesting to you.
 
 CONFIGURATION AND ENVIRONMENT
     WWW::Facebook::API requires no configuration files or environment
@@ -613,9 +640,9 @@ TESTING
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
       File                           stmt   bran   cond    sub    pod   time  total
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
-      blib/lib/WWW/Facebook/API.pm   98.7   85.2   67.2   98.8  100.0    7.7   93.8
-      .../WWW/Facebook/API/Auth.pm   94.7   72.2  100.0   87.5  100.0   91.9   89.9
-      ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
+      blib/lib/WWW/Facebook/API.pm   97.3   82.8   63.6   97.8  100.0    7.0   92.2
+      .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   92.6   91.3
+      ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.2   97.1
       ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -626,7 +653,7 @@ TESTING
       ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
       ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0   90.9
-      Total                          98.0   84.3   69.8   95.9  100.0  100.0   94.1
+      Total                          97.0   82.4   68.3   95.5  100.0  100.0   93.0
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 AUTHOR

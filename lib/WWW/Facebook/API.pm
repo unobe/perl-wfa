@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.5');
+use version; our $VERSION = qv('0.4.6');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -500,7 +500,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.4.5
+This document describes WWW::Facebook::API version 0.4.6
 
 =head1 SYNOPSIS
 
@@ -788,7 +788,7 @@ The application id where your Facebook app is described, e.g.:
 
     http://www.facebook.com/apps/application.php?id=THIS_NUMBER
 
-Remember, C<WWW::Facebook::API> is not so that clairvoyant: You must first
+Remember, C<WWW::Facebook::API> is not that clairvoyant: You must first
 set this number (when calling C<new()>) in order to use it.
 
 =item app_path()
@@ -940,7 +940,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.5".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.6".
 
 =back
 
@@ -1117,7 +1117,7 @@ specification. Returns a list of items: A hash reference of the newly
 formatted params (based on C<%params>) and the image data if the call is an
 photo upload:
 
-    ($params, $img_data) = $self->_format_and_check_params( $method, %args ); 
+    ($params, $img_data) = $self->_format_and_check_params( $method, %args );
 
 =item _has_error_response( $response )
 
