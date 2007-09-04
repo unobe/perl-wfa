@@ -1,7 +1,10 @@
 Revision history for WWW-Facebook-API
 
-0.4.6  Mon Sep  3 18:24:35 PDT 2007
+0.4.7  Mon Sep  3 18:32:38 PDT 2007
 	Updated POD and README
+
+0.4.6  Mon Sep  3 18:24:35 PDT 2007
+	Updated POD and README (and forgot to commit changes ):
 
 0.4.5  Mon Sep  3 16:35:59 PDT 2007
 	BUG FIX: $api->photos->upload now works as documented
