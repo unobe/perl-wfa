@@ -48,10 +48,9 @@ Methods for accessing feeds with L<WWW::Facebook::API>
 The feed.publishStoryToUser method of the Facebook API. C<title> is the only
 parameter required.
 
-    $client->feed->publish_action_of_user(
+    $client->feed->publish_story_to_user(
         title           => 'title',
         body            => 'markup',
-        priority        => int rand(100),
         image_1         => 'image url',
         image_1_link    => 'destination url',
         image_2         => 'image url',
@@ -70,7 +69,6 @@ parameter required.
     $client->feed->publish_action_of_user(
         title           => 'title',
         body            => 'markup',
-        priority        => int rand(100),
         image_1         => 'image url',
         image_1_link    => 'destination url',
         image_2         => 'image url',
