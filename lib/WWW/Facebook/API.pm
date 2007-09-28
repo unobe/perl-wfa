@@ -32,8 +32,17 @@ for (@namespaces) {
     eval qq(
         use $package;
 
-        *${package}::base = sub { return shift->{'base'}; };
-        *${package}::new = sub {
+        sub $name {
+            my \$self = shift;
+            unless ( \$self->{'_$name'} ) {
+                \$self->{'_$name'} = $package->new( base => \$self );
+            }
+            return \$self->{'_$name'};
+        }
+
+        package $package;
+        sub base { return shift->{'base'}; };
+        sub new {
             my ( \$class, \%args ) = \@_;
             my \$self = bless \\\%args, \$class;
 
@@ -43,13 +52,6 @@ for (@namespaces) {
             return \$self;
         };
 
-        sub $name {
-            my \$self = shift;
-            unless ( \$self->{'_$name'} ) {
-                \$self->{'_$name'} = $package->new( base => \$self );
-            }
-            return \$self->{'_$name'};
-        }
     );
     croak "Cannot create namespace $name: $@\n" if $@;
 }
