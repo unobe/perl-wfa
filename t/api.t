@@ -4,7 +4,7 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 36;
+use Test::More tests => 34;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -98,16 +98,14 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
 # call method
 {
     no warnings 'redefine';
-    local $WWW::Facebook::API::{_post_request} = sub { qq{"$_[1]->{'secret'}"} };
+    local $WWW::Facebook::API::{_post_request} = sub { q{} };
     my $args = { params => { method => 'hello', secret => 'foo' } };
-    my $secret = $api->call( 'hey', %$args );
-    isnt $secret, $api->secret, 'secret not object\'s';
-    is  $secret, $args->{'params'}->{'secret'}, 'secret is param\'s';
+    $api->call( 'hey', %$args );
     is $args->{'params'}->{'method'}, 'facebook.hello', 'call method changed';
 
     $args = { ids => [3,4,5,6] };
     my $ids = q{};
-    $WWW::Facebook::API::{_post_request} = sub { $ids = $_[1]->{'ids'}; qq{"$_[1]->{'secret'}"} };
+    $WWW::Facebook::API::{_post_request} = sub { $ids = $_[1]->{'ids'}; q{} };
     $api->call('method', %$args );
     is $ids, '3,4,5,6', 'Array refs flattened';
 
