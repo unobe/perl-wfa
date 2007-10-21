@@ -197,7 +197,7 @@ sub call {
         $self->_format_and_check_params( $method, %args );
     $sig = $self->generate_sig(
         params => $params,
-        secret => $params->{'secret'}
+        secret => delete $params->{'secret'},
     );
 
     $response = $self->_post_request( $params, $sig, $img_data );
