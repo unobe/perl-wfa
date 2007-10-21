@@ -1,9 +1,8 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Sun Oct 21 15:14:56 PDT 2007
+HEAD   Fri Sep 28 11:31:08 PDT 2007
 	Updated docs
 	Changed autogen methods for subclasses in API.pm (thanks Shawn)
-	No longer send secret when authenticating (thanks Derek)
 
 0.4.7  Mon Sep  3 18:32:38 PDT 2007
 	Updated POD and README

@@ -197,7 +197,7 @@ sub call {
         $self->_format_and_check_params( $method, %args );
     $sig = $self->generate_sig(
         params => $params,
-        secret => delete $params->{'secret'},
+        secret => $params->{'secret'}
     );
 
     $response = $self->_post_request( $params, $sig, $img_data );
@@ -1279,8 +1279,6 @@ Simon Cavalletto C<< <simonm@cavalletto.org> >>
 Skyler Clark C<< none >>
 
 Thomas Sibley C<< <tsibley@cpan.org> >>
-
-Derek Del Conte C<< derek@gambitdesign.com >>
 
 =head1 LICENSE AND COPYRIGHT
 
