@@ -1280,6 +1280,8 @@ Skyler Clark C<< none >>
 
 Thomas Sibley C<< <tsibley@cpan.org> >>
 
+Derek Del Conte C<< derek@gambitdesign.com >>
+
 =head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
