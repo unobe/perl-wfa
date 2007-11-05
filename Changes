@@ -1,6 +1,7 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Sun Oct 21 15:14:56 PDT 2007
+HEAD   Sun Nov  4 21:23:21 PST 2007
+	Added feed->publish_templatized_action (thanks King Mak)
 	Updated docs
 	Changed autogen methods for subclasses in API.pm (thanks Shawn)
 	No longer send secret when authenticating (thanks Derek)

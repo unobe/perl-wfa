@@ -4,7 +4,7 @@
 # $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 2;
+use Test::More tests => 3;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -21,3 +21,6 @@ is_deeply $api->feed->publish_story_to_user( title => '' ),
 is_deeply $api->feed->publish_action_of_user( title => '' ),
     [ 'feed.publishActionOfUser', title => '' ],
     'publish_action_of_user calls correctly';
+is_deeply $api->feed->publish_templatized_action( actor_id => 2, title_template => '' ),
+    [ 'feed.publishTemplatizedAction', actor_id => 2, title_template => '' ],
+    'publish_templatized_action calls correctly';

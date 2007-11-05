@@ -1282,6 +1282,8 @@ Thomas Sibley C<< <tsibley@cpan.org> >>
 
 Derek Del Conte C<< derek@delconte.org >>
 
+King Mak C<< none >>
+
 =head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
