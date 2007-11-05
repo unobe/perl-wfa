@@ -1,10 +1,10 @@
 #######################################################################
-# $Date$
-# $Revision$
-# $Author$
+# $Date: 2007-05-28T14:18:18.679359Z $
+# $Revision: 1508 $
+# $Author: unobe $
 # ex: set ts=8 sw=4 et
 #########################################################################
-package WWW::Facebook::API::Users;
+package WWW::Facebook::API::Marketplace;
 
 use warnings;
 use strict;
@@ -12,34 +12,41 @@ use Carp;
 
 use version; our $VERSION = qv('0.4.4');
 
-sub get_info { return shift->base->call( 'users.getInfo', @_ ); }
-
-sub get_logged_in_user {
-    return shift->base->call( 'users.getLoggedInUser', @_ );
+sub get_categories {
+    return shift->base->call( 'marketplace.getCategories', @_ );
 }
 
-sub has_app_permission {
-    return shift->base->call( 'users.hasAppPermission', @_ );
+sub get_subcategories {
+    return shift->base->call( 'marketplace.getSubcategories', @_ );
 }
 
-sub is_app_added {
-    return shift->base->call( 'users.isAppAdded', @_ );
+sub get_listings {
+    return shift->base->call( 'marketplace.getListings', @_ );
 }
 
-sub set_status {
-    return shift->base->call( 'users.setStatus', @_ );
+sub search {
+    return shift->base->call( 'marketplace.search', @_ );
+}
+
+sub create_listing {
+    return shift->base->call( 'marketplace.create_listing', @_ );
+}
+
+sub remove_listing {
+    return shift->base->call( 'marketplace.remove_listing', @_ );
 }
 
 1;    # Magic true value required at end of module
+
 __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Users - Facebook Users
+WWW::Facebook::API::Marketplace - Facebook Marketplace
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.4.4
+This document describes WWW::Facebook::API::Marketplace version 0.4.4
 
 =head1 SYNOPSIS
 
@@ -47,52 +54,62 @@ This document describes WWW::Facebook::API::Users version 0.4.4
 
 =head1 DESCRIPTION
 
-Methods for accessing users with L<WWW::Facebook::API>
+Methods for accessing the marketplace with L<WWW::Facebook::API>
 
 =head1 SUBROUTINES/METHODS 
 
 =over
 
-=item get_info( uids => $uids, fields => $fields )
+=item get_categories( %params )
 
-The users.getInfo method of the Facebook API:
+The marketplace.getCategories method of the Facebook API:
 
-    $response = $client->users->get_info(
-        uids => [ 2343, 3435 ],
-        fields => 'about_me'
-    );
-    $response = $client->users->get_info(
-        uids => 2343,
-        fields => [ qw/about_me quotes/ ]
-    );
+    $categories = $client->marketplace->get_categories;
 
-=item get_logged_in_user
+=item get_subcategories( %params )
 
-The users.getLoggedInUser method of the Facebook API:
+The marketplace.getSubcategories method of the Facebook API:
 
-    $uid = $client->users->get_logged_in_user;
-
-=item has_app_permission
-
-The users.hasAppPermission method of the Facebook API:
-
-    $response = $client->users->has_app_permission(
-        ext_perm => 'status_update|photo_upload'
+    $subcats = $client->marketplace->get_subcategories(
+        category => 'category',
     );
 
-=item is_app_added
+=item get_listings( %params )
 
-The users.isAppAdded method of the Facebook API:
+The marketplace.getListings method of the Facebook API:
 
-    $app_added = $client->users->is_app_added;
+    $listings_response = $client->marketplace->get_listings(
+        listing_ids => [@listing_ids],
+        uids => [@uids],
+    );
 
-=item set_status
+=item search( %params )
 
-The users.setStatus method of the Facebook API:
+The marketplace.search method of the Facebook API:
 
-    $response = $client->users->set_status(
-        status => 'status message',
-        clear => 1|0,
+    $response = $client->marketplace->search(
+        category => 'category',
+        subcategory => 'subcategory',
+        query => 'query',
+    );
+
+=item create_listing( %params )
+
+The marketplace.createListing method of the Facebook API:
+
+    $listing_id = $client->marketplace->create_listing(
+        listing_id => 0|existing_id,
+        show_on_profile => 0|1,
+        listing_attrs => 'JSON',
+    );
+
+=item remove_listing( %params )
+
+The marketplace.removeListing method of the Facebook API:
+
+    $success = $client->marketplace->remove_listing(
+        listing_id => 'id',
+        status => 'SUCCESS|NOT_SUCCESS|DEFAULT',
     );
 
 =back
@@ -103,7 +120,7 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Users requires no configuration files or environment
+WWW::Facebook::API::Marketplace requires no configuration files or environment
 variables.
 
 =head1 DEPENDENCIES

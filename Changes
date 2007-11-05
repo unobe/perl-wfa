@@ -1,6 +1,8 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Sun Nov  4 21:23:21 PST 2007
+HEAD   Sun Nov  4 21:48:26 PST 2007
+	Added marketplace
+	Added users->has_app_permission, users->is_app_added, users->set_status
 	Added feed->publish_templatized_action (thanks King Mak)
 	Updated docs
 	Changed autogen methods for subclasses in API.pm (thanks Shawn)
