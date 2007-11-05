@@ -204,6 +204,13 @@ NAMESPACE METHODS
                 invite  => 0|1,
             );
 
+    marketplace
+        marketplace namespace of the API (See
+        WWW::Facebook::API::Marketplace). All method names from the Facebook
+        API are lower_cased instead of CamelCase:
+
+            $categories = $client->marketplace->get_categories;
+
     photos
         photos namespace of the API (See WWW::Facebook::API::Photos). All
         method names from the Facebook API are lower_cased instead of
@@ -687,6 +694,10 @@ CONTRIBUTORS
     Skyler Clark "none"
 
     Thomas Sibley "<tsibley@cpan.org>"
+
+    Derek Del Conte "derek@delconte.org"
+
+    King Mak "none"
 
 LICENSE AND COPYRIGHT
     Copyright (c) 2007, David Romano "<unobe@cpan.org>". All rights

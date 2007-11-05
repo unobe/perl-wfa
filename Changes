@@ -1,6 +1,7 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Sun Nov  4 21:48:26 PST 2007
+HEAD   Sun Nov  4 22:59:01 PST 2007
+	Updated README
 	Added marketplace
 	Added users->has_app_permission, users->is_app_added, users->set_status
 	Added feed->publish_templatized_action (thanks King Mak)
