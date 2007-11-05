@@ -720,6 +720,13 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
         invite  => 0|1,
     );
 
+=item marketplace
+
+marketplace namespace of the API (See L<WWW::Facebook::API::Marketplace>).
+All method names from the Facebook API are lower_cased instead of CamelCase:
+
+    $categories = $client->marketplace->get_categories;
+
 =item photos
 
 photos namespace of the API (See L<WWW::Facebook::API::Photos>).
