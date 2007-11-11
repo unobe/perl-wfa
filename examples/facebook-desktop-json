@@ -16,7 +16,7 @@ print "Enter your API secret: ";
 chomp( $val = <STDIN> );
 $client->secret($val);
 
-my $token = $client->auth->login( sleep => 2 );
+my $token = $client->auth->login( sleep => 20 );
 $client->auth->get_session($token);
 
 use Data::Dumper;

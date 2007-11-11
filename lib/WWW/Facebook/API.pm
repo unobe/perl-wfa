@@ -1192,6 +1192,43 @@ It returns a list of items, all of which should be interesting to you.
 
 =back
 
+=head1 FAQ
+
+=over
+
+=item Id numbers returned by Facebook are being rounded. What is the problem?
+
+The JSON module that is installed on your system is converting the numbers to
+Perl and is losing precision in the process. Make sure you have the latest
+L<JSON::XS> module installed or L<JSON::DWIW> (any recent version of either
+should work).
+
+=item How do I run the examples in the examples directory?
+
+There are two types of examples in the examples directory, desktop-based and
+web-based. With desktop-based, the api key and secret key are prompted for on
+STDIN, and then the user's browser is opened and directed to the Facebook
+log in page. Currently, the desktop-based examples pause for 20 seconds to
+allow for the user to enter in their credentials.
+
+With web-based, you have to pass in the api key, secret key, and app path to
+the constructor, and then place the script at the callback url you specified
+in the Facebook setup for your application. For instance, when using the
+web-based example, you might have the following callback url (note the
+trailing slash):
+    
+    http://www.example.com/facebook-canvas-json/
+
+You have to make sure the required Perl modules are in the C<@INC> path for
+the web server process, otherwise there will be a 500 Internal Server error.
+The easiest way to do that is to put the following at the top of the example
+script (as long as "path-to-perl5-libs" is readable by the web server
+process):
+
+    use lib "path-to-perl5-libs";
+
+=back
+
 =head1 CONFIGURATION AND ENVIRONMENT
 
 WWW::Facebook::API requires no configuration files or environment variables.
