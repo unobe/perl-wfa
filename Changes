@@ -1,11 +1,10 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Sun Nov  4 22:59:01 PST 2007
-	Updated README
+0.4.8  Sun Nov 11 13:12:34 PST 2007
+	Updated docs and added FAQ with two questions
 	Added marketplace
 	Added users->has_app_permission, users->is_app_added, users->set_status
 	Added feed->publish_templatized_action (thanks King Mak)
-	Updated docs
 	Changed autogen methods for subclasses in API.pm (thanks Shawn)
 	No longer send secret when authenticating (thanks Derek)
 
