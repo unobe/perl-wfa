@@ -571,7 +571,7 @@ Where C<APP_PATH> is replaced by whatever $client->app_path returns, with all
 non-alphanumeric characters replaced with an underscore and all characters
 upcased (e.g., foo-bar-baz becomes FOO_BAR_BAZ).
 
-=head1 SUBROUTINES/METHODS 
+=head1 SUBROUTINES/METHODS
 
 =over
 
@@ -676,19 +676,19 @@ fql namespace of the API (See L<WWW::Facebook::API::FQL>):
 feed namespace of the API (See L<WWW::Facebook::API::Feed>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
-    $response 
+    $response
         = $client->feed->publish_story_to_user(
             title   => 'title',
             body    => 'markup',
             ...
     );
-    $response 
+    $response
         = $client->feed->publish_action_of_user(
             title   => 'title',
             body    => 'markup',
             ...
     );
-    $response 
+    $response
         = $client->feed->publish_templatized_action(
             actor_id       => 'title',
             title_template => 'markup',

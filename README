@@ -159,19 +159,19 @@ NAMESPACE METHODS
         feed namespace of the API (See WWW::Facebook::API::Feed). All method
         names from the Facebook API are lower_cased instead of CamelCase:
 
-            $response 
+            $response
                 = $client->feed->publish_story_to_user(
                     title   => 'title',
                     body    => 'markup',
                     ...
             );
-            $response 
+            $response
                 = $client->feed->publish_action_of_user(
                     title   => 'title',
                     body    => 'markup',
                     ...
             );
-            $response 
+            $response
                 = $client->feed->publish_templatized_action(
                     actor_id       => 'title',
                     title_template => 'markup',
