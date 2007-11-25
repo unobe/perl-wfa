@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.8');
+use version; our $VERSION = qv('0.4.9');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -23,7 +23,7 @@ our @namespaces = qw(
     FBML            Feed            FQL
     Friends         Groups          Notifications
     Photos          Profile         Users
-    Marketplace
+    Marketplace     Pages
 );
 
 for (@namespaces) {
@@ -503,7 +503,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.4.8
+This document describes WWW::Facebook::API version 0.4.9
 
 =head1 SYNOPSIS
 
@@ -594,6 +594,7 @@ attribute method names in L<WWW::Facebook::API> to set its value:
         next            => 'next',
         popup           => 'popup',
         skipcookie      => 'skip_cookie',
+        throw_errors    => 1,
     );
     $copy = $client->new;
 
@@ -645,7 +646,13 @@ Work with the canvas. See L<WWW::Facebook::API::Canvas>.
 events namespace of the API (See L<WWW::Facebook::API::Events>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
-    $response = $client->events->get( uid => 234233, eids => [23,2343,54545] );
+    $response = $client->events->get(
+        uid => 'uid',
+        eids => [@eids],
+        start_time => 'utc',
+        end_time => 'utc',
+        rsvp_status => 'attending|unsure|declined|not_replied',
+    );
     $response = $client->events->get_members( eid => 233 );
 
 =item fbml
@@ -673,14 +680,18 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
         = $client->feed->publish_story_to_user(
             title   => 'title',
             body    => 'markup',
-            priority => 5,
             ...
     );
     $response 
         = $client->feed->publish_action_of_user(
             title   => 'title',
             body    => 'markup',
-            priority => 7,
+            ...
+    );
+    $response 
+        = $client->feed->publish_templatized_action(
+            actor_id       => 'title',
+            title_template => 'markup',
             ...
     );
 
@@ -710,15 +721,13 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
     $response = $client->notifications->get;
     $response = $client->notifications->send(
         to_ids => [ 1, 3 ],
-        markup => 'markup',
-        no_email => 1,
+        notification => 'FBML notification markup',
     );
-    $response = $client->notifications->send_request(
-        to_ids => [ 1, 2 ],
-        type => 'event',
-        content => 'markup',
-        image   => 'image url',
-        invite  => 0|1,
+    $response = $client->notifications->send_email(
+        recipients => [1, 2343, 445],
+        subject => 'subject',
+        text => 'text version of email body',
+        fbml  => 'fbml version of email body',
     );
 
 =item marketplace
@@ -727,6 +736,42 @@ marketplace namespace of the API (See L<WWW::Facebook::API::Marketplace>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
     $categories = $client->marketplace->get_categories;
+    $subcats = $client->marketplace->get_subcategories(
+        category => 'category',
+    );
+    $listings_response = $client->marketplace->get_listings(
+        listing_ids => [@listing_ids],
+        uids => [@uids],
+    );
+    $response = $client->marketplace->search(
+        category => 'category',
+        subcategory => 'subcategory',
+        query => 'query',
+    );
+    $listing_id = $client->marketplace->create_listing(
+        listing_id => 0|existing_id,
+        show_on_profile => 0|1,
+        listing_attrs => 'JSON',
+    );
+    $success = $client->marketplace->remove_listing(
+        listing_id => 'id',
+        status => 'SUCCESS|NOT_SUCCESS|DEFAULT',
+    );
+
+=item pages
+
+pages namespace of the API (See L<WWW::Facebook::API::Marketplace>). All
+method names from the Facebook API are lower_cased instead of CamelCase:
+
+    $response = $client->pages->get_info(
+        page_ids => [@pages],
+        fields   => [@fields],
+        uid      => 'user',
+        type     => 'page type',
+    );
+    $page_added_app = $client->pages->is_app_added( page_id => 'page' );
+    $is_admin = $client->pages->is_admin( page_id => 'page' );
+    $is_fan = $client->pages->is_fan( page_id => 'page', uid => 'uid' )
 
 =item photos
 
@@ -768,8 +813,17 @@ users namespace of the API (See L<WWW::Facebook::API::Users>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
     $response = $client->users->get_info(
-        uids => [12,453,67],
-        fields => ['quotes','activities','books']
+        uids => 2343,
+        fields => [ qw/about_me quotes/ ]
+    );
+    $uid = $client->users->get_logged_in_user;
+    $response = $client->users->has_app_permission(
+        ext_perm => 'status_update|photo_upload'
+    );
+    $app_added = $client->users->is_app_added;
+    $response = $client->users->set_status(
+        status => 'status message',
+        clear => 1|0,
     );
 
 =back
@@ -950,7 +1004,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.8".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.9".
 
 =back
 
@@ -1275,10 +1329,10 @@ With live tests enabled, here is the current test coverage:
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   97.4   82.9   63.6   98.3  100.0    9.6   92.7
-  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   89.1   91.3
-  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.4   97.1
-  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.6  100.0
+  blib/lib/WWW/Facebook/API.pm   97.5   83.1   63.6   98.3  100.0    7.6   92.9
+  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   92.0   91.3
+  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
+  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -1286,10 +1340,11 @@ With live tests enabled, here is the current test coverage:
   ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...cebook/API/Marketplace.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...book/API/Notifications.pm   86.7    n/a    n/a   71.4  100.0    0.0   84.0
+  ...WWW/Facebook/API/Pages.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
+  ...W/Facebook/API/Profile.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...WWW/Facebook/API/Users.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  Total                          97.3   82.6   68.3   96.8  100.0  100.0   93.7
+  Total                          97.6   82.7   68.3   97.8  100.0  100.0   94.1
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR

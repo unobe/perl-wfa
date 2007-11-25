@@ -10,14 +10,11 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.8');
+use version; our $VERSION = qv('0.4.9');
 
 sub get  { return shift->base->call( 'notifications.get',  @_ ) }
 sub send { return shift->base->call( 'notifications.send', @_ ) } ## no critic
-
-sub send_request {
-    return shift->base->call( 'notifications.sendRequest', @_ );
-}
+sub send_email { return shift->base->call( 'notifications.sendEmail', @_ ); }
 
 1;    # Magic true value required at end of module
 __END__
@@ -28,7 +25,7 @@ WWW::Facebook::API::Notifications - Facebook Notifications
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Notifications version 0.4.8
+This document describes WWW::Facebook::API::Notifications version 0.4.9
 
 =head1 SYNOPSIS
 
@@ -48,26 +45,24 @@ The notifications.get method of the Facebook API:
 
     $response = $client->notifications->get;
 
-=item send( to_ids => [ @uids ], markup => $fbml_markup, no_email => 0|1 )
+=item send( to_ids => [ @uids ], notification => $fbml_markup )
 
 The notifications.send method of the Facebook API:
 
     $response = $client->notifications->send(
         to_ids => [1],
-        notifications => 'notifications page FBML',
-        email => 'email FBML',
+        notification => 'notifications page FBML',
     );
 
-=item send_request( %params )
+=item send_email( %params )
 
-The notifications.sendRequest method of the Facebook API:
+The notifications.sendEmail method of the Facebook API:
 
     $response = $client->notifications->send_request(
-        to_ids => [1],
-        type => 'event',
-        content => 'markup',
-        image   => 'image url',
-        invite  => 0|1,
+        recipients => [1, 2343, 445],
+        subject => 'subject',
+        text => 'text version of email body',
+        fbml  => 'fbml version of email body',
     );
 
 =back

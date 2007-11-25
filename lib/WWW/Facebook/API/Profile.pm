@@ -10,14 +10,10 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.8');
+use version; our $VERSION = qv('0.4.9');
 
 sub set_fbml { return shift->base->call( 'profile.setFBML', @_ ) }
 sub get_fbml { return shift->base->call( 'profile.getFBML', @_ ) }
-
-# Just in case ...
-sub set_FBML { return shift->base->call( 'profile.setFBML', @_ ) }
-sub get_FBML { return shift->base->call( 'profile.getFBML', @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
@@ -28,7 +24,7 @@ WWW::Facebook::API::Profile - Facebook Profile
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Profile version 0.4.8
+This document describes WWW::Facebook::API::Profile version 0.4.9
 
 =head1 SYNOPSIS
 
@@ -47,14 +43,6 @@ Methods for accessing profiles with L<WWW::Facebook::API>
 The profile.setFBML method of the Facebook API.
 
 =item get_fbml( uid => $single_uid )
-
-The profile.getFBML method of the Facebook API.
-
-=item set_FBML (DEPRECATED)
-
-The profile.setFBML method of the Facebook API.
-
-=item get_FBML (DEPRECATED)
 
 The profile.getFBML method of the Facebook API.
 

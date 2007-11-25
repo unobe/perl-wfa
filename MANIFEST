@@ -13,6 +13,7 @@ lib/WWW/Facebook/API/Friends.pm
 lib/WWW/Facebook/API/Groups.pm
 lib/WWW/Facebook/API/Marketplace.pm
 lib/WWW/Facebook/API/Notifications.pm
+lib/WWW/Facebook/API/Pages.pm
 lib/WWW/Facebook/API/Photos.pm
 lib/WWW/Facebook/API/Profile.pm
 lib/WWW/Facebook/API/Users.pm
@@ -36,6 +37,7 @@ t/internal.t
 t/marketplace.t
 t/md5.t
 t/notifications.t
+t/pages.t
 t/parse.t
 t/perlcritic.t
 t/perlcriticrc

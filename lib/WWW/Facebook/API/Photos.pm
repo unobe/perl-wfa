@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.8');
+use version; our $VERSION = qv('0.4.9');
 
 sub add_tag      { return shift->base->call( 'photos.addTag',      @_ ) }
 sub create_album { return shift->base->call( 'photos.createAlbum', @_ ) }
@@ -28,7 +28,7 @@ WWW::Facebook::API::Photos - Facebook Photos
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.4.8
+This document describes WWW::Facebook::API::Photos version 0.4.9
 
 =head1 SYNOPSIS
 
@@ -70,11 +70,11 @@ The photos.createAlbum method of the Facebook API:
             description => "Summer '07",
     );
 
-=item get( aid => $album_id, pids => [ @photo_ids ] )
+=item get( subj_id => 'uid', aid => $album_id, pids => [ @photo_ids ] )
 
 The photos.get method of the Facebook API:
 
-    $response = $client->photos->get( aid => 2, pids => [4,7,8] );
+    $response = $client->photos->get( subj_id => 3, aid => 2, pids => [4,7,8] );
 
 =item get_albums( uid => $uid, pids => [ @photo_ids ] )
 
@@ -97,8 +97,6 @@ The photos.upload method of the Facebook API:
         caption => 'beach',
         data => 'raw data',
     );
-
-Currently, only jpeg photos can be uploaded.
 
 =back
 

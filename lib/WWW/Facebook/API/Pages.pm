@@ -1,10 +1,9 @@
-#######################################################################
 # $Date$
 # $Revision$
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-package WWW::Facebook::API::Groups;
+package WWW::Facebook::API::Pages;
 
 use warnings;
 use strict;
@@ -12,43 +11,62 @@ use Carp;
 
 use version; our $VERSION = qv('0.4.9');
 
-sub get         { return shift->base->call( 'groups.get',        @_ ) }
-sub get_members { return shift->base->call( 'groups.getMembers', @_ ) }
+sub get_info     { return shift->base->call( 'pages.getInfo',  @_ ) }
+sub is_app_added { return shift->base->call( 'pages.isAppAdded',  @_ ) }
+sub is_admin     { return shift->base->call( 'pages.isAdmin',  @_ ) }
+sub is_fan       { return shift->base->call( 'pages.isFan',  @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME
 
-WWW::Facebook::API::Groups - Facebook Groups
+WWW::Facebook::API::Pages - Facebook Pages Info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Groups version 0.4.9
+This document describes WWW::Facebook::API::Pages version 0.4.9
 
 =head1 SYNOPSIS
 
-    use WWW::Facebook::API::Groups;
+    use WWW::Facebook::API;
 
 =head1 DESCRIPTION
 
-Methods for accessing groups with L<WWW::Facebook::API>
+Methods for accessing messages with L<WWW::Facebook::API>
 
 =head1 SUBROUTINES/METHODS 
 
 =over
 
-=item get( uid => 'uid', gids => [ @gids ] )
+=item get_info( %params )
 
-The groups.get method of the Facebook API:
+The pages.getInfo method of the Facebook API:
 
-    $response = $client->groups->get( uid => 234324, gids => [2423,334] );
+    $response = $client->pages->get_info(
+        page_ids => [@pages],
+        fields   => [@fields],
+        uid      => 'user',
+        type     => 'page type',
+    );
 
-=item get_members( gid => $gid )
+=item is_app_added( page_id => 'page' )
 
-The groups.get_members method of the Facebook API:
+The pages.isAppAdded method of the Facebook API:
 
-    $response = $client->groups->get_members( gid => 32 );
+    $page_added_app = $client->pages->is_app_added( page_id => 'page' );
+
+=item is_admin( page_id => 'page' )
+
+The pages.isAdmin method of the Facebook API:
+
+    $is_admin = $client->pages->is_admin( page_id => 'page' );
+
+=item is_fan( page_id => 'page', uid => 'user' )
+
+The pages.isFan method of the Facebook API:
+
+    $is_fan = $client->pages->is_fan( page_id => 'page', uid => 'uid' )
 
 =back
 
@@ -58,7 +76,7 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-WWW::Facebook::API::Groups requires no configuration files or environment
+WWW::Facebook::API::Pages requires no configuration files or environment
 variables.
 
 =head1 DEPENDENCIES

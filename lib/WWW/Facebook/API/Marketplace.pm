@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.8');
+use version; our $VERSION = qv('0.4.9');
 
 sub get_categories {
     return shift->base->call( 'marketplace.getCategories', @_ );
@@ -46,7 +46,7 @@ WWW::Facebook::API::Marketplace - Facebook Marketplace
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Marketplace version 0.4.8
+This document describes WWW::Facebook::API::Marketplace version 0.4.9
 
 =head1 SYNOPSIS
 
@@ -60,13 +60,13 @@ Methods for accessing the marketplace with L<WWW::Facebook::API>
 
 =over
 
-=item get_categories( %params )
+=item get_categories()
 
 The marketplace.getCategories method of the Facebook API:
 
     $categories = $client->marketplace->get_categories;
 
-=item get_subcategories( %params )
+=item get_subcategories( category => 'category' )
 
 The marketplace.getSubcategories method of the Facebook API:
 
@@ -74,7 +74,7 @@ The marketplace.getSubcategories method of the Facebook API:
         category => 'category',
     );
 
-=item get_listings( %params )
+=item get_listings( listing_ids => [@listing_ids], uids => [@uids] )
 
 The marketplace.getListings method of the Facebook API:
 
@@ -103,7 +103,7 @@ The marketplace.createListing method of the Facebook API:
         listing_attrs => 'JSON',
     );
 
-=item remove_listing( %params )
+=item remove_listing( listing_id => 'id', status => 'status' )
 
 The marketplace.removeListing method of the Facebook API:
 

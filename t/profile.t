@@ -15,7 +15,7 @@ BEGIN {
     {
         plan skip_all => 'Live tests require API key, secret, and session';
     }
-    plan tests => 5;
+    plan tests => 3;
 }
 
 my $api = WWW::Facebook::API->new( app_path => 'test' );
@@ -26,5 +26,3 @@ ok $api->profile->set_fbml( markup => $time ), 'set fbml';
 like $api->profile->get_fbml(), qr{\A <fb:fbml [^>]+ >$time</fb:fbml> \z }xms,
     'get fbml';
 ok $api->profile->set_fbml( markup => $fbml_orig ), 'reset fmbl';
-ok $api->profile->can('set_FBML'), 'set_FBML';
-ok $api->profile->can('get_FBML'), 'get_FBML';

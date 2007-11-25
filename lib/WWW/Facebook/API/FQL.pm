@@ -9,10 +9,10 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.8');
+use version; our $VERSION = qv('0.4.9');
 
 # always return an array reference. The value returned by Facebook is a hash
-# reference when the are no results, so this shouldn't be a problem.
+# reference when there are no results, so this shouldn't be a problem.
 sub query {
     my $self = shift;
     return $self->base->call( 'fql.query', @_ );
@@ -27,7 +27,7 @@ WWW::Facebook::API::FQL - Facebook Query Language
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FQL version 0.4.8
+This document describes WWW::Facebook::API::FQL version 0.4.9
 
 =head1 SYNOPSIS
 

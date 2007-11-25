@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.8');
+use version; our $VERSION = qv('0.4.9');
 
 sub get         { return shift->base->call( 'events.get',        @_ ) }
 sub get_members { return shift->base->call( 'events.getMembers', @_ ) }
@@ -24,7 +24,7 @@ WWW::Facebook::API::Events - Facebook Events
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Events version 0.4.8
+This document describes WWW::Facebook::API::Events version 0.4.9
 
 =head1 SYNOPSIS
 
@@ -39,11 +39,17 @@ Methods for accessing events with L<WWW::Facebook::API>
 
 =over
 
-=item get( uid => $uid, eids => [ ... ] )
+=item get( %params )
 
 The events.get method of the Facebook API:
 
-    $response = $client->events->get( uid => 234233, eids => [23,2343,54545] );
+    $response = $client->events->get(
+        uid => 'uid',
+        eids => [@eids],
+        start_time => 'utc',
+        end_time => 'utc',
+        rsvp_status => 'attending|unsure|declined|not_replied',
+    );
 
 =item get_members( eid => $event_id )
 
