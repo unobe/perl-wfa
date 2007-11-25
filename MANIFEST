@@ -11,6 +11,7 @@ lib/WWW/Facebook/API/Feed.pm
 lib/WWW/Facebook/API/FQL.pm
 lib/WWW/Facebook/API/Friends.pm
 lib/WWW/Facebook/API/Groups.pm
+lib/WWW/Facebook/API/Marketplace.pm
 lib/WWW/Facebook/API/Notifications.pm
 lib/WWW/Facebook/API/Photos.pm
 lib/WWW/Facebook/API/Profile.pm
@@ -32,6 +33,7 @@ t/fql.t
 t/friends.t
 t/groups.t
 t/internal.t
+t/marketplace.t
 t/md5.t
 t/notifications.t
 t/parse.t
