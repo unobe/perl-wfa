@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.7');
+use version; our $VERSION = qv('0.4.8');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -23,6 +23,7 @@ our @namespaces = qw(
     FBML            Feed            FQL
     Friends         Groups          Notifications
     Photos          Profile         Users
+    Marketplace
 );
 
 for (@namespaces) {
@@ -502,7 +503,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.4.7
+This document describes WWW::Facebook::API version 0.4.8
 
 =head1 SYNOPSIS
 
@@ -949,7 +950,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.7".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.8".
 
 =back
 
@@ -1274,20 +1275,21 @@ With live tests enabled, here is the current test coverage:
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   97.3   82.8   63.6   97.8  100.0    7.0   92.2
-  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   92.6   91.3
-  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.2   97.1
-  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  blib/lib/WWW/Facebook/API.pm   97.4   82.9   63.6   98.3  100.0    9.6   92.7
+  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   89.1   91.3
+  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.4   97.1
+  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.6  100.0
   .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  ...cebook/API/Marketplace.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...book/API/Notifications.pm   86.7    n/a    n/a   71.4  100.0    0.0   84.0
   ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Profile.pm   87.5    n/a    n/a   75.0  100.0    0.0   85.7
-  ...WWW/Facebook/API/Users.pm   92.9    n/a    n/a   83.3  100.0    0.0   90.9
-  Total                          97.0   82.4   68.3   95.5  100.0  100.0   93.0
+  ...WWW/Facebook/API/Users.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  Total                          97.3   82.6   68.3   96.8  100.0  100.0   93.7
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR

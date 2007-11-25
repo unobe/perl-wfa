@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.4');
+use version; our $VERSION = qv('0.4.8');
 
 sub get_categories {
     return shift->base->call( 'marketplace.getCategories', @_ );
@@ -29,11 +29,11 @@ sub search {
 }
 
 sub create_listing {
-    return shift->base->call( 'marketplace.create_listing', @_ );
+    return shift->base->call( 'marketplace.createListing', @_ );
 }
 
 sub remove_listing {
-    return shift->base->call( 'marketplace.remove_listing', @_ );
+    return shift->base->call( 'marketplace.removeListing', @_ );
 }
 
 1;    # Magic true value required at end of module
@@ -46,7 +46,7 @@ WWW::Facebook::API::Marketplace - Facebook Marketplace
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Marketplace version 0.4.4
+This document describes WWW::Facebook::API::Marketplace version 0.4.8
 
 =head1 SYNOPSIS
 
