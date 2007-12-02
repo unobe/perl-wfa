@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
 sub get         { return shift->base->call( 'groups.get',        @_ ) }
 sub get_members { return shift->base->call( 'groups.getMembers', @_ ) }
@@ -24,7 +24,7 @@ WWW::Facebook::API::Groups - Facebook Groups
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Groups version 0.4.9
+This document describes WWW::Facebook::API::Groups version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -37,6 +37,14 @@ Methods for accessing groups with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item get( uid => 'uid', gids => [ @gids ] )
 

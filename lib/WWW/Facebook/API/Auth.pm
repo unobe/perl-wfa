@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
 sub create_token {
     my $self = shift;
@@ -57,7 +57,7 @@ sub get_session {
     $self->_use_http_uri() if $self->base->desktop;
 
     # Copy values from response to object's hash
-    AUTH_RESPONSE:
+AUTH_RESPONSE:
     for my $key ( keys %{$resp} ) {
         next AUTH_RESPONSE if $key eq 'secret' && !$self->base->desktop;
         carp "Setting $field{$key}: $resp->{$key}" if $self->base->debug;
@@ -100,13 +100,13 @@ sub logout {
     return;
 }
 
-sub _use_http_uri  { return shift->_flip_scheme(0); } ## no critic
-sub _use_https_uri { return shift->_flip_scheme(1); } ## no critic
+sub _use_http_uri  { return shift->_flip_scheme(0); }    ## no critic
+sub _use_https_uri { return shift->_flip_scheme(1); }    ## no critic
 
 sub _flip_scheme {
-    my $self = shift;
+    my $self       = shift;
     my $make_https = shift;
-    my $scheme = $make_https ? 'http' : 'https';
+    my $scheme     = $make_https ? 'http' : 'https';
 
     ( my $uri = $self->base->server_uri() ) =~ s{^[^:]+:}{$scheme:}xms;
     $self->base->server_uri($uri);
@@ -123,7 +123,7 @@ WWW::Facebook::API::Auth - Facebook Authentication
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.4.9
+This document describes WWW::Facebook::API::Auth version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -136,6 +136,14 @@ Methods for accessing auth with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item create_token()
 

@@ -4,7 +4,7 @@
 # $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 16;
+use Test::More tests => 19;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -65,6 +65,13 @@ $api->_check_values_of( $params );
 is $params->{'method'}, 'facebook.hello', 'method changed again';
 is $params->{'call_id'}, $time, 'time not reset';
 is $params->{'session_key'}, q{}, 'session key set from object\'s value';
+ok !exists $params->{'callback'}, 'callback not set';
+
+# Mostly just testing that session_key's passed in value is kept...
+$params = { method => 'hello2', session_key => 'foo' };
+$api->_check_values_of( $params );
+is $params->{'method'}, 'facebook.hello2', 'method changed again';
+is $params->{'session_key'}, q{foo}, 'session key not changed';
 ok !exists $params->{'callback'}, 'callback not set';
 
 $api->callback('/new_info');

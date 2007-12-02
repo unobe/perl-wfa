@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
 sub get_info { return shift->base->call( 'users.getInfo', @_ ); }
 
@@ -39,7 +39,7 @@ WWW::Facebook::API::Users - Facebook Users
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.4.9
+This document describes WWW::Facebook::API::Users version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -52,6 +52,14 @@ Methods for accessing users with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item get_info( uids => $uids, fields => $fields )
 

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
 sub get_categories {
     return shift->base->call( 'marketplace.getCategories', @_ );
@@ -46,7 +46,7 @@ WWW::Facebook::API::Marketplace - Facebook Marketplace
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Marketplace version 0.4.9
+This document describes WWW::Facebook::API::Marketplace version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -59,6 +59,14 @@ Methods for accessing the marketplace with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item get_categories()
 

@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
 # always return an array reference. The value returned by Facebook is a hash
 # reference when there are no results, so this shouldn't be a problem.
@@ -27,7 +27,7 @@ WWW::Facebook::API::FQL - Facebook Query Language
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::FQL version 0.4.9
+This document describes WWW::Facebook::API::FQL version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -40,6 +40,14 @@ Methods for accessing messages with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item query( query => 'FQL QUERY LANGUAGE' )
 

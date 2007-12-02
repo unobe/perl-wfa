@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
 sub add_tag      { return shift->base->call( 'photos.addTag',      @_ ) }
 sub create_album { return shift->base->call( 'photos.createAlbum', @_ ) }
@@ -28,7 +28,7 @@ WWW::Facebook::API::Photos - Facebook Photos
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Photos version 0.4.9
+This document describes WWW::Facebook::API::Photos version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -41,6 +41,14 @@ Methods for accessing photos with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item add_tag( %params )
 

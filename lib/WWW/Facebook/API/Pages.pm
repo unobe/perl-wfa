@@ -9,12 +9,12 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
-sub get_info     { return shift->base->call( 'pages.getInfo',  @_ ) }
-sub is_app_added { return shift->base->call( 'pages.isAppAdded',  @_ ) }
-sub is_admin     { return shift->base->call( 'pages.isAdmin',  @_ ) }
-sub is_fan       { return shift->base->call( 'pages.isFan',  @_ ) }
+sub get_info     { return shift->base->call( 'pages.getInfo',    @_ ) }
+sub is_app_added { return shift->base->call( 'pages.isAppAdded', @_ ) }
+sub is_admin     { return shift->base->call( 'pages.isAdmin',    @_ ) }
+sub is_fan       { return shift->base->call( 'pages.isFan',      @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
@@ -25,7 +25,7 @@ WWW::Facebook::API::Pages - Facebook Pages Info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Pages version 0.4.9
+This document describes WWW::Facebook::API::Pages version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -38,6 +38,14 @@ Methods for accessing messages with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item get_info( %params )
 

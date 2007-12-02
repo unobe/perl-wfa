@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.9');
+use version; our $VERSION = qv('0.4.10');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -115,8 +115,7 @@ sub _set_from_file {
     my $app_path = shift;
     my %ENV_VARS = @_;
 
-    # fail silently if file can't be opened
-    open my $config, '<', $self->{'config'}
+    open my $config, '<', $self->{'config'}    ## no critic
         or croak "Cannot open $self->{'config'}";
 
     while (<$config>) {
@@ -131,6 +130,8 @@ sub _set_from_file {
         }
         $ENV{$key} ||= $val;
     }
+
+    close $config or croak "Cannot close $self->{'config'}";
 
     return;
 }
@@ -161,7 +162,7 @@ sub new {
     $self->{'ua'} ||=
         LWP::UserAgent->new( agent => "Perl-WWW-Facebook-API/$VERSION" );
     my $is_attribute = join q{|}, keys %attributes;
-    delete $self->{$_} for grep { !/^($is_attribute)$/xms } keys %{$self};
+    delete $self->{$_} for grep { !/^ $is_attribute $/xms } keys %{$self};
 
     # set up default namespaces
     $self->$_($self) for map {"\L$_"} @namespaces;
@@ -243,7 +244,7 @@ sub redirect {
     if ( $self->canvas->in_fb_canvas ) {
         return qq{<fb:redirect url="$url" />};
     }
-    elsif ($url =~ m[^https?://([^/]*\.)?facebook\.com(:\d+)?]ixms
+    elsif ($url =~ m{^https?://([^/]*\.)?facebook\.com(:\d+)?}ixms
         && $self->session_uid )
     {
         return join q{},
@@ -333,7 +334,7 @@ sub _add_url_params {
         if ( @_ % 2 ) {
 
             # Odd number of elelemts, so didn't pass in canvas => 1
-            $params .= q{&canvas} if grep { $_ eq 'canvas' } @_;
+            $params .= q{&canvas} if grep { $_ eq 'canvas' } @_;  ## no critic
             @_ = grep { $_ ne 'canvas' } @_;
         }
         my %params = @_;
@@ -388,7 +389,7 @@ sub _check_values_of {
     }
 
     if ( $params->{'method'} !~ m/^auth/xms ) {
-        $params->{'session_key'} = $self->session_key;
+        $params->{'session_key'} ||= $self->session_key;
         if ( !$params->{'callback'} && $self->callback ) {
             $params->{'callback'} = $self->callback;
         }
@@ -446,7 +447,7 @@ sub _reformat_response {
 
     # get actual response when web app
     if ( $params->{'callback'} ) {
-        $response =~ s/^$params->{'callback'} [^\(]* \((.+) \);$/$1/xms;
+        $response =~ s/^$params->{'callback'} [^(]* [(](.+) [)];$/$1/xms;
     }
     undef $params;
 
@@ -503,7 +504,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.4.9
+This document describes WWW::Facebook::API version 0.4.10
 
 =head1 SYNOPSIS
 
@@ -1004,7 +1005,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.9".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.10".
 
 =back
 
@@ -1242,8 +1243,18 @@ Cannot create the needed attribute method. Contact the developer to report.
 
 =item C<<_format_and_check_params must be called in list context!>>
 
-You're using a privat method call and you're not calling it in list context.
+You're using a private method call and you're not calling it in list context.
 It returns a list of items, all of which should be interesting to you.
+
+=item C<< Cannot open %s >>
+
+Cannot open the configuration file. Make sure the filename is correct and that
+the program has the appropriate permissions.
+
+=item C<< Cannot close %s >>
+
+Cannot close the configuration file. Make sure the filename is correct and
+that the program has the appropriate permissions.
 
 =back
 
@@ -1329,11 +1340,11 @@ With live tests enabled, here is the current test coverage:
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
   File                           stmt   bran   cond    sub    pod   time  total
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   97.5   83.1   63.6   98.3  100.0    7.6   92.9
-  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   92.0   91.3
-  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
+  blib/lib/WWW/Facebook/API.pm   97.5   82.8   63.8   98.3  100.0   10.2   92.7
+  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   89.1   91.3
+  ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.2   97.1
   ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+  .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.1  100.0
   ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -1344,7 +1355,7 @@ With live tests enabled, here is the current test coverage:
   ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...W/Facebook/API/Profile.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
   ...WWW/Facebook/API/Users.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  Total                          97.6   82.7   68.3   97.8  100.0  100.0   94.1
+  Total                          97.6   82.5   68.2   97.8  100.0  100.0   94.0
   ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
@@ -1384,6 +1395,8 @@ Thomas Sibley C<< <tsibley@cpan.org> >>
 Derek Del Conte C<< derek@delconte.org >>
 
 King Mak C<< none >>
+
+Louis-Philippe C<< none >>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -2,7 +2,7 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.4.9
+    This document describes WWW::Facebook::API version 0.4.10
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -466,7 +466,7 @@ ATTRIBUTE METHODS
         "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.9".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.10".
 
 PUBLIC METHODS
     call( $method, %args )
@@ -663,9 +663,17 @@ DIAGNOSTICS
         report.
 
     "<_format_and_check_params must be called in list context!">
-        You're using a privat method call and you're not calling it in list
+        You're using a private method call and you're not calling it in list
         context. It returns a list of items, all of which should be
         interesting to you.
+
+    "Cannot open %s"
+        Cannot open the configuration file. Make sure the filename is
+        correct and that the program has the appropriate permissions.
+
+    "Cannot close %s"
+        Cannot close the configuration file. Make sure the filename is
+        correct and that the program has the appropriate permissions.
 
 FAQ
     Id numbers returned by Facebook are being rounded. What is the problem?
@@ -732,11 +740,11 @@ TESTING
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
       File                           stmt   bran   cond    sub    pod   time  total
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
-      blib/lib/WWW/Facebook/API.pm   97.5   83.1   63.6   98.3  100.0    7.6   92.9
-      .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   92.0   91.3
-      ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.1   97.1
+      blib/lib/WWW/Facebook/API.pm   97.5   82.8   63.8   98.3  100.0   10.2   92.7
+      .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   89.1   91.3
+      ...WW/Facebook/API/Canvas.pm   97.6   87.5  100.0  100.0  100.0    0.2   97.1
       ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-      .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
+      .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.1  100.0
       ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
@@ -747,7 +755,7 @@ TESTING
       ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...W/Facebook/API/Profile.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
       ...WWW/Facebook/API/Users.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-      Total                          97.6   82.7   68.3   97.8  100.0  100.0   94.1
+      Total                          97.6   82.5   68.2   97.8  100.0  100.0   94.0
       ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 AUTHOR
@@ -785,6 +793,8 @@ CONTRIBUTORS
     Derek Del Conte "derek@delconte.org"
 
     King Mak "none"
+
+    Louis-Philippe "none"
 
 LICENSE AND COPYRIGHT
     Copyright (c) 2007, David Romano "<unobe@cpan.org>". All rights

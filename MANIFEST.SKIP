@@ -21,5 +21,6 @@
 #Avoid bin directory, for now
 \bbin/
 
-# Avoid Subversion files
+# Avoid Subversion and git files
 \.svn
+\.git
