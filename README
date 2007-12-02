@@ -172,7 +172,6 @@ NAMESPACE METHODS
                     ...
             );
             $response
-                = $client->feed->publish_templatized_action(
                     actor_id       => 'title',
                     title_template => 'markup',
                     ...
