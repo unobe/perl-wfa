@@ -219,7 +219,7 @@ sub call {
 sub generate_sig {
     my ( $self, %args ) = @_;
     my %params = %{ $args{'params'} };
-    return md5_hex(( map {encode_utf8("$_=$params{$_}")} sort keys %params ),
+    return md5_hex(( map {"$_=$params{$_}"} sort keys %params ),
         $args{'secret'} );
 }
 
