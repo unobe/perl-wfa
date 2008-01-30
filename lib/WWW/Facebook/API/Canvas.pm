@@ -15,20 +15,37 @@ sub get_fb_params {
     my $self = shift;
     $self->base->query(shift);
 
-    return {
-        map { (/^fb_sig_ (.*) $/xms)[0] => $self->base->query->param($_) }
-            grep {m/^fb_sig_/xms} $self->base->query->param
-    };
+    my $fb_params = {};
+    my @query = grep {m/^fb_sig_/xms} $self->base->query->param;
+    for my $param (@query) {
+        my @values = $self->base->query->param($param);
+        if (@values > 1 || ref $values[0]) {
+            croak "Multiple values for $param: Are you using POST for forms?";
+        }
+
+        my $attribute = ($param =~ /^fb_sig_ (.*) $/xms)[0];
+        $fb_params->{$attribute} = $self->base->query->param($param);
+    }
+
+    return $fb_params;
 }
 
 sub get_non_fb_params {
     my $self = shift;
     $self->base->query(shift);
 
-    return {
-        map { $_ => $self->base->query->param($_) }
-            grep { !/^fb_sig_?/xms } $self->base->query->param
-    };
+    my $non_fb_params = {};
+    my @query = grep { !/^fb_sig_?/xms } $self->base->query->param;
+    for my $param (@query) {
+        my @values = $self->base->query->param($param);
+        if (@values > 1 || ref $values[0]) {
+            croak "Multiple values for $param. Are you using POST for forms?";
+        }
+
+        $non_fb_params->{$param} = $self->base->query->param($param);
+    }
+
+    return $non_fb_params;
 }
 
 sub validate_sig {
@@ -172,7 +189,15 @@ used.
 
 =head1 DIAGNOSTICS
 
-None.
+=over
+
+=item C<< Multiple values for %s. Are you using POST for forms? >>
+
+Your forms are most likely using GET rather than POST to the Facebook URLs.
+Change your forms to using POST and the problem should be resolved. (See
+RT#31620 and RT#31944 for more information).
+
+=back
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

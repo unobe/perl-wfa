@@ -1293,6 +1293,12 @@ process):
 
     use lib "path-to-perl5-libs";
 
+=item I'm getting the "Multiple values for %s" error from WFA::Canvas. Help?
+
+This usually means that your forms are using GET rather than POST to Facebook
+URLs. Change your forms to use POST and the problem should be resolved. (See
+RT#31620 and RT#31944 for more information).
+
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT

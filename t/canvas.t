@@ -4,7 +4,7 @@
 # $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 58;
+use Test::More 'no_plan'; # tests => 58;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -214,3 +214,17 @@ SKIP: {
     is $api->require_login, undef, 'require_login w/fb_sig_added';
     test_cgi_redirect( $test_stdout, undef );
 }
+
+$q->set_param(
+    fb_sig_user        => [qw/2 3/],
+    fb_sig_session_key => [qw/5 7/],
+    fb_sig_time        => 3,
+    fb_sig_in_canvas   => 4,
+    fb_sig             => '',
+    custom_1           => 5,
+    custom_2           => 6,
+);
+
+eval '$api->canvas->get_fb_params($q)';
+if ($@) { pass 'get_fb_params dies with refs as hash values'; }
+else { fail 'get_fb_params dies with refs as hash values'; }

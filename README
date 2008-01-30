@@ -15,33 +15,33 @@ SYNOPSIS
             api_key => 'your api key',
             secret => 'your secret key',
         );
-    
-        # Change API key and secret
+        
+    # Change API key and secret
         print "Enter your public API key: ";
         chomp( my $val = <STDIN> );
         $client->api_key($val);
         print "Enter your API secret: ";
         chomp($val = <STDIN> );
         $client->secret($val);
-    
-        # not needed if web app (see $client->canvas->get_fb_params)
+        
+    # not needed if web app (see $client->canvas->get_fb_params)
         $client->auth->get_session( $token );
-    
-        use Data::Dumper;
+        
+    use Data::Dumper;
         my $friends_perl = $client->friends->get;
         print Dumper $friends_perl;
-    
-        my $notifications_perl = $client->notifications->get;
+        
+    my $notifications_perl = $client->notifications->get;
         print Dumper $notifications_perl;
-    
-        # Current user's quotes
+        
+    # Current user's quotes
         my $quotes_perl = $client->users->get_info(
             uids   => $friends_perl,
             fields => ['quotes']
         );
         print Dumper $quotes_perl;
-    
-        $client->auth->logout;
+        
+    $client->auth->logout;
 
 DESCRIPTION
     A Perl implementation of the Facebook API, working off of the canonical
@@ -705,6 +705,11 @@ FAQ
         readable by the web server process):
 
             use lib "path-to-perl5-libs";
+
+    I'm getting the "Multiple values for %s" error from WFA::Canvas. Help?
+        This usually means that your forms are using GET rather than POST to
+        Facebook URLs. Change your forms to use POST and the problem should
+        be resolved. (See RT#31620 and RT#31944 for more information).
 
 CONFIGURATION AND ENVIRONMENT
     WWW::Facebook::API requires no configuration files or environment
