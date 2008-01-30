@@ -15,6 +15,7 @@ use version; our $VERSION = qv('0.4.10');
 use LWP::UserAgent;
 use Time::HiRes qw(time);
 use Digest::MD5 qw(md5_hex);
+use Encode qw(encode_utf8);
 use CGI;
 use CGI::Util qw(escape);
 
@@ -218,7 +219,7 @@ sub call {
 sub generate_sig {
     my ( $self, %args ) = @_;
     my %params = %{ $args{'params'} };
-    return md5_hex( ( map {"$_=$params{$_}"} sort keys %params ),
+    return md5_hex(( map {encode_utf8("$_=$params{$_}")} sort keys %params ),
         $args{'secret'} );
 }
 
@@ -1387,6 +1388,8 @@ Nick Gerakines C<< <nick@socklabs.com> >>
 Olaf Alders C<< <olaf@wundersolutions.com> >>
 
 Patrick Michael Kane C<< <pmk@wawd.com> >>
+
+Ryan D Johnson C<< none >>
 
 Sean O'Rourke C<< <seano@cpan.org> >>
 
