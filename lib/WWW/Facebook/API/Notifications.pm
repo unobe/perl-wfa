@@ -66,7 +66,7 @@ The notifications.send method of the Facebook API:
 
 The notifications.sendEmail method of the Facebook API:
 
-    $response = $client->notifications->send_request(
+    $response = $client->notifications->send_email(
         recipients => [1, 2343, 445],
         subject => 'subject',
         text => 'text version of email body',
