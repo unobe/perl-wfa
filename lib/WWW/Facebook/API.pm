@@ -219,7 +219,7 @@ sub call {
 sub generate_sig {
     my ( $self, %args ) = @_;
     my %params = %{ $args{'params'} };
-    return md5_hex(( map {encode_utf8("$_=$params{$_}")} sort keys %params ),
+    return md5_hex(( map {"$_=$params{$_}"} sort keys %params ),
         $args{'secret'} );
 }
 
@@ -416,7 +416,7 @@ sub _format_and_check_params {
     # reformat arrays and add each param to digest
     for ( keys %{$params} ) {
         next unless ref $params->{$_} eq 'ARRAY';
-        $params->{$_} = join q{,}, @{ $params->{$_} };
+        $params->{$_} = encode_utf8(join q{,}, @{ $params->{$_} });
     }
 
     croak '_format_and_check_params must be called in list context!'
