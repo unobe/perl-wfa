@@ -10,12 +10,12 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.10');
+use version; our $VERSION = qv('0.4.10_1');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
 use Digest::MD5 qw(md5_hex);
-use Encode qw(encode_utf8);
+use Encode qw(encode_utf8 is_utf8);
 use CGI;
 use CGI::Util qw(escape);
 
@@ -415,8 +415,15 @@ sub _format_and_check_params {
 
     # reformat arrays and add each param to digest
     for ( keys %{$params} ) {
-        next unless ref $params->{$_} eq 'ARRAY';
-        $params->{$_} = encode_utf8(join q{,}, @{ $params->{$_} });
+        if ( ref $params->{$_} eq 'ARRAY' )
+        {
+            $params->{$_} = join q{,}, @{ $params->{$_} };
+        }
+
+        if ( is_utf8( $params->{$_} ) )
+        {
+            $params->{$_} = encode_utf8( $params->{$_} );
+        }
     }
 
     croak '_format_and_check_params must be called in list context!'
@@ -1389,7 +1396,7 @@ Olaf Alders C<< <olaf@wundersolutions.com> >>
 
 Patrick Michael Kane C<< <pmk@wawd.com> >>
 
-Ryan D Johnson C<< none >>
+Ryan D Johnson C<< ryan@innerfence.com >>
 
 Sean O'Rourke C<< <seano@cpan.org> >>
 

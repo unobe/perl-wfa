@@ -1,10 +1,10 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Tue Jan 29 22:42:43 PST 2008
+HEAD   Wed Jan 30 09:38:43 PST 2008
 	Fix documentation bug for notifications->send_email
 	Add FAQ entry for RT#31620 and RT#31944
 	Regen'ed README
-	Fixed utf8 encoding issue (RT#32500)
+	Fixed utf8 encoding issue: RT#32500 (thanks for the patch, Ryan)
 
 0.4.10 Sat Dec  1 17:30:58 PST 2007
 	Fixed bug where session_key parameter value wasn't being used when

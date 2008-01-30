@@ -4,8 +4,9 @@
 # $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 34;
+use Test::More tests => 36;
 use WWW::Facebook::API;
+use Encode qw( encode_utf8 );
 use strict;
 use warnings;
 
@@ -109,6 +110,16 @@ is $api->verify_sig( sig => $sig, %sig_params ), '', 'sig verify 3 nok';
     $api->call('method', %$args );
     is $ids, '3,4,5,6', 'Array refs flattened';
 
+    $args = { unichar => "\x{304b}" };
+    my $unichar = q{};
+    $WWW::Facebook::API::{_post_request} = sub { $unichar = $_[1]->{'unichar'}; q{} };
+    $api->call('method', %$args );
+    is $unichar, encode_utf8( "\x{304b}" ), 'Unicode param encoded for transmission';
+
+    $args = { unichar => encode_utf8( "\x{304b}" ) };
+    $unichar = q{};
+    $api->call('method', %$args );
+    is $unichar, encode_utf8( "\x{304b}" ), 'Raw UTF-8 param left alone for transmission';
 }
 
 sub redirect_fh {
