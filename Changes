@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD   Wed Jan 30 09:38:43 PST 2008
+HEAD   Wed Jan 30 22:46:02 PST 2008
 	Fix documentation bug for notifications->send_email
 	Add FAQ entry for RT#31620 and RT#31944
 	Regen'ed README
