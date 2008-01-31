@@ -46,7 +46,7 @@ Returns the L<WWW::Facebook::API> base object.
 
 Constructor.
 
-=item set_fbml( markup => $fbml_markup, uid => $single_uid )
+=item set_fbml( profile => $fbml_markup, uid => $single_uid, ... )
 
 The profile.setFBML method of the Facebook API.
 

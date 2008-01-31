@@ -71,6 +71,7 @@ parameter required.
         image_3_link    => 'destination url',
         image_4         => 'image url',
         image_4_link    => 'destination url',
+        priority        => '100',
     );
 
 =item publish_action_of_user( %params )
@@ -97,7 +98,7 @@ The feed.publishTemplatizedAction method of the Facebook API. C<actor_id> and
 C<title_template> are required parameters.
 
     $client->feed->publish_templatized_action(
-        actor_id        => 'user_id',
+        page_actor_id   => 'page_id',
         title_template  => 'markup',
         title_data      => 'JSON',
         body_template   => 'markup',
