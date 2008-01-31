@@ -4,7 +4,7 @@
 # $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 3;
+use Test::More tests => 4;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -21,3 +21,6 @@ is_deeply $api->friends->get_app_users, ['friends.getAppUsers'],
 is_deeply $api->friends->are_friends( uids1 => 'a', uids2 => 'b' ),
     [ 'friends.areFriends', uids1 => 'a', uids2 => 'b' ],
     'are_friends calls correctly';
+is_deeply $api->friends->get_lists( flid => '223324' ),
+    [ 'friends.getLists', flid => '223324' ],
+    'get_lists calls correctly';

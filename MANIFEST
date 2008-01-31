@@ -5,6 +5,7 @@ examples/facebook-desktop-raw
 lib/WWW/Facebook/API.pm
 lib/WWW/Facebook/API/Auth.pm
 lib/WWW/Facebook/API/Canvas.pm
+lib/WWW/Facebook/API/Data.pm
 lib/WWW/Facebook/API/Events.pm
 lib/WWW/Facebook/API/FBML.pm
 lib/WWW/Facebook/API/Feed.pm
@@ -27,6 +28,7 @@ t/api.t
 t/auth.t
 t/canvas.t
 t/config.t
+t/data.t
 t/events.t
 t/fbml.t
 t/feed.t

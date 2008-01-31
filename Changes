@@ -5,6 +5,8 @@ HEAD   Wed Jan 30 09:38:43 PST 2008
 	Add FAQ entry for RT#31620 and RT#31944
 	Regen'ed README
 	Fixed utf8 encoding issue: RT#32500 (thanks for the patch, Ryan)
+	Added get_lists in friends namespace
+	Added data namespace with tests
 
 0.4.10 Sat Dec  1 17:30:58 PST 2007
 	Fixed bug where session_key parameter value wasn't being used when

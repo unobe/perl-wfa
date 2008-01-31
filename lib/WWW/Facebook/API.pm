@@ -20,11 +20,11 @@ use CGI;
 use CGI::Util qw(escape);
 
 our @namespaces = qw(
-    Auth            Canvas          Events
-    FBML            Feed            FQL
-    Friends         Groups          Notifications
-    Photos          Profile         Users
-    Marketplace     Pages
+    Auth            Canvas          Data
+    Events          FBML            Feed
+    FQL             Friends         Groups
+    Notifications   Photos          Profile
+    Users           Marketplace     Pages
 );
 
 for (@namespaces) {
@@ -713,6 +713,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
     $response = $client->friends->get_app_users;
     $response
         = $client->friends->are_friends( uids1 => [1,5,8], uids2 => [2,3,4] );
+    $response = $client->friends->get_lists;
 
 =item groups
 
