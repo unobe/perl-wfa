@@ -219,7 +219,7 @@ sub call {
 sub generate_sig {
     my ( $self, %args ) = @_;
     my %params = %{ $args{'params'} };
-    return md5_hex(( map {"$_=$params{$_}"} sort keys %params ),
+    return md5_hex( ( map {"$_=$params{$_}"} sort keys %params ),
         $args{'secret'} );
 }
 
@@ -415,13 +415,11 @@ sub _format_and_check_params {
 
     # reformat arrays and add each param to digest
     for ( keys %{$params} ) {
-        if ( ref $params->{$_} eq 'ARRAY' )
-        {
+        if ( ref $params->{$_} eq 'ARRAY' ) {
             $params->{$_} = join q{,}, @{ $params->{$_} };
         }
 
-        if ( is_utf8( $params->{$_} ) )
-        {
+        if ( is_utf8( $params->{$_} ) ) {
             $params->{$_} = encode_utf8( $params->{$_} );
         }
     }
@@ -650,6 +648,17 @@ Work with the canvas. See L<WWW::Facebook::API::Canvas>.
     $response = $client->canvas->in_fb_canvas( $q )
     $response = $client->canvas->in_frame( $q )
 
+=item data
+
+data namespace of the API (See L<WWW::Facebook::API::Data>).
+All method names from the Facebook API are lower_cased instead of CamelCase:
+
+    $response = $client->data->set_cookie( uid => 23, qw/name foo value bar/);
+    $cookies = $client->data->get_cookies(
+        uid => 4534,
+        name => 'foo',
+    );
+
 =item events
 
 events namespace of the API (See L<WWW::Facebook::API::Events>).
@@ -666,7 +675,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 =item fbml
 
-fbml namespace of the API (See L<WWW::Facebook::API::FBML>):
+fbml namespace of the API (See L<WWW::Facebook::API::FBML>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
     $response = $client->fbml->set_ref_handle( handle => '', fbml => '');
@@ -815,7 +824,11 @@ profile namespace of the API (See L<WWW::Facebook::API::Profile>).
 All method names from the Facebook API are lower_cased instead of CamelCase:
 
     $response = $client->profile->get_fbml( uid => 3 );
-    $response = $client->profile->set_fbml( uid => 5, markup => 'markup' );
+    $response = $client->profile->set_fbml( uid => 5,
+        profile => 'markup',
+        profile_action => 'markup',
+        mobile_profile => 'markup',
+    );
 
 =item users
 
