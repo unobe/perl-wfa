@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.10');
+use version; our $VERSION = qv('0.4.11');
 
 sub get_cookies { return shift->base->call( 'data.getCookies', @_ ); }
 sub set_cookie  { return shift->base->call( 'data.setCookie',  @_ ); }
@@ -24,7 +24,7 @@ WWW::Facebook::API::Data - Facebook Data
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Data version 0.4.10
+This document describes WWW::Facebook::API::Data version 0.4.11
 
 =head1 SYNOPSIS
 

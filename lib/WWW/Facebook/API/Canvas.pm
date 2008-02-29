@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.10');
+use version; our $VERSION = qv('0.4.11');
 
 sub get_fb_params {
     my $self = shift;
@@ -99,7 +99,7 @@ WWW::Facebook::API::Canvas - Facebook Canvas
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Canvas version 0.4.10
+This document describes WWW::Facebook::API::Canvas version 0.4.11
 
 =head1 SYNOPSIS
 
