@@ -12,6 +12,9 @@ use Carp;
 
 use version; our $VERSION = qv('0.4.11');
 
+use Readonly;
+Readonly my $DEFAULT_SLEEP => 15;
+
 sub create_token {
     my $self = shift;
     my $token;
@@ -87,7 +90,7 @@ sub login {
     system qq($browser "$url");
 
     # Give the user time to log in
-    $args{'sleep'} ||= 15;
+    $args{'sleep'} ||= $DEFAULT_SLEEP;
     sleep $args{'sleep'};
 
     return $token;

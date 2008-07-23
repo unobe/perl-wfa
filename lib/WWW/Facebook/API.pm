@@ -31,7 +31,7 @@ for (@namespaces) {
     my $package = __PACKAGE__ . "::$_";
     my $name    = "\L$_";
     ## no critic
-    eval qq(
+    my $namespace = eval qq(
         use $package;
 
         sub $name {
@@ -53,9 +53,10 @@ for (@namespaces) {
 
             return \$self;
         };
+        1;
 
     );
-    croak "Cannot create namespace $name: $@\n" if $@;
+    croak "Cannot create namespace $name: $@\n" if not $namespace;
 }
 
 our %attributes = (
@@ -80,15 +81,16 @@ our %attributes = (
 
 for ( keys %attributes ) {
     ## no critic
-    eval qq( 
+    my $attribute = eval qq( 
         sub $_ {
             my \$self = shift;
             return \$self->{$_} = shift if defined \$_[0];
             return \$self->{$_} if defined \$self->{$_};
             return \$self->{$_} = '$attributes{$_}';
         }
+        1;
     );
-    croak "Cannot create attribute $_: $@\n" if $@;
+    croak "Cannot create attribute $_: $@\n" if not $attribute;
 }
 
 sub _set_from_outside {
@@ -367,16 +369,15 @@ sub _parse {
     return 0   if $response =~ /\A"?false"?\Z/xms;
 
     my $parser;
-    eval { $parser = _parser() };
+    eval { $parser = _parser(); 1; } or do {
 
     # Only load JSON::Any if we haven't already.  Lets the developers
     # pick their choice of JSON modules (JSON::DWIW, for example)
-    if ($@) {    ## no critic
         ## no critic
         eval q{use JSON::Any};
         croak "Unable to load JSON module for parsing:$@\n" if $@;
         $parser = _parser();
-    }
+    };
     carp 'JSON::Any is parsing with ' . $parser->handlerType if $self->debug;
 
     return $parser->decode($response);
