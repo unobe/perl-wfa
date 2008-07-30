@@ -1,5 +1,10 @@
 Revision history for WWW-Facebook-API
 
+0.4.12  Wed Jul 30 04:09:26 PDT 2008
+	Perltidy'd
+	Fixed RT#33571 and RT#37617 (gregor herrmann)++
+	Addresses RT#37840 (clscott++)
+	
 0.4.11  Thu Feb 28 20:44:29 PST 2008
 	Fix documentation bug for notifications->send_email
 	Add FAQ entry for RT#31620 and RT#31944
