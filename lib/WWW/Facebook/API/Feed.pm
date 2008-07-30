@@ -12,12 +12,36 @@ use Carp;
 
 use version; our $VERSION = qv('0.4.11');
 
+sub publish_user_action {
+    return shift->base->call( 'feed.publishUserAction',@_);
+}
+
+sub register_template_bundle {
+    return shift->base->call( 'feed.registerTemplateBundle',@_);
+}
+
+sub deactivate_template_bundle {
+	return shift->base->call( 'feed.deactivateTemplateBundleById', @_);
+}
+
+sub get_registered_template_bundle {
+	my $method = @_
+				 ? 'feed.getRegisteredTemplateBundleById'
+				 : 'feed.getRegisteredTemplateBundles';
+
+	return shift->base->call( $method, @_ );
+}
+
 sub publish_story_to_user {
-    return shift->base->call( 'feed.publishStoryToUser', @_ );
+	my $self = shift;
+	carp "publish_story_to_user is deprecated" if $self->base->debug;
+    return $self->base->call( 'feed.publishStoryToUser', @_ );
 }
 
 sub publish_action_of_user {
-    return shift->base->call( 'feed.publishActionOfUser', @_ );
+	my $self = shift;
+    carp "publish_action_of_user is deprecated" if $self->base->debug;
+    return $self->base->call( 'feed.publishActionOfUser', @_ );
 }
 
 sub publish_templatized_action {
@@ -43,7 +67,7 @@ This document describes WWW::Facebook::API::Feed version 0.4.11
 
 Methods for accessing feeds with L<WWW::Facebook::API>
 
-=head1 SUBROUTINES/METHODS 
+=head1 SUBROUTINES/METHODS
 
 =over
 
@@ -53,7 +77,93 @@ Returns the L<WWW::Facebook::API> base object.
 
 =item new
 
+
 Constructor.
+
+
+=item publish_user_action( %params )
+
+
+The feed.publishUserAction method of the Facebook API. C<template_bundle_id> is the only
+parameter required.
+
+
+    $client->feed->publish_user_action(
+        template_bundle_id => 'id',
+        template_data      => 'JSON',
+        body_general       => 'markup',
+        target_ids         => [@array_of_ids],
+    );
+
+The format for C<template_data> is described on the developer wiki:
+http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
+
+
+=item register_template_bundle( %params )
+
+
+The feed.registerTemplateBundle method of the Facebook API. C<one_line_story_templates> is the only
+parameter required.
+
+
+    $client->feed->publish_user_action(
+        one_line_story_templates => 'JSON',
+        short_story_templates    => 'JSON',
+        full_story_template      => 'JSON',
+    );
+
+The formats for C<one_line_story_templates>,C<short_story_templates>,C<full_story_template> are
+described on the developer wiki:
+http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
+
+=item deactivate_template_bundle( %params )
+
+The feed.deactivateTemplateBundle method of the Facebook API. C<template_bundle_id> is the only
+parameter required.
+
+
+    $client->feed->deactivate_template_bundle(
+		template_bundle_id => 'template_bundle_id'
+    );
+
+=item get_registered_template_bundle
+
+The combined feed.getRegisteredTemplateBundleByID and feed.getRegisteredTemplateBundles methods
+of the Facebook API. If the C<template_bundle_id> parameter is present only that template bundle will be fetched.
+
+
+    $client->feed->get_registered_template_bundle(
+        template_bundle_id => 'template_bundle_id'
+    );
+
+=item publish_templatized_action( %params )
+
+The feed.publishTemplatizedAction method of the Facebook API. C<actor_id> and
+C<title_template> are required parameters.
+
+    $client->feed->publish_templatized_action(
+        page_actor_id   => 'page_id',
+        title_template  => 'markup',
+        title_data      => 'JSON',
+        body_template   => 'markup',
+        body_general    => 'markup',
+        body_data       => 'JSON',
+        image_1         => 'image url',
+        image_1_link    => 'destination url',
+        image_2         => 'image url',
+        image_2_link    => 'destination url',
+        image_3         => 'image url',
+        image_3_link    => 'destination url',
+        image_4         => 'image url',
+        image_4_link    => 'destination url',
+        target_ids      => [@array_of_ids],
+    );
+
+=back
+
+=head1 DEPRECATED SUBROUTINES/METHODS
+
+=over
 
 =item publish_story_to_user( %params )
 
@@ -90,29 +200,6 @@ parameter required.
         image_3_link    => 'destination url',
         image_4         => 'image url',
         image_4_link    => 'destination url',
-    );
-
-=item publish_templatized_action( %params )
-
-The feed.publishTemplatizedAction method of the Facebook API. C<actor_id> and
-C<title_template> are required parameters.
-
-    $client->feed->publish_templatized_action(
-        page_actor_id   => 'page_id',
-        title_template  => 'markup',
-        title_data      => 'JSON',
-        body_template   => 'markup',
-        body_general    => 'markup',
-        body_data       => 'JSON',
-        image_1         => 'image url',
-        image_1_link    => 'destination url',
-        image_2         => 'image url',
-        image_2_link    => 'destination url',
-        image_3         => 'image url',
-        image_3_link    => 'destination url',
-        image_4         => 'image url',
-        image_4_link    => 'destination url',
-        target_ids      => [@array_of_ids],
     );
 
 =back

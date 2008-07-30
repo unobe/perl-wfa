@@ -14,6 +14,11 @@ use version; our $VERSION = qv('0.4.11');
 
 sub set_fbml { return shift->base->call( 'profile.setFBML', @_ ) }
 sub get_fbml { return shift->base->call( 'profile.getFBML', @_ ) }
+sub get_info { return shift->base->call( 'profile.getInfo', @_ ) }
+sub get_info_options { return shift->base->call( 'profile.getInfoOptions', @_ ) }
+sub set_info { return shift->base->call( 'profile.setInfo', @_ ) }
+sub set_info_options { return shift->base->call( 'profile.setInfoOptions', @_ ) }
+
 
 1;    # Magic true value required at end of module
 __END__
@@ -34,7 +39,7 @@ This document describes WWW::Facebook::API::Profile version 0.4.11
 
 Methods for accessing profiles with L<WWW::Facebook::API>
 
-=head1 SUBROUTINES/METHODS 
+=head1 SUBROUTINES/METHODS
 
 =over
 
@@ -46,13 +51,58 @@ Returns the L<WWW::Facebook::API> base object.
 
 Constructor.
 
-=item set_fbml( profile => $fbml_markup, uid => $single_uid, ... )
-
-The profile.setFBML method of the Facebook API.
 
 =item get_fbml( uid => $single_uid )
 
 The profile.getFBML method of the Facebook API.
+
+=item set_fbml( profile => $fbml_markup, uid => $single_uid, ... )
+
+The profile.setFBML method of the Facebook API.
+
+
+=item get_info( %params )
+
+The profile.getInfo method of the Facebook API. C<uid> is the only
+required parameter.
+
+	$client->profile->get_info( uid => 'user_id' );
+
+=item get_info_options( %params )
+
+The profile.getInfoOptions method of the Facebook API. C<field> is the only
+required parameter.
+
+	$client->profile->get_info_options( field => 'field_title' );
+
+
+=item set_info( %params )
+
+The profile.setInfo method of the Facebook API. All parameters are required.
+
+	$client->profile->set_info(
+						title 		=> 'title',
+						type  		=> '1|5',
+						info_fields => 'JSON',
+						uid			=> 'user_id',
+
+	);
+
+The format for C<info_fields> is described on the developer wiki:
+http://wiki.developers.facebook.com/index.php/Profile.setInfo
+
+=item set_info_options( %params )
+
+The profile.setInfoOptions method of the Facebook API. C<field> and C<options>
+parameters are required.
+
+    $client->profile->set_info_options(
+                        field       => 'field_title',
+                        options     => 'JSON',
+    );
+
+The format for C<options> is described on the developer wiki:
+http://wiki.developers.facebook.com/index.php/Profile.setInfoOptions
 
 =back
 

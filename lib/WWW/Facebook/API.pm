@@ -355,8 +355,7 @@ sub _add_url_params {
 sub _parser {
     my $parser = JSON::Any->new;
 
-    # JSON::Any needs to get fixed
-    $parser->handler->allow_nonref() if $parser->handlerType eq 'JSON::XS';
+    $parser->handler->allow_nonref;
     return $parser;
 }
 
@@ -1351,7 +1350,7 @@ L<http://rt.cpan.org>.
 
 =head1 SOURCE REPOSITORY
 
-http://code.google.com/p/perl-www-facebook-api/
+http://github.com/unobe/perl-wfa/tree/master
 
 =head1 TESTING
 
@@ -1364,29 +1363,8 @@ environment variables are set:
 Additionally, if your app is a desktop one, you must set C<WFA_DESKTOP_TEST>.
 Also, the session key must be valid for the API key being used.
 
-With live tests enabled, here is the current test coverage:
-
-  ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  File                           stmt   bran   cond    sub    pod   time  total
-  ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  blib/lib/WWW/Facebook/API.pm   97.6   83.1   63.8   98.4  100.0    6.0   93.0
-  .../WWW/Facebook/API/Auth.pm   95.1   77.3  100.0   90.9  100.0   93.5   91.3
-  ...WW/Facebook/API/Canvas.pm   96.3   83.3   66.7  100.0  100.0    0.2   92.3
-  .../WWW/Facebook/API/Data.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...WW/Facebook/API/Events.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  .../WWW/Facebook/API/FBML.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...b/WWW/Facebook/API/FQL.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  .../WWW/Facebook/API/Feed.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...W/Facebook/API/Friends.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...WW/Facebook/API/Groups.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...cebook/API/Marketplace.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...book/API/Notifications.pm   86.7    n/a    n/a   71.4  100.0    0.0   84.0
-  ...WWW/Facebook/API/Pages.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...WW/Facebook/API/Photos.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...W/Facebook/API/Profile.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  ...WWW/Facebook/API/Users.pm  100.0    n/a    n/a  100.0  100.0    0.0  100.0
-  Total                          97.7   82.6   66.7   97.9  100.0  100.0   94.0
-  ---------------------------- ------ ------ ------ ------ ------ ------ ------
+To enable POD coverage and POD formattings tests, set C<PERL_TEST_POD> to
+true. To enable L<Perl::Critic> tests, set C<_PERL_TEST_CRITIC> to true.
 
 =head1 AUTHOR
 
