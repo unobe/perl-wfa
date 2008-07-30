@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.11');
+use version; our $VERSION = qv('0.4.12');
 
 sub get_info { return shift->base->call( 'users.getInfo', @_ ); }
 
@@ -23,8 +23,8 @@ sub has_app_permission {
 }
 
 sub is_app_added {
-	my $self = shift;
-	carp "is_app_added is deprecated" if $self->base->debug;
+    my $self = shift;
+    carp 'is_app_added is deprecated' if $self->base->debug;
     return $self->base->call( 'users.isAppAdded', @_ );
 }
 
@@ -45,7 +45,7 @@ WWW::Facebook::API::Users - Facebook Users
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Users version 0.4.11
+This document describes WWW::Facebook::API::Users version 0.4.12
 
 =head1 SYNOPSIS
 

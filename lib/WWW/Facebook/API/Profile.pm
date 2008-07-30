@@ -10,15 +10,20 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.11');
+use version; our $VERSION = qv('0.4.12');
 
 sub set_fbml { return shift->base->call( 'profile.setFBML', @_ ) }
 sub get_fbml { return shift->base->call( 'profile.getFBML', @_ ) }
 sub get_info { return shift->base->call( 'profile.getInfo', @_ ) }
-sub get_info_options { return shift->base->call( 'profile.getInfoOptions', @_ ) }
-sub set_info { return shift->base->call( 'profile.setInfo', @_ ) }
-sub set_info_options { return shift->base->call( 'profile.setInfoOptions', @_ ) }
 
+sub get_info_options {
+    return shift->base->call( 'profile.getInfoOptions', @_ );
+}
+sub set_info { return shift->base->call( 'profile.setInfo', @_ ) }
+
+sub set_info_options {
+    return shift->base->call( 'profile.setInfoOptions', @_ );
+}
 
 1;    # Magic true value required at end of module
 __END__
@@ -29,7 +34,7 @@ WWW::Facebook::API::Profile - Facebook Profile
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Profile version 0.4.11
+This document describes WWW::Facebook::API::Profile version 0.4.12
 
 =head1 SYNOPSIS
 

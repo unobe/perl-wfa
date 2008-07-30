@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.11');
+use version; our $VERSION = qv('0.4.12');
 
 sub get  { return shift->base->call( 'notifications.get',  @_ ) }
 sub send { return shift->base->call( 'notifications.send', @_ ) } ## no critic
@@ -25,7 +25,7 @@ WWW::Facebook::API::Notifications - Facebook Notifications
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Notifications version 0.4.11
+This document describes WWW::Facebook::API::Notifications version 0.4.12
 
 =head1 SYNOPSIS
 

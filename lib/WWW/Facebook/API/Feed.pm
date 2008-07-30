@@ -10,37 +10,38 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.11');
+use version; our $VERSION = qv('0.4.12');
 
 sub publish_user_action {
-    return shift->base->call( 'feed.publishUserAction',@_);
+    return shift->base->call( 'feed.publishUserAction', @_ );
 }
 
 sub register_template_bundle {
-    return shift->base->call( 'feed.registerTemplateBundle',@_);
+    return shift->base->call( 'feed.registerTemplateBundle', @_ );
 }
 
 sub deactivate_template_bundle {
-	return shift->base->call( 'feed.deactivateTemplateBundleById', @_);
+    return shift->base->call( 'feed.deactivateTemplateBundleById', @_ );
 }
 
 sub get_registered_template_bundle {
-	my $method = @_
-				 ? 'feed.getRegisteredTemplateBundleById'
-				 : 'feed.getRegisteredTemplateBundles';
+    my $method =
+        @_
+        ? 'feed.getRegisteredTemplateBundleById'
+        : 'feed.getRegisteredTemplateBundles';
 
-	return shift->base->call( $method, @_ );
+    return shift->base->call( $method, @_ );
 }
 
 sub publish_story_to_user {
-	my $self = shift;
-	carp "publish_story_to_user is deprecated" if $self->base->debug;
+    my $self = shift;
+    carp 'publish_story_to_user is deprecated' if $self->base->debug;
     return $self->base->call( 'feed.publishStoryToUser', @_ );
 }
 
 sub publish_action_of_user {
-	my $self = shift;
-    carp "publish_action_of_user is deprecated" if $self->base->debug;
+    my $self = shift;
+    carp 'publish_action_of_user is deprecated' if $self->base->debug;
     return $self->base->call( 'feed.publishActionOfUser', @_ );
 }
 
@@ -57,7 +58,7 @@ WWW::Facebook::API::Feed - Facebook Feeds
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Feed version 0.4.11
+This document describes WWW::Facebook::API::Feed version 0.4.12
 
 =head1 SYNOPSIS
 

@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.11');
+use version; our $VERSION = qv('0.4.12');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -125,7 +125,7 @@ sub _set_from_file {
         carp "Config line: $_" if $self->{'debug'};
         chomp;
         my ( $key, $val ) = split m/=/xms, $_, 2;
-        next                              if !$key;
+        next if !$key;
         carp "Key/Val pair: $key -> $val" if $self->{'debug'};
         for ( $key, $val ) {
             s/\A\s+//xms;
@@ -370,8 +370,8 @@ sub _parse {
     my $parser;
     eval { $parser = _parser(); 1; } or do {
 
-    # Only load JSON::Any if we haven't already.  Lets the developers
-    # pick their choice of JSON modules (JSON::DWIW, for example)
+        # Only load JSON::Any if we haven't already.  Lets the developers
+        # pick their choice of JSON modules (JSON::DWIW, for example)
         ## no critic
         eval q{use JSON::Any};
         croak "Unable to load JSON module for parsing:$@\n" if $@;
@@ -510,7 +510,7 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.4.11
+This document describes WWW::Facebook::API version 0.4.12
 
 =head1 SYNOPSIS
 
@@ -1027,7 +1027,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.11".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.12".
 
 =back
 

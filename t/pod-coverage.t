@@ -7,7 +7,7 @@
 
 use Test::More;
 if (!$ENV{'PERL_TEST_POD'}) {
-    plan skip_all => "Skipping author tests";
+    plan skip_all => "Skipping Pod::Coverage tests";
     exit;
 }
 

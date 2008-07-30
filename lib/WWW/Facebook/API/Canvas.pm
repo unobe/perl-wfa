@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.11');
+use version; our $VERSION = qv('0.4.12');
 
 sub get_fb_params {
     my $self = shift;
@@ -19,11 +19,11 @@ sub get_fb_params {
     my @query = grep {m/^fb_sig_/xms} $self->base->query->param;
     for my $param (@query) {
         my @values = $self->base->query->param($param);
-        if (@values > 1 || ref $values[0]) {
+        if ( @values > 1 || ref $values[0] ) {
             croak "Multiple values for $param: Are you using POST for forms?";
         }
 
-        my $attribute = ($param =~ /^fb_sig_ (.*) $/xms)[0];
+        my $attribute = ( $param =~ /^fb_sig_ (.*) $/xms )[0];
         $fb_params->{$attribute} = $self->base->query->param($param);
     }
 
@@ -38,7 +38,7 @@ sub get_non_fb_params {
     my @query = grep { !/^fb_sig_?/xms } $self->base->query->param;
     for my $param (@query) {
         my @values = $self->base->query->param($param);
-        if (@values > 1 || ref $values[0]) {
+        if ( @values > 1 || ref $values[0] ) {
             croak "Multiple values for $param. Are you using POST for forms?";
         }
 
@@ -99,7 +99,7 @@ WWW::Facebook::API::Canvas - Facebook Canvas
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Canvas version 0.4.11
+This document describes WWW::Facebook::API::Canvas version 0.4.12
 
 =head1 SYNOPSIS
 
