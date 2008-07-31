@@ -1,5 +1,8 @@
 Revision history for WWW-Facebook-API
 
+0.4.13  Wed Jul 30 18:14:59 PDT 2008
+	Added Readonly as dependency
+
 0.4.12  Wed Jul 30 04:09:26 PDT 2008
 	Perltidy'd
 	Fixed RT#33571 and RT#37617 (gregor herrmann)++

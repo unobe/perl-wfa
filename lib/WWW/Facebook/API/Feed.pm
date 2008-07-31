@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.12');
+use version; our $VERSION = qv('0.4.13');
 
 sub publish_user_action {
     return shift->base->call( 'feed.publishUserAction', @_ );
@@ -58,7 +58,7 @@ WWW::Facebook::API::Feed - Facebook Feeds
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Feed version 0.4.12
+This document describes WWW::Facebook::API::Feed version 0.4.13
 
 =head1 SYNOPSIS
 

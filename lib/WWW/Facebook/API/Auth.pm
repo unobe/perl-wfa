@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.12');
+use version; our $VERSION = qv('0.4.13');
 
 use Readonly;
 Readonly my $DEFAULT_SLEEP => 15;
@@ -126,7 +126,7 @@ WWW::Facebook::API::Auth - Facebook Authentication
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Auth version 0.4.12
+This document describes WWW::Facebook::API::Auth version 0.4.13
 
 =head1 SYNOPSIS
 

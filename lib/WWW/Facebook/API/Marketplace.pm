@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.12');
+use version; our $VERSION = qv('0.4.13');
 
 sub get_categories {
     return shift->base->call( 'marketplace.getCategories', @_ );
@@ -46,7 +46,7 @@ WWW::Facebook::API::Marketplace - Facebook Marketplace
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Marketplace version 0.4.12
+This document describes WWW::Facebook::API::Marketplace version 0.4.13
 
 =head1 SYNOPSIS
 

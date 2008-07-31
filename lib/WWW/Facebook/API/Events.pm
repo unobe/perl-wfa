@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.12');
+use version; our $VERSION = qv('0.4.13');
 
 sub get         { return shift->base->call( 'events.get',        @_ ) }
 sub get_members { return shift->base->call( 'events.getMembers', @_ ) }
@@ -24,7 +24,7 @@ WWW::Facebook::API::Events - Facebook Events
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Events version 0.4.12
+This document describes WWW::Facebook::API::Events version 0.4.13
 
 =head1 SYNOPSIS
 
