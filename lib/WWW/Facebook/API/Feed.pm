@@ -107,7 +107,7 @@ The feed.registerTemplateBundle method of the Facebook API. C<one_line_story_tem
 parameter required.
 
 
-    $client->feed->publish_user_action(
+    $client->feed->register_template_bundle(
         one_line_story_templates => 'JSON',
         short_story_templates    => 'JSON',
         full_story_template      => 'JSON',
