@@ -1,5 +1,9 @@
 Revision history for WWW-Facebook-API
 
+0.4.14  Tue Oct 14 22:37;41 EDT 2008
+	Added Applicationi,Admin,SMS APIs + tests (tburke++)
+	Fixed a bug with get_registered_template_bundle in Feed API (tburke++)
+
 0.4.13  Wed Jul 30 18:14:59 PDT 2008
 	Added Readonly as dependency
 

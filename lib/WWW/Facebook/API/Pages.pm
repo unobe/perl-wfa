@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.13');
+use version; our $VERSION = qv('0.4.14');
 
 sub get_info     { return shift->base->call( 'pages.getInfo',    @_ ) }
 sub is_app_added { return shift->base->call( 'pages.isAppAdded', @_ ) }
@@ -25,7 +25,7 @@ WWW::Facebook::API::Pages - Facebook Pages Info
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Pages version 0.4.13
+This document describes WWW::Facebook::API::Pages version 0.4.14
 
 =head1 SYNOPSIS
 

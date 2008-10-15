@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.13');
+use version; our $VERSION = qv('0.4.14');
 
 sub get           { return shift->base->call( 'friends.get',         @_ ) }
 sub get_app_users { return shift->base->call( 'friends.getAppUsers', @_ ) }
@@ -26,7 +26,7 @@ WWW::Facebook::API::Friends - Facebook Friends
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Friends version 0.4.13
+This document describes WWW::Facebook::API::Friends version 0.4.14
 
 =head1 SYNOPSIS
 

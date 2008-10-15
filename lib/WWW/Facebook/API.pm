@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.13');
+use version; our $VERSION = qv('0.4.14');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -25,6 +25,7 @@ our @namespaces = qw(
     FQL             Friends         Groups
     Notifications   Photos          Profile
     Users           Marketplace     Pages
+	SMS             Application     Admin
 );
 
 for (@namespaces) {

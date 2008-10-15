@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.13');
+use version; our $VERSION = qv('0.4.14');
 
 sub get_allocation {
     return shift->base->call( 'Admin.getAllocation', @_ );
@@ -31,7 +31,7 @@ WWW::Facebook::API::Admin - Facebook Admin
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API::Admin version 0.4.13
+This document describes WWW::Facebook::API::Admin version 0.4.14
 
 =head1 SYNOPSIS
 

@@ -2,7 +2,10 @@ Changes
 examples/facebook-canvas-json
 examples/facebook-desktop-json
 examples/facebook-desktop-raw
+examples/web-app.pl
 lib/WWW/Facebook/API.pm
+lib/WWW/Facebook/API/Admin.pm
+lib/WWW/Facebook/API/Application.pm
 lib/WWW/Facebook/API/Auth.pm
 lib/WWW/Facebook/API/Canvas.pm
 lib/WWW/Facebook/API/Data.pm
@@ -17,6 +20,7 @@ lib/WWW/Facebook/API/Notifications.pm
 lib/WWW/Facebook/API/Pages.pm
 lib/WWW/Facebook/API/Photos.pm
 lib/WWW/Facebook/API/Profile.pm
+lib/WWW/Facebook/API/SMS.pm
 lib/WWW/Facebook/API/Users.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -24,7 +28,9 @@ MANIFEST.SKIP
 META.yml
 README
 t/00.load.t
+t/admin.t
 t/api.t
+t/application.t
 t/auth.t
 t/canvas.t
 t/config.t
@@ -47,6 +53,7 @@ t/photos.t
 t/pod-coverage.t
 t/pod.t
 t/profile.t
+t/sms.t
+t/upload.jpg
 t/users.t
 t/xml.t
-t/upload.jpg
