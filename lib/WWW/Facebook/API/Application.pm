@@ -33,6 +33,14 @@ Methods for accessing application info with L<WWW::Facebook::API>
 
 =over
 
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
+
 =item get_public_info( %params )
 
 The Application.getPublicInfo method of the Facebook API. 

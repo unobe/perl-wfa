@@ -26,7 +26,7 @@ sub deactivate_template_bundle {
 
 sub get_registered_template_bundle {
     my $method =
-        @_ > 1 
+        @_ > 1
         ? 'feed.getRegisteredTemplateBundleById'
         : 'feed.getRegisteredTemplateBundles';
 

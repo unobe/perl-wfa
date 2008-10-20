@@ -45,6 +45,14 @@ Methods for accessing Admin functions with L<WWW::Facebook::API>
 
 =over
 
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
+
 =item get_allocation( %params )
 
 The Admin.getAllocation method of the Facebook API. 

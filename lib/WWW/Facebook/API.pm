@@ -25,7 +25,7 @@ our @namespaces = qw(
     FQL             Friends         Groups
     Notifications   Photos          Profile
     Users           Marketplace     Pages
-	SMS             Application     Admin
+    SMS             Application     Admin
 );
 
 for (@namespaces) {
@@ -614,6 +614,14 @@ All method names from the Facebook API are lower_cased instead of CamelCase.
 
 =over
 
+=item admin
+
+admin namespace of the API (See L<WWW::Facebook::API::Admin>).
+
+=item application
+
+application namespace of the API (See L<WWW::Facebook::API::Application>).
+
 =item auth
 
 For desktop apps, these are synonymous:
@@ -830,6 +838,10 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
         profile_action => 'markup',
         mobile_profile => 'markup',
     );
+
+=item sms
+
+sms namespace of the API (See L<WWW::Facebook::API::SMS>).
 
 =item users
 

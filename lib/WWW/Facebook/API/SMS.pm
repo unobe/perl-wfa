@@ -10,7 +10,7 @@ sub can_send {
     return shift->base->call( 'sms.canSend', @_ );
 }
 
-sub send {
+sub send { ## no critic
     return shift->base->call( 'sms.send', @_ );
 }
 
@@ -36,6 +36,14 @@ Methods for accessing sms with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS 
 
 =over
+
+=item base
+
+Returns the L<WWW::Facebook::API> base object.
+
+=item new
+
+Constructor.
 
 =item can_send( %params )
 
