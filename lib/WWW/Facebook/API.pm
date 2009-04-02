@@ -23,9 +23,10 @@ our @namespaces = qw(
     Auth            Canvas          Data
     Events          FBML            Feed
     FQL             Friends         Groups
-    Notifications   Photos          Profile
-    Users           Marketplace     Pages
-    SMS             Application     Admin
+    Notifications   Permissions     Photos
+    Profile         Users           Marketplace
+    Pages           SMS             Application
+    Admin
 );
 
 for (@namespaces) {
