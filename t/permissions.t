@@ -25,7 +25,7 @@ is_deeply $api->permissions->grant_api_access(
     'grant_api_access calls correctly';
 
 is_deeply $api->permissions->check_available_api_access( 
-    permissions_apikey => 'masterkey' ),
+    permissions_apikey => 'masterappkey' ),
     [
         'Permissions.checkAvailableApiAccess',
         permissions_apikey => 'masterappkey'
