@@ -50,7 +50,7 @@ t/pages.t
 t/parse.t
 t/perlcritic.t
 t/perlcriticrc
-t/perlmissions.t
+t/permissions.t
 t/photos.t
 t/pod-coverage.t
 t/pod.t
