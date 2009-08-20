@@ -17,13 +17,16 @@ use CGI;
 use CGI::Util qw(escape);
 
 our @namespaces = qw(
-    Auth            Canvas          Data
-    Events          FBML            Feed
-    FQL             Friends         Groups
-    Notifications   Permissions     Photos
-    Profile         Users           Marketplace
-    Pages           SMS             Application
-    Admin
+    Admin           Auth            Canvas
+    Comments        Connect         Data
+    Events          Feed            FBML
+    Feed            FQL             Friends
+    Groups          Intl            Links
+    LiveMessage     Message         Notes
+    Notifications   Pages           Permissions
+    Photos          Profile         SMS
+    Status          Stream          Users
+    Video
 );
 
 for (@namespaces) {
@@ -73,7 +76,7 @@ our %attributes = (
             popup               next        session_key
             session_expires     session_uid callback
             app_path            ua          query
-            config              app_id
+            config              app_id      call_as_apikey
             )
     ),
 );
@@ -196,6 +199,10 @@ sub call {
     my ( $self, $method, %args ) = @_;
     my ( $response, $params, $sig, $img_data );
     $self->call_success(1);
+
+    if ( $self->base->call_as_api_key ) { 
+         $args{'call_as_api_key'} = $self->base->call_as_api_key;
+    }
 
     ( $params, $img_data ) =
         $self->_format_and_check_params( $method, %args );
