@@ -1,3 +1,6 @@
+#######################################################################
+# ex: set ts=8 sw=4 et
+#########################################################################
 package WWW::Facebook::API::Permissions;
 
 use warnings;
@@ -5,18 +8,28 @@ use strict;
 
 use Carp;
 
+sub grant_api_access {
+    return shift->base->call( 'Permissions.grantApiAccess', @_ );
+}
+
+sub check_available_api_access {
+    return shift->base->call( 'Permissions.checkAvailableApiAccess', @_ );
+}
+
+sub revoke_api_access {
+	return shift->base->call( 'Permissions.revokeApiAccess', @_ );
+}
+
+sub check_granted_api_access {
+	return shift->base->call( 'Permissions.checkGrantedApiAccess', @_ );
+}
+
+1;    # Magic true value required at end of module
+__END__
+
 =head1 NAME
 
 WWW::Facebook::API::Permissions - Facebook Permissions
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
 
 =head1 SYNOPSIS
 
@@ -35,13 +48,11 @@ Implementation of the Facebook Permissions API:
 
 Methods for accessing Permissions functions with L<WWW::Facebook::API>
 
-Please note that this API is considered by Facebook to be in Beta.
+=head1 SUBROUTINES/METHODS
 
-=head1 METHODS
+=over
 
-The first paragraph of documentation for each of these methods comes from Facebook's method documentation.
-
-=head2 grant_api_access
+=item grant_api_access
 
 This method gives another application access to certain API calls on behalf of the application calling it.
 
@@ -54,13 +65,7 @@ You B<MUST> supply the API key of the application you want to grant access to. Y
 
 L<http://wiki.developers.facebook.com/index.php/Permissions.grantApiAccess>
 
-=cut
-
-sub grant_api_access {
-    return shift->base->call( 'Permissions.grantApiAccess', @_ );
-}
-
-=head2 check_available_api_access
+=item check_available_api_access
 
 This method returns the API methods to which access has been granted by the specified application.
 
@@ -72,13 +77,7 @@ You B<MUST> supply the API key of the application you want to check.
 
 L<http://wiki.developers.facebook.com/index.php/Permissions.checkAvailableApiAccess>
 
-=cut
-
-sub check_available_api_access {
-    return shift->base->call( 'Permissions.checkAvailableApiAccess', @_ );
-}
-
-=head2 revoke_api_access
+=item revoke_api_access
 
 This method revokes the API access granted to the specified application.
 
@@ -90,13 +89,7 @@ You B<MUST> supply the API key of the application for which you want to revoke a
     
 L<http://wiki.developers.facebook.com/index.php/Permissions.revokeApiAccess>
 
-=cut
-
-sub revoke_api_access {
-	return shift->base->call( 'Permissions.revokeApiAccess', @_ );
-}
-
-=head2 check_granted_api_access
+=item check_granted_api_access
 
 This method returns the API methods to which the specified application has been given access.
 
@@ -108,23 +101,21 @@ You B<MUST> supply the API key of the application for which you want the check t
     
 L<http://wiki.developers.facebook.com/index.php/Permissions.checkGrantedApiAccess>
 
-=cut
+=back
 
-sub check_granted_api_access {
-	return shift->base->call( 'Permissions.checkGrantedApiAccess', @_ );
-}
+=head1 BUGS AND LIMITATIONS
 
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
 Pedro Figueiredo, C<< <pedro.figueiredo at playfish.com> >>
 
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-www-facebook-api-permissions at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=WWW-Facebook-API-Permissions>. I will be notified, and then you'll automatically be notified of progress on your bug as I make changes.
-
+David Romano C<< <unobe@cpan.org> >>
 
 =head1 SUPPORT
 
@@ -135,37 +126,13 @@ You can find documentation for this module with the perldoc command.
 
 You can also look for information at:
 
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-Facebook-API-Permissions>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/WWW-Facebook-API-Permissions>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/WWW-Facebook-API-Permissions>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/WWW-Facebook-API-Permissions/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Playfish, all rights reserved.
+Copyright (c) 2009 Playfish. All Rights reserved.
+Certain parts copyright (c) 2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
 
 =head1 DISCLAIMER OF WARRANTY
 
@@ -189,7 +156,3 @@ RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
 FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
 SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
-
-=cut
-
-45; # End of WWW::Facebook::API::Permissions
