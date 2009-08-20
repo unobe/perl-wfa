@@ -11,16 +11,36 @@ sub get_allocation {
     return shift->base->call( 'admin.getAllocation', @_ );
 }
 
-sub get_metrics {
-    return shift->base->call( 'admin.getMetrics', @_ );
-}
-
 sub get_app_properties {
     return shift->base->call( 'admin.getAppProperties', @_ );
 }
 
+sub get_metrics {
+    return shift->base->call( 'admin.getMetrics', @_ );
+}
+
+sub get_restriction_info {
+    return shift->base->call( 'admin.getRestrictionInfo', @_ );
+}
+
 sub set_app_properties {
     return shift->base->call( 'admin.setAppProperties', @_ );
+}
+
+sub set_restriction_info {
+    return shift->base->call( 'admin.setRestrictionInfo', @_ );
+}
+
+sub ban_users {
+    return shift->base->call( 'admin.banUsers', @_ );
+}
+
+sub unban_users {
+    return shift->base->call( 'admin.unbanUsers', @_ );
+}
+
+sub get_banned_users {
+    return shift->base->call( 'admin.getBannedUsers', @_ );
 }
 
 1;    # Magic true value required at end of module
@@ -87,6 +107,38 @@ The Admin.setAppProperties method of the Facebook API.
         callback_url => 'http://example.com/testapp/'
         }
     );
+
+=item get_restriction_info( %params )
+
+The Admin.getRestrictionInfo method of the Facebook API. 
+
+    $result = $client->Admin->get_restriction_info();
+
+=item set_restriction_info( %params )
+
+The Admin.setRestrictionInfo method of the Facebook API. 
+
+    $result = $client->Admin->set_restriction_info(
+        encode_json { age => '21+', location => 'us' }
+    );
+
+=item ban_users( %params )
+
+The Admin.banUsers method of the Facebook API. 
+
+    $result = $client->Admin->ban_users( uids => [@uids] );
+
+==item unban_users( %params )
+
+The Admin.unbanUsers method of the Facebook API. 
+
+    $result = $client->Admin->unban_users( uids => [@uids] );
+
+=item get_banned_users( %params )
+
+The Admin.getBannedUsers method of the Facebook API. 
+
+    $result = $client->Admin->getBannedUsers();
 
 =back
 
