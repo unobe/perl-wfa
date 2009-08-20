@@ -8,7 +8,7 @@ use strict;
 use Carp;
 
 sub get {
-    my $self;
+    my $self = shift;
     $self->base->call( 'status.get',
                        session_key => $self->base->session_key,
                        @_
