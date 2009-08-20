@@ -8,19 +8,19 @@ use strict;
 use Carp;
 
 sub get_allocation {
-    return shift->base->call( 'Admin.getAllocation', @_ );
+    return shift->base->call( 'admin.getAllocation', @_ );
 }
 
 sub get_metrics {
-    return shift->base->call( 'Admin.getMetrics', @_ );
+    return shift->base->call( 'admin.getMetrics', @_ );
 }
 
 sub get_app_properties {
-    return shift->base->call( 'Admin.getAppProperties', @_ );
+    return shift->base->call( 'admin.getAppProperties', @_ );
 }
 
 sub set_app_properties {
-    return shift->base->call( 'Admin.setAppProperties', @_ );
+    return shift->base->call( 'admin.setAppProperties', @_ );
 }
 
 1;    # Magic true value required at end of module
