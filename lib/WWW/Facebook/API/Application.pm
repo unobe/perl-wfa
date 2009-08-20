@@ -1,10 +1,11 @@
+#######################################################################
+# ex: set ts=8 sw=4 et
+#########################################################################
 package WWW::Facebook::API::Application;
 
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub get_public_info {
     return shift->base->call( 'Application.getPublicInfo', @_ );
@@ -16,10 +17,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Application - Facebook Application
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Application version 0.4.14
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,4 @@
-# $Date$
-# $Revision$
-# $Author$
+#########################################################################
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::FQL;
@@ -8,8 +6,6 @@ package WWW::Facebook::API::FQL;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 # always return an array reference. The value returned by Facebook is a hash
 # reference when there are no results, so this shouldn't be a problem.
@@ -24,10 +20,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::FQL - Facebook Query Language
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::FQL version 0.4.14
 
 =head1 SYNOPSIS
 

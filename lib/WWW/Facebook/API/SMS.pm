@@ -1,10 +1,11 @@
+#######################################################################
+# ex: set ts=8 sw=4 et
+#########################################################################
 package WWW::Facebook::API::SMS;
 
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub can_send {
     return shift->base->call( 'sms.canSend', @_ );
@@ -20,10 +21,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::SMS - Facebook SMS
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::SMS version 0.4.14
 
 =head1 SYNOPSIS
 

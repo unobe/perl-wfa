@@ -1,7 +1,4 @@
 #######################################################################
-# $Date: 2007-05-28T14:18:18.679359Z $
-# $Revision: 1508 $
-# $Author: unobe $
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Marketplace;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Marketplace;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub get_categories {
     return shift->base->call( 'marketplace.getCategories', @_ );
@@ -43,10 +38,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Marketplace - Facebook Marketplace
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Marketplace version 0.4.14
 
 =head1 SYNOPSIS
 

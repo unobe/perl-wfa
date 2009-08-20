@@ -1,7 +1,4 @@
 #######################################################################
-# $Date$
-# $Revision$
-# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Events;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Events;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub get         { return shift->base->call( 'events.get',        @_ ) }
 sub get_members { return shift->base->call( 'events.getMembers', @_ ) }
@@ -21,10 +16,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Events - Facebook Events
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Events version 0.4.14
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,4 @@
 #######################################################################
-# $Date$
-# $Revision$
-# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Auth;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Auth;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 use Readonly;
 Readonly my $DEFAULT_SLEEP => 15;
@@ -123,10 +118,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Auth - Facebook Authentication
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Auth version 0.4.14
 
 =head1 SYNOPSIS
 

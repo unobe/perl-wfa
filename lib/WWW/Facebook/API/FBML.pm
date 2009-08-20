@@ -4,8 +4,6 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.14');
-
 sub refresh_img_src { return shift->base->call( 'fbml.refreshImgSrc', @_ ) }
 sub refresh_ref_url { return shift->base->call( 'fbml.refreshRefUrl', @_ ) }
 sub set_ref_handle  { return shift->base->call( 'fbml.setRefHandle',  @_ ) }
@@ -20,10 +18,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::FBML - Facebook Markup Language
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::FBML version 0.4.14
 
 =head1 SYNOPSIS
 

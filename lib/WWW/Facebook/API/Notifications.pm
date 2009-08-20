@@ -1,7 +1,4 @@
 #######################################################################
-# $Date$
-# $Revision$
-# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Notifications;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Notifications;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub get  { return shift->base->call( 'notifications.get',  @_ ) }
 sub send { return shift->base->call( 'notifications.send', @_ ) } ## no critic
@@ -22,10 +17,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Notifications - Facebook Notifications
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Notifications version 0.4.14
 
 =head1 SYNOPSIS
 

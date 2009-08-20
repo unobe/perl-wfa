@@ -1,7 +1,4 @@
 #########################################################################
-# $Date$
-# $Revision$
-# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API;
@@ -10,7 +7,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.14');
+use version; our $VERSION = qv('0.4.15');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -512,7 +509,8 @@ WWW::Facebook::API - Facebook API implementation
 
 =head1 VERSION
 
-This document describes WWW::Facebook::API version 0.4.13
+This document and others distributed with this module describe
+WWW::Facebook::API version 0.4.15
 
 =head1 SYNOPSIS
 

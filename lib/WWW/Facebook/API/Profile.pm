@@ -1,7 +1,4 @@
 #######################################################################
-# $Date: 2007-05-28T14:18:18.679359Z $
-# $Revision: 1508 $
-# $Author: unobe $
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Profile;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Profile;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub set_fbml { return shift->base->call( 'profile.setFBML', @_ ) }
 sub get_fbml { return shift->base->call( 'profile.getFBML', @_ ) }
@@ -31,10 +26,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Profile - Facebook Profile
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Profile version 0.4.14
 
 =head1 SYNOPSIS
 

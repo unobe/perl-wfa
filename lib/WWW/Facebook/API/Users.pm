@@ -1,7 +1,4 @@
 #######################################################################
-# $Date$
-# $Revision$
-# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Users;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Users;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub get_info { return shift->base->call( 'users.getInfo', @_ ); }
 
@@ -42,10 +37,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Users - Facebook Users
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Users version 0.4.14
 
 =head1 SYNOPSIS
 

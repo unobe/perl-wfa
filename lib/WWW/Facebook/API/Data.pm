@@ -1,7 +1,4 @@
 #######################################################################
-# $Date$
-# $Revision$
-# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Data;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Data;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 sub get_cookies { return shift->base->call( 'data.getCookies', @_ ); }
 sub set_cookie  { return shift->base->call( 'data.setCookie',  @_ ); }
@@ -21,10 +16,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Data - Facebook Data
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Data version 0.4.14
 
 =head1 SYNOPSIS
 
