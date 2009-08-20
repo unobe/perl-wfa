@@ -1,7 +1,4 @@
 #######################################################################
-# $Date: 2007-05-28T14:18:18.679359Z $
-# $Revision: 1508 $
-# $Author: unobe $
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Feed;
@@ -85,8 +82,8 @@ Constructor.
 =item publish_user_action( %params )
 
 
-The feed.publishUserAction method of the Facebook API. C<template_bundle_id> is the only
-parameter required.
+The feed.publishUserAction method of the Facebook API. C<template_bundle_id>
+and C<template_data> are the only parameters required.
 
 
     $client->feed->publish_user_action(
