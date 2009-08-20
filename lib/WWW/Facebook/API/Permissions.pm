@@ -8,20 +8,32 @@ use strict;
 
 use Carp;
 
+sub begin {
+    my $self = shift;
+    shift; # get rid of hash key
+    $self->base->call_as_api_key(shift);
+    return;
+}
+
+sub end {
+    shift->base->call_as_api_key(q{});
+    return;
+}
+
 sub grant_api_access {
-    return shift->base->call( 'Permissions.grantApiAccess', @_ );
+    return shift->base->call( 'permissions.grantApiAccess', @_ );
 }
 
 sub check_available_api_access {
-    return shift->base->call( 'Permissions.checkAvailableApiAccess', @_ );
+    return shift->base->call( 'permissions.checkAvailableApiAccess', @_ );
 }
 
 sub revoke_api_access {
-	return shift->base->call( 'Permissions.revokeApiAccess', @_ );
+	return shift->base->call( 'permissions.revokeApiAccess', @_ );
 }
 
 sub check_granted_api_access {
-	return shift->base->call( 'Permissions.checkGrantedApiAccess', @_ );
+	return shift->base->call( 'permissions.checkGrantedApiAccess', @_ );
 }
 
 1;    # Magic true value required at end of module
@@ -51,6 +63,24 @@ Methods for accessing Permissions functions with L<WWW::Facebook::API>
 =head1 SUBROUTINES/METHODS
 
 =over
+
+=item begin($call_as_apikey)
+
+Mimics C<begin_permissions_mode> of official PHP API. Successive calls will
+automatically insert the C<call_as_apikey> key and whatever value is passed in
+as <$call_as_apikey>.
+
+    $client->permissions->begin(
+        call_as_apikey => $key,
+    );
+
+=item end
+
+Mimics C<end_permissions_mode> of official PHP API. Opposite of C<begin>.
+
+    $client->permissions->end(
+        call_as_apikey => $key,
+    );
 
 =item grant_api_access
 
