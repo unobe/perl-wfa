@@ -1,7 +1,16 @@
 Revision history for WWW-Facebook-API
 
-HEAD    Sun Oct 19 20:09:16 PDT 2008
+HEAD    Fri Aug 21 22:26:44 PDT 2009
 	Updated POD and formatting (for Perl::Critic) (gregor herrmann)++
+	Added new namespaces that are now a part of Facebook API along with
+	  basic tests
+	Added documentation for all namespaces in API.pm
+	Deleted deprecated namespaces and methods
+	Added begin and end methods to start and finish permissions mode in
+	  Permissions.pm
+        Changed formatting and removed versioning information. Versioning
+	  information is no longer specific to each submodule, but to the
+	  distribution
 
 0.4.14  Tue Oct 14 22:37;41 EDT 2008
 	Added Application,Admin,SMS APIs + tests (tburke++)
