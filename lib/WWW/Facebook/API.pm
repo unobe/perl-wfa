@@ -19,14 +19,14 @@ use CGI::Util qw(escape);
 our @namespaces = qw(
     Admin           Application     Auth
     Canvas          Comments        Connect
-    Data            Events          Feed
-    FBML            Feed            FQL
-    Friends         Groups          Intl
-    Links           LiveMessage     Message
-    Notes           Notifications   Pages
-    Permissions     Photos          Profile
-    SMS             Status          Stream
-    Users           Video
+    Data            Events          FBML
+    Feed            FQL             Friends
+    Groups          Intl            Links
+    LiveMessage     Message         Notes
+    Notifications   Pages           Permissions
+    Photos          Profile         SMS
+    Status          Stream          Users
+    Video
 );
 
 for (@namespaces) {
@@ -663,6 +663,14 @@ Work with the canvas. See L<WWW::Facebook::API::Canvas>.
     $response = $client->canvas->in_fb_canvas( $q )
     $response = $client->canvas->in_frame( $q )
 
+=item comments
+
+comments namespace of the API (See L<WWW::Facebook::API::Comments>).
+
+=item connect
+
+connect namespace of the API (See L<WWW::Facebook::API::Connect>).
+
 =item data
 
 data namespace of the API (See L<WWW::Facebook::API::Data>).
@@ -697,13 +705,6 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
     $response = $client->fbml->refresh_img_src( url => '');
     $response = $client->fbml->refresh_ref_url( url => '');
 
-=item fql
-
-fql namespace of the API (See L<WWW::Facebook::API::FQL>):
-
-    $response = $client->fql->query( query => 'FQL query' );
-
-
 =item feed
 
 feed namespace of the API (See L<WWW::Facebook::API::Feed>).
@@ -728,6 +729,12 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
             ...
     );
 
+=item fql
+
+fql namespace of the API (See L<WWW::Facebook::API::FQL>):
+
+    $response = $client->fql->query( query => 'FQL query' );
+
 =item friends
 
 friends namespace of the API (See L<WWW::Facebook::API::Friends>).
@@ -746,6 +753,26 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
     $response = $client->groups->get( uid => 234324, gids => [2423,334] );
     $response = $client->groups->get_members( gid => 32 );
+
+=item intl
+
+intl namespace of the API (See L<WWW::Facebook::API::Intl>).
+
+=item links
+
+links namespace of the API (See L<WWW::Facebook::API::Links>).
+
+=item livemesssage
+
+liveMesssage namespace of the API (See L<WWW::Facebook::API::LiveMesssage>).
+
+=item message
+
+message namespace of the API (See L<WWW::Facebook::API::Message>).
+
+=item notes
+
+notes namespace of the API (See L<WWW::Facebook::API::Notes>).
 
 =item notifications
 
@@ -778,6 +805,10 @@ method names from the Facebook API are lower_cased instead of CamelCase:
     $page_added_app = $client->pages->is_app_added( page_id => 'page' );
     $is_admin = $client->pages->is_admin( page_id => 'page' );
     $is_fan = $client->pages->is_fan( page_id => 'page', uid => 'uid' )
+
+=item permissions
+
+permissions namespace of the API (See L<WWW::Facebook::API::Permissions>).
 
 =item photos
 
@@ -821,6 +852,14 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
 
 sms namespace of the API (See L<WWW::Facebook::API::SMS>).
 
+=item status
+
+status namespace of the API (See L<WWW::Facebook::API::Status>).
+
+=item stream
+
+stream namespace of the API (See L<WWW::Facebook::API::Stream>).
+
 =item users
 
 users namespace of the API (See L<WWW::Facebook::API::Users>).
@@ -839,6 +878,10 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
         status => 'status message',
         clear => 1|0,
     );
+
+=item video
+
+video namespace of the API (See L<WWW::Facebook::API::Video>).
 
 =back
 
