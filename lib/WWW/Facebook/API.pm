@@ -200,8 +200,8 @@ sub call {
     my ( $response, $params, $sig, $img_data );
     $self->call_success(1);
 
-    if ( $self->base->call_as_api_key ) { 
-         $args{'call_as_api_key'} = $self->base->call_as_api_key;
+    if ( $self->call_as_api_key ) { 
+         $args{'call_as_api_key'} = $self->call_as_api_key;
     }
 
     ( $params, $img_data ) =
