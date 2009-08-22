@@ -106,7 +106,7 @@ The stream.get_comments method of the Facebook API.
 
 =item get_filters( %params )
 
-The stream.get_filters method of the Facebook API. 
+The stream.getFilters method of the Facebook API. 
 
     $client->stream->get_filters(
         uid         => $uid,
@@ -133,7 +133,7 @@ The stream.remove method of the Facebook API.
 
 =item remove_comment( %params )
 
-The stream.remove_comment method of the Facebook API. 
+The stream.removeComment method of the Facebook API. 
 
     $client->stream->remove_comment(
         comment_id      => $comment_id,
@@ -141,7 +141,7 @@ The stream.remove_comment method of the Facebook API.
 
 =item remove_like( %params )
 
-The stream.remove_like method of the Facebook API. 
+The stream.removeLike method of the Facebook API. 
 
     $client->stream->remove_like(
         post_id      => $post_id,
