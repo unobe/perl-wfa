@@ -90,9 +90,9 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-David Romano  C<< <unobe@cpan.org> >>
-
 Thomas Burke  C<< <tburke@cpan.org> >>
+
+David Romano  C<< <unobe@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
