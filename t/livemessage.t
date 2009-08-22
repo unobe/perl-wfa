@@ -12,4 +12,4 @@ my $api = WWW::Facebook::API->new( app_path => 'test' );
     no warnings 'redefine';
     *WWW::Facebook::API::call = sub { shift; return [@_] };
 }
-is_deeply $api->LiveMessage->get, ['liveMessage.send'], 'send calls correctly';
+is_deeply $api->livemessage->send, ['liveMessage.send'], 'send calls correctly';
