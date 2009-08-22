@@ -15,5 +15,5 @@ my $api = WWW::Facebook::API->new( app_path => 'test' );
 
 is_deeply $api->video->get_upload_limits,
 ['video.getUploadLimits'], 'get_upload_limits calls correctly';
-is_deeply $api->video->has_app_permission,
+is_deeply $api->video->upload,
 ['video.upload'], 'upload calls correctly';

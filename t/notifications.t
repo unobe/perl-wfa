@@ -19,5 +19,5 @@ is_deeply $api->notifications->mark_read, ['notifications.markRead'],
     'mark_read calls correctly';
 is_deeply $api->notifications->send, ['notifications.send'],
     'send calls correctly';
-is_deeply $api->notifications->send_email, ['notifications.send_email'],
+is_deeply $api->notifications->send_email, ['notifications.sendEmail'],
     'send_email calls correctly';

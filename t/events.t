@@ -9,15 +9,6 @@ use warnings;
 
 my $api = WWW::Facebook::API->new( app_path => 'test' );
 
-my $events = $api->events->get;
-is ref $events, 'ARRAY', 'get returns array ref';
-
-SKIP: {
-    skip 'No events to get members from' => 1 unless $events->[0]->{'eid'};
-    is keys %{$api->events->get_members(eid => $events->[0]->{'eid'})}, 4,
-    'four lists, as per API';
-}
-
 # at least show the right method is being called.
 {
     no warnings 'redefine';
@@ -35,4 +26,4 @@ is_deeply $api->events->rsvp,
 is_deeply $api->events->get,
 ['events.get'], 'get calls correctly';
 is_deeply $api->events->get_members,
-['events.get_members'], 'get_members calls correctly';
+['events.getMembers'], 'get_members calls correctly';

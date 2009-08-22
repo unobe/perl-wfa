@@ -7,17 +7,8 @@ use warnings;
 use strict;
 use Carp;
 
-sub get {
-    my $self = shift;
-    $self->base->call( 'status.get',
-                       session_key => $self->base->session_key,
-                       @_
-    );
-}
-
-sub set {
-    return shift->base->call( 'status.set', @_ );
-}
+sub get { return shift->base->call( 'status.get', @_ ); }
+sub set { return shift->base->call( 'status.set', @_ ); }
 
 1;
 __END__
