@@ -7,6 +7,10 @@ use warnings;
 use strict;
 use Carp;
 
+sub cancel      { return shift->base->call( 'events.cancel',     @_ ) }
+sub create      { return shift->base->call( 'events.create',     @_ ) }
+sub edit        { return shift->base->call( 'events.edit',       @_ ) }
+sub rsvp        { return shift->base->call( 'events.rsvp',       @_ ) }
 sub get         { return shift->base->call( 'events.get',        @_ ) }
 sub get_members { return shift->base->call( 'events.getMembers', @_ ) }
 
@@ -37,6 +41,38 @@ Returns the L<WWW::Facebook::API> base object.
 =item new
 
 Constructor.
+
+=item cancel( %params )
+
+The events.cancel method of the Facebook API:
+
+    $response = $client->events->cancel(
+        eid => $eid,
+        cancel_message => $message,
+    );
+
+=item create( %params )
+
+The events.create method of the Facebook API:
+
+    $response = $client->events->create(
+        event_info => $json,
+    );
+
+=item edit( %params )
+
+The events.edit method of the Facebook API:
+
+    $response = $client->events->edit( eid => $eid );
+
+=item rsvp( %params )
+
+The events.rsvp method of the Facebook API:
+
+    $response = $client->events->rsvp(
+        eid => $eid,
+        rsvp_status => 'attending|unsure|declined|not_replied',
+    );
 
 =item get( %params )
 

@@ -1,22 +1,11 @@
 #######################################################################
-# $Date: 2007-06-28 13:05:21 -0700 (Thu, 28 Jun 2007) $
-# $Revision: 120 $
-# $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More;
+use Test::More tests => 6;
 use WWW::Facebook::API;
 use strict;
 use warnings;
 
-BEGIN {
-    if ( 3 != grep defined,
-        @ENV{qw/WFA_API_KEY_TEST WFA_SECRET_TEST WFA_SESSION_KEY_TEST/} )
-    {
-        plan skip_all => 'Live tests require API key, secret, and session';
-    }
-    plan tests => 2;
-}
 
 my $api = WWW::Facebook::API->new( app_path => 'test' );
 
@@ -28,3 +17,22 @@ SKIP: {
     is keys %{$api->events->get_members(eid => $events->[0]->{'eid'})}, 4,
     'four lists, as per API';
 }
+
+# at least show the right method is being called.
+{
+    no warnings 'redefine';
+    *WWW::Facebook::API::call = sub { shift; return [@_] };
+}
+
+is_deeply $api->events->cancel,
+['events.cancel'], 'cancel calls correctly';
+is_deeply $api->events->create,
+['events.create'], 'create calls correctly';
+is_deeply $api->events->edit,
+['events.edit'], 'edit calls correctly';
+is_deeply $api->events->rsvp,
+['events.rsvp'], 'rsvp calls correctly';
+is_deeply $api->events->get,
+['events.get'], 'get calls correctly';
+is_deeply $api->events->get_members,
+['events.get_members'], 'get_members calls correctly';
