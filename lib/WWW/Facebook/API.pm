@@ -17,16 +17,16 @@ use CGI;
 use CGI::Util qw(escape);
 
 our @namespaces = qw(
-    Admin           Auth            Canvas
-    Comments        Connect         Data
-    Events          Feed            FBML
-    Feed            FQL             Friends
-    Groups          Intl            Links
-    LiveMessage     Message         Notes
-    Notifications   Pages           Permissions
-    Photos          Profile         SMS
-    Status          Stream          Users
-    Video
+    Admin           Application     Auth
+    Canvas          Comments        Connect
+    Data            Events          Feed
+    FBML            Feed            FQL
+    Friends         Groups          Intl
+    Links           LiveMessage     Message
+    Notes           Notifications   Pages
+    Permissions     Photos          Profile
+    SMS             Status          Stream
+    Users           Video
 );
 
 for (@namespaces) {
@@ -764,37 +764,9 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
         fbml  => 'fbml version of email body',
     );
 
-=item marketplace
-
-marketplace namespace of the API (See L<WWW::Facebook::API::Marketplace>).
-All method names from the Facebook API are lower_cased instead of CamelCase:
-
-    $categories = $client->marketplace->get_categories;
-    $subcats = $client->marketplace->get_subcategories(
-        category => 'category',
-    );
-    $listings_response = $client->marketplace->get_listings(
-        listing_ids => [@listing_ids],
-        uids => [@uids],
-    );
-    $response = $client->marketplace->search(
-        category => 'category',
-        subcategory => 'subcategory',
-        query => 'query',
-    );
-    $listing_id = $client->marketplace->create_listing(
-        listing_id => 0|existing_id,
-        show_on_profile => 0|1,
-        listing_attrs => 'JSON',
-    );
-    $success = $client->marketplace->remove_listing(
-        listing_id => 'id',
-        status => 'SUCCESS|NOT_SUCCESS|DEFAULT',
-    );
-
 =item pages
 
-pages namespace of the API (See L<WWW::Facebook::API::Marketplace>). All
+pages namespace of the API (See L<WWW::Facebook::API::Pages>). All
 method names from the Facebook API are lower_cased instead of CamelCase:
 
     $response = $client->pages->get_info(
@@ -862,7 +834,7 @@ All method names from the Facebook API are lower_cased instead of CamelCase:
     $response = $client->users->has_app_permission(
         ext_perm => 'status_update|photo_upload'
     );
-    $app_added = $client->users->is_app_added;
+    $app_added = $client->users->is_app_user;
     $response = $client->users->set_status(
         status => 'status message',
         clear => 1|0,
