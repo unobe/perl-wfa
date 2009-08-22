@@ -92,8 +92,6 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-Herman Polloni C<< <hpolloni@gmail.com> >>
-
 David Romano  C<< <unobe@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
