@@ -9,10 +9,8 @@ use Carp;
 
 # always return an array reference. The value returned by Facebook is a hash
 # reference when there are no results, so this shouldn't be a problem.
-sub query {
-    my $self = shift;
-    return $self->base->call( 'fql.query', @_ );
-}
+sub query { return shift->base->call( 'fql.query', @_ ); }
+sub multiquery { return shift->base->call( 'fql.multiquery', @_ ); }
 
 1;    # Magic true value required at end of module
 __END__
@@ -46,6 +44,19 @@ Constructor.
 The fql.query method of the Facebook API:
 
     $response = $client->fql->query( query => 'FQL query' );
+
+Returns nothing if no result returned from Facebook.
+
+=item multiquery( %params )
+
+The fql.multiquery method of the Facebook API:
+
+    $response = $client->fql->multiquery(
+                queries => [
+                    'FQL QUERY LANGUAGE #1',
+                    'FQL QUERY LANGUAGE #2',
+                    ...]
+    );
 
 Returns nothing if no result returned from Facebook.
 
