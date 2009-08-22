@@ -18,11 +18,12 @@ WriteMakefile(
         'LWP::UserAgent'    => 0,
         'Readonly'          => 0,
     },
-    EXTRA_META          => <<'META',
-resources:
-    license:   http://dev.perl.org/licenses/
-    repository: http://github.com/unobe/perl-wfa/
-META
+    META_MERGE          => {
+        resources => {
+            license    => 'http://dev.perl.org/licenses/',
+            repository => 'http://github.com/unobe/perl-wfa/',
+        }
+    },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'WWW-Facebook-API-*' },
 );

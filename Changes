@@ -1,6 +1,6 @@
 Revision history for WWW-Facebook-API
 
-HEAD    Fri Aug 21 22:26:44 PDT 2009
+0.4.15  Fri Aug 21 22:26:44 PDT 2009
 	Updated POD and formatting (for Perl::Critic) (gregor herrmann)++
 	Added new namespaces that are now a part of Facebook API along with
 	  basic tests

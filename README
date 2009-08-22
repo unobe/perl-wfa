@@ -2,7 +2,8 @@ NAME
     WWW::Facebook::API - Facebook API implementation
 
 VERSION
-    This document describes WWW::Facebook::API version 0.4.13
+    This document and others distributed with this module describe
+    WWW::Facebook::API version 0.4.15
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -95,6 +96,13 @@ NAMESPACE METHODS
     All method names from the Facebook API are lower_cased instead of
     CamelCase.
 
+    admin
+        admin namespace of the API (See WWW::Facebook::API::Admin).
+
+    application
+        application namespace of the API (See
+        WWW::Facebook::API::Application).
+
     auth
         For desktop apps, these are synonymous:
 
@@ -129,6 +137,12 @@ NAMESPACE METHODS
             $response = $client->canvas->in_fb_canvas( $q )
             $response = $client->canvas->in_frame( $q )
 
+    comments
+        comments namespace of the API (See WWW::Facebook::API::Comments).
+
+    connect
+        connect namespace of the API (See WWW::Facebook::API::Connect).
+
     data
         data namespace of the API (See WWW::Facebook::API::Data). All method
         names from the Facebook API are lower_cased instead of CamelCase:
@@ -161,10 +175,6 @@ NAMESPACE METHODS
             $response = $client->fbml->refresh_img_src( url => '');
             $response = $client->fbml->refresh_ref_url( url => '');
 
-    fql fql namespace of the API (See WWW::Facebook::API::FQL):
-
-            $response = $client->fql->query( query => 'FQL query' );
-
     feed
         feed namespace of the API (See WWW::Facebook::API::Feed). All method
         names from the Facebook API are lower_cased instead of CamelCase:
@@ -188,6 +198,10 @@ NAMESPACE METHODS
                     ...
             );
 
+    fql fql namespace of the API (See WWW::Facebook::API::FQL):
+
+            $response = $client->fql->query( query => 'FQL query' );
+
     friends
         friends namespace of the API (See WWW::Facebook::API::Friends). All
         method names from the Facebook API are lower_cased instead of
@@ -207,6 +221,22 @@ NAMESPACE METHODS
             $response = $client->groups->get( uid => 234324, gids => [2423,334] );
             $response = $client->groups->get_members( gid => 32 );
 
+    intl
+        intl namespace of the API (See WWW::Facebook::API::Intl).
+
+    links
+        links namespace of the API (See WWW::Facebook::API::Links).
+
+    livemesssage
+        liveMesssage namespace of the API (See
+        WWW::Facebook::API::LiveMesssage).
+
+    message
+        message namespace of the API (See WWW::Facebook::API::Message).
+
+    notes
+        notes namespace of the API (See WWW::Facebook::API::Notes).
+
     notifications
         notifications namespace of the API (See
         WWW::Facebook::API::Notifications). All method names from the
@@ -224,37 +254,9 @@ NAMESPACE METHODS
                 fbml  => 'fbml version of email body',
             );
 
-    marketplace
-        marketplace namespace of the API (See
-        WWW::Facebook::API::Marketplace). All method names from the Facebook
-        API are lower_cased instead of CamelCase:
-
-            $categories = $client->marketplace->get_categories;
-            $subcats = $client->marketplace->get_subcategories(
-                category => 'category',
-            );
-            $listings_response = $client->marketplace->get_listings(
-                listing_ids => [@listing_ids],
-                uids => [@uids],
-            );
-            $response = $client->marketplace->search(
-                category => 'category',
-                subcategory => 'subcategory',
-                query => 'query',
-            );
-            $listing_id = $client->marketplace->create_listing(
-                listing_id => 0|existing_id,
-                show_on_profile => 0|1,
-                listing_attrs => 'JSON',
-            );
-            $success = $client->marketplace->remove_listing(
-                listing_id => 'id',
-                status => 'SUCCESS|NOT_SUCCESS|DEFAULT',
-            );
-
     pages
-        pages namespace of the API (See WWW::Facebook::API::Marketplace).
-        All method names from the Facebook API are lower_cased instead of
+        pages namespace of the API (See WWW::Facebook::API::Pages). All
+        method names from the Facebook API are lower_cased instead of
         CamelCase:
 
             $response = $client->pages->get_info(
@@ -266,6 +268,10 @@ NAMESPACE METHODS
             $page_added_app = $client->pages->is_app_added( page_id => 'page' );
             $is_admin = $client->pages->is_admin( page_id => 'page' );
             $is_fan = $client->pages->is_fan( page_id => 'page', uid => 'uid' )
+
+    permissions
+        permissions namespace of the API (See
+        WWW::Facebook::API::Permissions).
 
     photos
         photos namespace of the API (See WWW::Facebook::API::Photos). All
@@ -305,6 +311,14 @@ NAMESPACE METHODS
                 mobile_profile => 'markup',
             );
 
+    sms sms namespace of the API (See WWW::Facebook::API::SMS).
+
+    status
+        status namespace of the API (See WWW::Facebook::API::Status).
+
+    stream
+        stream namespace of the API (See WWW::Facebook::API::Stream).
+
     users
         users namespace of the API (See WWW::Facebook::API::Users). All
         method names from the Facebook API are lower_cased instead of
@@ -318,11 +332,14 @@ NAMESPACE METHODS
             $response = $client->users->has_app_permission(
                 ext_perm => 'status_update|photo_upload'
             );
-            $app_added = $client->users->is_app_added;
+            $app_added = $client->users->is_app_user;
             $response = $client->users->set_status(
                 status => 'status message',
                 clear => 1|0,
             );
+
+    video
+        video namespace of the API (See WWW::Facebook::API::Video).
 
 ATTRIBUTE METHODS
     These are methods to get/set the object's attributes.
