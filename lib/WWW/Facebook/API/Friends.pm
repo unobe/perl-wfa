@@ -11,6 +11,7 @@ sub get           { return shift->base->call( 'friends.get',         @_ ) }
 sub get_app_users { return shift->base->call( 'friends.getAppUsers', @_ ) }
 sub are_friends   { return shift->base->call( 'friends.areFriends',  @_ ) }
 sub get_lists     { return shift->base->call( 'friends.getLists',    @_ ) }
+sub get_mutual_friends { return shift->base->call( 'friends.getMutualFriends',    @_ ) }
 
 1;    # Magic true value required at end of module
 __END__
@@ -67,6 +68,15 @@ See the Facebook API Documentation for more information.
 The friends.getLists method of the Facebook API:
 
     $response = $client->friends->get_lists;
+
+=item get_mutual_friends( %params )
+
+The friends.getMutualFriends method of the Facebook API:
+
+    $response = $client->friends->get_mutual_friends(
+        target_uid => $target_uid,
+        source_uid => $source_uid,
+    );
 
 =back
 

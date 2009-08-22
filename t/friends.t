@@ -1,10 +1,7 @@
 #######################################################################
-# $Date: 2007-06-28 13:05:21 -0700 (Thu, 28 Jun 2007) $
-# $Revision: 120 $
-# $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 4;
+use Test::More tests => 5;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -24,3 +21,6 @@ is_deeply $api->friends->are_friends( uids1 => 'a', uids2 => 'b' ),
 is_deeply $api->friends->get_lists( flid => '223324' ),
     [ 'friends.getLists', flid => '223324' ],
     'get_lists calls correctly';
+is_deeply $api->friends->get_mutual_friends( target_id => '223324' ),
+    [ 'friends.getMutualFriends', target_id => '223324' ],
+    'get_mutual_friends calls correctly';
