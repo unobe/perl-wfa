@@ -7,6 +7,9 @@ use warnings;
 use strict;
 use Carp;
 
+sub delete_custom_tags { return shift->base->call( 'fbml.deleteCustomTags', @_ ) }
+sub get_custom_tags { return shift->base->call( 'fbml.getCustomTags', @_ ) }
+sub register_custom_tags { return shift->base->call( 'fbml.registerCustomTags', @_ ) }
 sub refresh_img_src { return shift->base->call( 'fbml.refreshImgSrc', @_ ) }
 sub refresh_ref_url { return shift->base->call( 'fbml.refreshRefUrl', @_ ) }
 sub set_ref_handle  { return shift->base->call( 'fbml.setRefHandle',  @_ ) }
@@ -41,6 +44,18 @@ Returns the L<WWW::Facebook::API> base object.
 =item new
 
 Constructor.
+
+=item delete_custom_tags( names => [@tag_names] )
+
+The fbml.deleteCustomTags method of the Facebook API.
+
+=item get_custom_tags( app_id => $id )
+
+The fbml.getCustomTags method of the Facebook API.
+
+=item register_custom_tags( tags => [@json_tags] )
+
+The fbml.registerCustomTags method of the Facebook API. 
 
 =item set_ref_handle( handle => 'handleName', fbml => 'fbml' )
 
