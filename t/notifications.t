@@ -1,10 +1,7 @@
 #######################################################################
-# $Date: 2007-06-28 13:05:21 -0700 (Thu, 28 Jun 2007) $
-# $Revision: 120 $
-# $Author: david.romano $
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 1;
+use Test::More tests => 5;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -17,5 +14,10 @@ my $api = WWW::Facebook::API->new( app_path => 'test' );
 }
 
 is_deeply $api->notifications->get, ['notifications.get'], 'get calls correctly';
-# send
-# send_request
+is_deeply $api->notifications->get_list, ['notifications.getList'], 'get_list calls correctly';
+is_deeply $api->notifications->mark_read, ['notifications.markRead'],
+    'mark_read calls correctly';
+is_deeply $api->notifications->send, ['notifications.send'],
+    'send calls correctly';
+is_deeply $api->notifications->send_email, ['notifications.send_email'],
+    'send_email calls correctly';

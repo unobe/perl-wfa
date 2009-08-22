@@ -10,6 +10,8 @@ use Carp;
 sub get  { return shift->base->call( 'notifications.get',  @_ ) }
 sub send { return shift->base->call( 'notifications.send', @_ ) } ## no critic
 sub send_email { return shift->base->call( 'notifications.sendEmail', @_ ); }
+sub get_list { return shift->base->call( 'notifications.getList', @_ ); }
+sub mark_read { return shift->base->call( 'notifications.markRead', @_ ); }
 
 1;    # Magic true value required at end of module
 __END__
@@ -62,6 +64,20 @@ The notifications.sendEmail method of the Facebook API:
         subject => 'subject',
         text => 'text version of email body',
         fbml  => 'fbml version of email body',
+    );
+
+=item get_list( %params )
+
+The notifications.getList method of the Facebook API:
+
+    $response = $client->notifications->get_list();
+
+=item mark_read( %params )
+
+The notifications.markRead method of the Facebook API:
+
+    $response = $client->notifications->mark_read(
+        notification_ids => [@notification_ids],
     );
 
 =back
