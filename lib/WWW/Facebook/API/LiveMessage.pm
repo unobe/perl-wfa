@@ -46,6 +46,8 @@ The liveMessage.send method of the Facebook API:
         message => $message,
     );
 
+=back
+
 =head1 DIAGNOSTICS
 
 None.
