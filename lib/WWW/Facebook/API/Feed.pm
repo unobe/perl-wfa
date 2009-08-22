@@ -28,18 +28,6 @@ sub get_registered_template_bundle {
     return shift->base->call( $method, @_ );
 }
 
-sub publish_story_to_user {
-    my $self = shift;
-    carp 'publish_story_to_user is deprecated' if $self->base->debug;
-    return $self->base->call( 'feed.publishStoryToUser', @_ );
-}
-
-sub publish_action_of_user {
-    my $self = shift;
-    carp 'publish_action_of_user is deprecated' if $self->base->debug;
-    return $self->base->call( 'feed.publishActionOfUser', @_ );
-}
-
 sub publish_templatized_action {
     return shift->base->call( 'feed.publishTemplatizedAction', @_ );
 }
@@ -110,8 +98,8 @@ http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
 
 =item deactivate_template_bundle( %params )
 
-The feed.deactivateTemplateBundle method of the Facebook API. C<template_bundle_id> is the only
-parameter required.
+The feed.deactivateTemplateBundleById method of the Facebook API.
+C<template_bundle_id> is the only parameter required.
 
 
     $client->feed->deactivate_template_bundle(
@@ -149,49 +137,6 @@ C<title_template> are required parameters.
         image_4         => 'image url',
         image_4_link    => 'destination url',
         target_ids      => [@array_of_ids],
-    );
-
-=back
-
-=head1 DEPRECATED SUBROUTINES/METHODS
-
-=over
-
-=item publish_story_to_user( %params )
-
-The feed.publishStoryToUser method of the Facebook API. C<title> is the only
-parameter required.
-
-    $client->feed->publish_story_to_user(
-        title           => 'title',
-        body            => 'markup',
-        image_1         => 'image url',
-        image_1_link    => 'destination url',
-        image_2         => 'image url',
-        image_2_link    => 'destination url',
-        image_3         => 'image url',
-        image_3_link    => 'destination url',
-        image_4         => 'image url',
-        image_4_link    => 'destination url',
-        priority        => '100',
-    );
-
-=item publish_action_of_user( %params )
-
-The feed.publishActionOfUser method of the Facebook API. C<title> is the only
-parameter required.
-
-    $client->feed->publish_action_of_user(
-        title           => 'title',
-        body            => 'markup',
-        image_1         => 'image url',
-        image_1_link    => 'destination url',
-        image_2         => 'image url',
-        image_2_link    => 'destination url',
-        image_3         => 'image url',
-        image_3_link    => 'destination url',
-        image_4         => 'image url',
-        image_4_link    => 'destination url',
     );
 
 =back
