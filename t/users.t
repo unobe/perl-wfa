@@ -22,7 +22,9 @@ is_deeply $api->users->get_info,
 ['users.getInfo'], 'get_info calls correctly';
 is_deeply $api->users->has_app_permission,
 ['users.hasAppPermission'], 'has_app_permission calls correctly';
-is_deeply $api->users->is_app_added,
-['users.isAppAdded'], 'is_app_added calls correctly';
+is_deeply $api->users->is_app_user,
+['users.isAppUser'], 'is_app_user calls correctly';
 is_deeply $api->users->set_status,
 ['users.setStatus'], 'set_status calls correctly';
+is_deeply $api->users->is_verified,
+['users.isVerified'], 'is_verified calls correctly';
