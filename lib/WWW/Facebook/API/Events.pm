@@ -57,13 +57,18 @@ The events.create method of the Facebook API:
 
     $response = $client->events->create(
         event_info => $json,
+        data => $RAW_DATA,
     );
 
 =item edit( %params )
 
 The events.edit method of the Facebook API:
 
-    $response = $client->events->edit( eid => $eid );
+    $response = $client->events->edit(
+        eid => $eid,
+        event_info => $json,
+        data => $RAW_DATA,
+    );
 
 =item rsvp( %params )
 
