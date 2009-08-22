@@ -1,7 +1,7 @@
 #######################################################################
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 1;
+use Test::More tests => 2;
 use WWW::Facebook::API;
 use strict;
 use warnings;
