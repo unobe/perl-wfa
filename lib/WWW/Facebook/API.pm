@@ -16,6 +16,8 @@ use Encode qw(encode_utf8 is_utf8);
 use CGI;
 use CGI::Util qw(escape);
 
+use WWW::Facebook::API::Exception;
+
 our @namespaces = qw(
     Admin           Application     Auth
     Canvas          Comments        Connect
@@ -216,8 +218,9 @@ sub call {
     carp $self->log_string( $params, $response ) if $self->debug;
     if ( $self->_has_error_response($response) ) {
         if ( $self->throw_errors ) {
-            confess "Error during REST $method call:",
-                $self->log_string( $params, $response );
+            warn WWW::Facebook::API::Exception->new(
+                $method, $params, $response
+            );
         }
     }
 
