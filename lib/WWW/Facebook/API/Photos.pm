@@ -75,11 +75,11 @@ The photos.get method of the Facebook API:
 
     $response = $client->photos->get( subj_id => 3, aid => 2, pids => [4,7,8] );
 
-=item get_albums( uid => $uid, pids => [ @photo_ids ] )
+=item get_albums( uid => $uid, aids => [ @album_ids ] )
 
 The photos.getAlbums method of the Facebook API:
 
-    $response = $client->photos->get_albums( uid => 1, pids => [3,5] );
+    $response = $client->photos->get_albums( uid => 1, aids => [3,5] );
 
 =item get_tags( pids => [ @photo_ids ] )
 
