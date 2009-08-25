@@ -7,7 +7,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.15');
+use version; our $VERSION = qv('0.4.16');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);

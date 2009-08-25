@@ -1,5 +1,8 @@
 Revision history for WWW-Facebook-API
 
+0.4.16  Mon Aug 24 18:43:12 PDT 2009
+	Added Exception submodule for handling exceptions (Kevin Riggle)++
+
 0.4.15  Fri Aug 21 22:26:44 PDT 2009
 	Updated POD and formatting (for Perl::Critic) (gregor herrmann)++
 	Added new namespaces that are now a part of Facebook API along with

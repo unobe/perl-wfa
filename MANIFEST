@@ -12,6 +12,7 @@ lib/WWW/Facebook/API/Comments.pm
 lib/WWW/Facebook/API/Connect.pm
 lib/WWW/Facebook/API/Data.pm
 lib/WWW/Facebook/API/Events.pm
+lib/WWW/Facebook/API/Exception.pm
 lib/WWW/Facebook/API/FBML.pm
 lib/WWW/Facebook/API/Feed.pm
 lib/WWW/Facebook/API/FQL.pm

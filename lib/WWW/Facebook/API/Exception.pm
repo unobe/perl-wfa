@@ -1,7 +1,4 @@
 #########################################################################
-# $Date$
-# $Revision$
-# $Author$
 # ex: set ts=8 sw=4 et
 #########################################################################
 package WWW::Facebook::API::Exception;
@@ -9,8 +6,6 @@ package WWW::Facebook::API::Exception;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.4.14');
 
 use overload ('""' => 'stringify');
 
@@ -47,10 +42,6 @@ __END__
 =head1 NAME
 
 WWW::Facebook::API::Exception - Facebook API exception
-
-=head1 VERSION
-
-This document describes WWW::Facebook::API::Exception version 0.4.14
 
 =head1 DESCRIPTION
 
