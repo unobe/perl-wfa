@@ -11,15 +11,36 @@ sub get_fb_params {
     $self->base->query(shift);
 
     my $fb_params = {};
-    my @query = grep {m/^fb_sig_/xms} $self->base->query->param;
+	# verify - FB Connect or Native?
+	my @query = '';
+	my $api_key_pre = $self->base->api_key."_";
+	if ($self->base->query->param('fb_sig')) {
+    	@query = grep {m/^fb_sig_/xms} $self->base->query->param;
+	}
+	else {
+		@query = grep {m/^$api_key_pre/xms} $self->base->query->cookie;
+	}
+
     for my $param (@query) {
-        my @values = $self->base->query->param($param);
+		my @values = '';
+		if ($self->base->query->param('fb_sig')) {
+       		@values = $self->base->query->param($param);
+		}
+		else {
+			@values = $self->base->query->cookie($param)->value;
+		}
         if ( @values > 1 || ref $values[0] ) {
             croak "Multiple values for $param: Are you using POST for forms?";
         }
 
-        my $attribute = ( $param =~ /^fb_sig_ (.*) $/xms )[0];
-        $fb_params->{$attribute} = $self->base->query->param($param);
+		if ($self->base->query->param('fb_sig')) {
+        	my $attribute = ( $param =~ /^fb_sig_ (.*) $/xms )[0];
+        	$fb_params->{$attribute} = $self->base->query->param($param);
+		}
+		else {
+        	my $attribute = ( $param =~ /^$api_key_pre (.*) $/xms )[0];
+        	$fb_params->{$attribute} = $self->base->query->cookie($param)->value;
+		}
     }
 
     return $fb_params;
@@ -48,11 +69,11 @@ sub validate_sig {
     $self->base->query(shift);
 
     my $fb_params = $self->get_fb_params;
-    return unless $self->base->query->param('fb_sig');
+    return unless $self->base->query->param('fb_sig') || $self->base->query->cookie('fbsetting_'.$self->base->api_key)->value;
     return $fb_params
         if $self->base->verify_sig(
         params => $fb_params,
-        sig    => $self->base->query->param('fb_sig'),
+        sig    => $self->base->query->param('fb_sig') || $self->base->query->cookie('fbsetting_'.$self->base->api_key)->value,
         );
 
     return;
