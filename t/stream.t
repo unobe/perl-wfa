@@ -1,7 +1,7 @@
 #######################################################################
 # ex: set ts=8 sw=4 et
 #########################################################################
-use Test::More tests => 9;
+use Test::More tests => 10;
 use WWW::Facebook::API;
 use strict;
 use warnings;
@@ -29,6 +29,8 @@ is_deeply $api->stream->get_filters(),
 
 is_deeply $api->stream->publish(),
     [ 'stream.publish' ], 'publish calls correctly';
+is_deeply $api->stream->publish( action_links => [qw/book cow/] ),
+    [ 'stream.publish', 'action_links' => '["book","cow"]' ], 'publish with action_links calls correctly';
 
 is_deeply $api->stream->remove(),
     [ 'stream.remove' ], 'remove calls correctly';

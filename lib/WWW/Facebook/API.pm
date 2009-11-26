@@ -1426,7 +1426,7 @@ Jim Spath C<< <jspath@gmail.com> >>
 
 Kevin Riggle C<< none >>
 
-King Mak C<< none >>
+Larry Mak C<< none >>
 
 Louis-Philippe C<< none >>
 
