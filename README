@@ -644,10 +644,10 @@ PRIVATE METHODS
     _format_and_check_params( $method, %args )
         Format method parameters (given in %args) according to Facebook API
         specification. Returns a list of items: A hash reference of the
-        newly formatted params (based on %params) and the image data if the
-        call is an photo upload:
+        newly formatted params (based on %params) and the raw data (and
+        filename, if passed in) if the call is a photo or video upload:
 
-            ($params, $img_data) = $self->_format_and_check_params( $method, %args );
+            ($params, $raw_data, $filename) = $self->_format_and_check_params( $method, %args );
 
     _has_error_response( $response )
         Determines if the response is an error, and logs it appropriately.
@@ -657,9 +657,10 @@ PRIVATE METHODS
         Determines if the response is an empty hash or array reference.
         Returns true if the response is empty, false otherwise.
 
-    _post_request( $params_hashref, $sig, $img_data )
+    _post_request( $params_hashref, $sig, $raw_data, $filename )
         Used by "call" to post the request to the REST server and return the
-        response. $img_data is used when uploading an photo to Facebook.
+        response. $raw_data and $filename are used when uploading a photo or
+        video to Facebook.
 
     _parse($string)
         Parses the response from a call to the Facebook server to make it a
@@ -779,15 +780,23 @@ AUTHOR
     David Romano "<unobe@cpan.org>"
 
 CONTRIBUTORS
+    Anthony Bouvier "none"
+
     Clayton Scott "http://www.matrix.ca"
 
     David Leadbeater "http://dgl.cx"
+
+    Derek Del Conte "derek@delconte.org"
 
     Gisle Aas "none"
 
     J. Shirley "<jshirley@gmail.com>"
 
     Jim Spath "<jspath@gmail.com>"
+
+    King Mak "none"
+
+    Louis-Philippe "none"
 
     Matt Sickler "<imMute@mail.msk3.ath.cx>"
 
@@ -808,12 +817,6 @@ CONTRIBUTORS
     Skyler Clark "none"
 
     Thomas Sibley "<tsibley@cpan.org>"
-
-    Derek Del Conte "derek@delconte.org"
-
-    King Mak "none"
-
-    Louis-Philippe "none"
 
 LICENSE AND COPYRIGHT
     Copyright (c) 2007, David Romano "<unobe@cpan.org>". All rights

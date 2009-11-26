@@ -76,7 +76,7 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 David Romano  C<< <unobe@cpan.org> >>
 
@@ -84,7 +84,7 @@ Thomas Burke  C<< <tburke@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007-2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

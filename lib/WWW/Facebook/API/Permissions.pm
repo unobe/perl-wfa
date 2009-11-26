@@ -141,7 +141,7 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Pedro Figueiredo, C<< <pedro.figueiredo at playfish.com> >>
 

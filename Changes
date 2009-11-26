@@ -1,5 +1,10 @@
 Revision history for WWW-Facebook-API
 
+0.4.17  Thu Nov 26 08:51:25 PST 2009
+	- Fixed upload method in Video along with docs (Anthony Bouvier)++
+	- Updated server call in API.pm to allow a filename to be passed in
+	  from the upload methods under Video and Photo. (Anthony Bouvier)++
+
 0.4.16  Mon Aug 24 18:43:12 PDT 2009
 	Added Exception submodule for handling exceptions (Kevin Riggle)++
 
@@ -329,4 +334,3 @@ Branch Sat Jun  2 01:40:44 PDT 2007
 
 0.0.1  Mon Aug 21 13:09:11 2006
         Initial development.
-

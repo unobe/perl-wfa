@@ -7,7 +7,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.16');
+use version; our $VERSION = qv('0.4.17');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -199,21 +199,21 @@ sub call_success {
 
 sub call {
     my ( $self, $method, %args ) = @_;
-    my ( $response, $params, $sig, $img_data );
+    my ( $response, $params, $sig, $raw_data, $filename );
     $self->call_success(1);
 
     if ( $self->call_as_apikey ) { 
          $args{'call_as_apikey'} = $self->call_as_apikey;
     }
 
-    ( $params, $img_data ) =
+    ( $params, $raw_data, $filename ) =
         $self->_format_and_check_params( $method, %args );
     $sig = $self->generate_sig(
         params => $params,
         secret => delete $params->{'secret'},
     );
 
-    $response = $self->_post_request( $params, $sig, $img_data );
+    $response = $self->_post_request( $params, $sig, $raw_data, $filename );
 
     carp $self->log_string( $params, $response ) if $self->debug;
     if ( $self->_has_error_response($response) ) {
@@ -436,7 +436,7 @@ sub _format_and_check_params {
     croak '_format_and_check_params must be called in list context!'
         if !wantarray;
 
-    return ( $params, delete $params->{'data'} );
+    return ( $params, delete $params->{'data'}, delete $params->{'filename'} );
 }
 
 sub _has_error_response {
@@ -491,16 +491,16 @@ sub _is_empty_response {
 }
 
 sub _post_request {
-    my ( $self, $params, $sig, $img_data ) = @_;
+    my ( $self, $params, $sig, $raw_data, $filename ) = @_;
 
     my $post_params = [ map { $_ => $params->{$_} } sort keys %{$params} ];
     push @{$post_params}, 'sig' => $sig;
 
-    if ($img_data) {
+    if ($raw_data) {
         push @{$post_params}, data => [
-            undef, 'filename',
-            'Content-Type' => 'image/jpeg',
-            'Content'      => $img_data,
+            undef, ( $filename || 'filename'),
+            'Content-Type' => 'application/octet-stream',
+            'Content'      => $raw_data,
         ];
     }
     return $self->ua->post(
@@ -520,7 +520,7 @@ WWW::Facebook::API - Facebook API implementation
 =head1 VERSION
 
 This document and others distributed with this module describe
-WWW::Facebook::API version 0.4.15
+WWW::Facebook::API version 0.4.17
 
 =head1 SYNOPSIS
 
@@ -1064,7 +1064,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.13".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.17".
 
 =back
 
@@ -1238,10 +1238,10 @@ set. Uses the defaults for those values that are needed and not supplied.
 
 Format method parameters (given in C<%args>) according to Facebook API
 specification. Returns a list of items: A hash reference of the newly
-formatted params (based on C<%params>) and the image data if the call is an
-photo upload:
+formatted params (based on C<%params>) and the raw data (and filename, if
+passed in) if the call is a photo or video upload:
 
-    ($params, $img_data) = $self->_format_and_check_params( $method, %args );
+    ($params, $raw_data, $filename) = $self->_format_and_check_params( $method, %args );
 
 =item _has_error_response( $response )
 
@@ -1253,10 +1253,11 @@ true if response is an error, false otherwise.
 Determines if the response is an empty hash or array reference. Returns true
 if the response is empty, false otherwise.
 
-=item _post_request( $params_hashref, $sig, $img_data )
+=item _post_request( $params_hashref, $sig, $raw_data, $filename )
 
 Used by C<call> to post the request to the REST server and return the
-response. C<$img_data> is used when uploading an photo to Facebook.
+response. C<$raw_data> and C<$filename> are used when uploading a photo or
+video to Facebook.
 
 =item _parse($string)
 
@@ -1409,15 +1410,25 @@ David Romano  C<< <unobe@cpan.org> >>
 
 =head1 CONTRIBUTORS
 
+Anthony Bouvier C<< none >>
+
 Clayton Scott C<< http://www.matrix.ca >>
 
 David Leadbeater C<< http://dgl.cx >>
+
+Derek Del Conte C<< derek@delconte.org >>
 
 Gisle Aas C<< none >>
 
 J. Shirley C<< <jshirley@gmail.com> >>
 
 Jim Spath C<< <jspath@gmail.com> >>
+
+Kevin Riggle C<< none >>
+
+King Mak C<< none >>
+
+Louis-Philippe C<< none >>
 
 Matt Sickler C<< <imMute@mail.msk3.ath.cx> >>
 
@@ -1439,15 +1450,9 @@ Skyler Clark C<< none >>
 
 Thomas Sibley C<< <tsibley@cpan.org> >>
 
-Derek Del Conte C<< derek@delconte.org >>
-
-King Mak C<< none >>
-
-Louis-Philippe C<< none >>
-
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2007, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007-2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

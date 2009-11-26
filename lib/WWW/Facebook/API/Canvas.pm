@@ -232,15 +232,16 @@ Please report any bugs or feature requests to
 C<bug-www-facebook-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 David Leadbeater  C<< http://dgl.cx >>
+
 David Romano  C<< <unobe@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2007, David Leadbeater C<< http://dgl.cx >>.
-David Romano C<< <unobe@cpan.org> >>. All rights reserved. 
+Certain parts copyright (c) 2007-2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved. 
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

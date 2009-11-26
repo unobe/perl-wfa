@@ -8,7 +8,15 @@ use strict;
 use Carp;
 
 sub get_upload_limits { return shift->base->call( 'video.getUploadLimits',  @_ ) }
-sub upload            { return shift->base->call( 'video.upload', @_ ) }
+sub upload            {
+    my $base = shift;
+
+    $base->server_uri('http://api-video.facebook.com/restserver.php');
+    my $response = $base->call( 'video.upload', format => $base->format, @_ );
+    $base->server_uri('http://api.facebook.com/restserver.php');
+
+    return $response;
+}
 
 1;    # Magic true value required at end of module
 __END__
@@ -51,7 +59,12 @@ The video.upload method of the Facebook API:
         title => $title,
         description => $description,
         data => $RAW_DATA,
+        filename => $filename, # not in the official API, but might be useful
     );
+
+I<N.B.: the default response format for this method is XML per the official
+Facebook documentation, but this module uses whatever format has been set in
+L<WWW::Facebook::API>.>
 
 =back
 
