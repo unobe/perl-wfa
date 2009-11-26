@@ -3,7 +3,7 @@ NAME
 
 VERSION
     This document and others distributed with this module describe
-    WWW::Facebook::API version 0.4.15
+    WWW::Facebook::API version 0.4.17
 
 SYNOPSIS
         use WWW::Facebook::API;
@@ -498,7 +498,7 @@ ATTRIBUTE METHODS
         "confess" when an error is returned from the REST server.
 
     ua  The LWP::UserAgent agent used to communicate with the REST server.
-        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.13".
+        The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.17".
 
 PUBLIC METHODS
     call( $method, %args )
@@ -794,6 +794,8 @@ CONTRIBUTORS
 
     Jim Spath "<jspath@gmail.com>"
 
+    Kevin Riggle "none"
+
     King Mak "none"
 
     Louis-Philippe "none"
@@ -819,7 +821,7 @@ CONTRIBUTORS
     Thomas Sibley "<tsibley@cpan.org>"
 
 LICENSE AND COPYRIGHT
-    Copyright (c) 2007, David Romano "<unobe@cpan.org>". All rights
+    Copyright (c) 2007-2009, David Romano "<unobe@cpan.org>". All rights
     reserved.
 
     This module is free software; you can redistribute it and/or modify it
