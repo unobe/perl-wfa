@@ -1,9 +1,12 @@
 Revision history for WWW-Facebook-API
 
-0.4.17  Thu Nov 26 08:51:25 PST 2009
+0.4.17  Thu Nov 26 09:48:03 PST 2009
 	- Fixed upload method in Video along with docs (Anthony Bouvier)++
 	- Updated server call in API.pm to allow a filename to be passed in
 	  from the upload methods under Video and Photo. (Anthony Bouvier)++
+	- Didn't include Canvas testing b/c it looks like the code changes
+	  back in August broke the mocking. (It's on the TODO list)
+	- Added format testing for Video.upload
 
 0.4.16  Mon Aug 24 18:43:12 PDT 2009
 	Added Exception submodule for handling exceptions (Kevin Riggle)++

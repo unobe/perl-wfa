@@ -9,7 +9,7 @@ use Carp;
 
 sub get_upload_limits { return shift->base->call( 'video.getUploadLimits',  @_ ) }
 sub upload            {
-    my $base = shift;
+    my $base = shift->base;
 
     $base->server_uri('http://api-video.facebook.com/restserver.php');
     my $response = $base->call( 'video.upload', format => $base->format, @_ );

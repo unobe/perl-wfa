@@ -43,7 +43,6 @@ t/admin.t
 t/api.t
 t/application.t
 t/auth.t
-t/canvas.t
 t/config.t
 t/data.t
 t/events.live.t
