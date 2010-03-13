@@ -73,7 +73,7 @@ sub validate_sig {
     return $fb_params
         if $self->base->verify_sig(
         params => $fb_params,
-        sig    => $self->base->query->param('fb_sig') || $self->base->query->cookie(.$self->base->api_key)->value,
+        sig    => $self->base->query->param('fb_sig') || $self->base->query->cookie($self->base->api_key)->value,
         );
 
     return;
