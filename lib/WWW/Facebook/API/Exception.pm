@@ -93,7 +93,7 @@ David Romano  C<< <unobe@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Certain part copyright (c) 2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Certain part copyright (c) 2010, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

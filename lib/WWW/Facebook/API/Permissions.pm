@@ -158,8 +158,8 @@ You can also look for information at:
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) 2009 Playfish. All Rights reserved.
-Certain parts copyright (c) 2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2010 Playfish. All Rights reserved.
+Certain parts copyright (c) 2010, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

@@ -69,11 +69,11 @@ sub validate_sig {
     $self->base->query(shift);
 
     my $fb_params = $self->get_fb_params;
-    return unless $self->base->query->param('fb_sig') || $self->base->query->cookie('fbsetting_'.$self->base->api_key)->value;
+    return unless $self->base->query->param('fb_sig') || $self->base->query->cookie($self->base->api_key)->value;
     return $fb_params
         if $self->base->verify_sig(
         params => $fb_params,
-        sig    => $self->base->query->param('fb_sig') || $self->base->query->cookie('fbsetting_'.$self->base->api_key)->value,
+        sig    => $self->base->query->param('fb_sig') || $self->base->query->cookie(.$self->base->api_key)->value,
         );
 
     return;
@@ -121,8 +121,7 @@ WWW::Facebook::API::Canvas - Facebook Canvas
 
 Methods for using the canvas with L<WWW::Facebook::API>
 
-The C<$q> parameter should implement the param method (for example a L<CGI> or
-L<Apache::Request> object).
+The C<$q> parameter should implement the param and cookie methods (for example a L<CGI> or L<Apache::Request> object).
 
 =head1 SUBROUTINES/METHODS
 
@@ -241,7 +240,7 @@ David Romano  C<< <unobe@cpan.org> >>
 =head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2007, David Leadbeater C<< http://dgl.cx >>.
-Certain parts copyright (c) 2007-2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved. 
+Certain parts copyright (c) 2007-2010, David Romano C<< <unobe@cpan.org> >>. All rights reserved. 
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

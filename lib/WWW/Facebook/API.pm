@@ -7,7 +7,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.4.17');
+use version; our $VERSION = qv('0.4.18');
 
 use LWP::UserAgent;
 use Time::HiRes qw(time);
@@ -1452,7 +1452,7 @@ Thomas Sibley C<< <tsibley@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2007-2009, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
+Copyright (c) 2007-2010, David Romano C<< <unobe@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
