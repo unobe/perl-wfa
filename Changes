@@ -1,5 +1,10 @@
 Revision history for WWW-Facebook-API
 
+0.4.18 Fri Mar 12 23:39:59 PST 2010
+    - Fixed Canvas.pm to correctly select MD5-hex value. (Andrey Ilyin)++
+    - Updated Canvas.pm docs to specify cookie method needed
+    - Updated copyright information
+
 0.4.17  Thu Nov 26 09:48:03 PST 2009
 	- Updated Stream.publish to automatically call encode action_links
 	  to JSON. (Larry Mak)++

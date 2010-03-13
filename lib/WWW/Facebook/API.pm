@@ -520,7 +520,7 @@ WWW::Facebook::API - Facebook API implementation
 =head1 VERSION
 
 This document and others distributed with this module describe
-WWW::Facebook::API version 0.4.17
+WWW::Facebook::API version 0.4.18
 
 =head1 SYNOPSIS
 
@@ -1064,7 +1064,7 @@ when an error is returned from the REST server.
 =item ua
 
 The L<LWP::UserAgent> agent used to communicate with the REST server.
-The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.17".
+The agent_alias is initially set to "Perl-WWW-Facebook-API/0.4.18".
 
 =back
 
