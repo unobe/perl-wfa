@@ -1,0 +1,55 @@
+{
+   "abstract" : "Facebook API implementation",
+   "author" : [
+      "David Romano <unobe@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "ExtUtils::MakeMaker version 7.1, CPAN::Meta::Converter version 2.142690",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "WWW-Facebook-API",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Crypt::SSLeay" : "0",
+            "Digest::MD5" : "0",
+            "JSON::Any" : "0",
+            "LWP::UserAgent" : "0",
+            "Readonly" : "0",
+            "Time::HiRes" : "0",
+            "version" : "0"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "http://github.com/unobe/perl-wfa/"
+      }
+   },
+   "version" : "v0.4.18"
+}
