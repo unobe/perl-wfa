@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
- 
+
 WriteMakefile(
     NAME                => 'WWW::Facebook::API',
     AUTHOR              => 'David Romano <unobe@cpan.org>',
@@ -13,7 +13,7 @@ WriteMakefile(
         'version'           => 0,
         'Crypt::SSLeay'     => 0,
         'Digest::MD5'       => 0,
-        'JSON::Any'         => 0,
+        'JSON::Any'         => 1.33,
         'Time::HiRes'       => 0,
         'LWP::UserAgent'    => 0,
         'Const::Fast'       => 0,
