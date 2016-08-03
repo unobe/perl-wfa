@@ -7,8 +7,8 @@ use warnings;
 use strict;
 use Carp;
 
-use Readonly;
-Readonly my $DEFAULT_SLEEP => 15;
+use Const::Fast;
+const my $DEFAULT_SLEEP => 15;
 
 sub create_token {
     my $self = shift;

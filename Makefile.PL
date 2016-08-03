@@ -16,7 +16,7 @@ WriteMakefile(
         'JSON::Any'         => 0,
         'Time::HiRes'       => 0,
         'LWP::UserAgent'    => 0,
-        'Readonly'          => 0,
+        'Const::Fast'       => 0,
     },
     META_MERGE          => {
         resources => {
